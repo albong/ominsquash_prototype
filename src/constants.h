@@ -1,0 +1,9 @@
+#ifndef CONSTANTS_H
+#define CONSTANTS_H
+
+#define SCREEN_WIDTH 400
+#define SCREEN_HEIGHT 320
+
+#define SQRT_2 1.4142135623730950
+
+#endif
