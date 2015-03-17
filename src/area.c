@@ -1,10 +1,27 @@
 #include <stdlib.h> 
 
+#include "constants.h"
 #include "area.h"
 #include "room.h"
 #include "graphics.h"
+#include "player.h"
 
+#include "stdint.h"
 #include "SDL/SDL.h"
+
+int changingRooms = 0;
+int changingToRoom = -1;
+static const double transitionPixPerMilli = 0.6; //ought to change to percent for moving Link
+
+typedef struct Transition{
+    double changeX, changeY;
+    double oldX, oldY;
+    double newX, newY;
+    Room *newRoom;
+    int direction;
+} Transition;
+
+Transition room_transition;
 
 void loadArea(){
     //load the tilesheet
@@ -16,19 +33,8 @@ void loadArea(){
     //load the rooms
     _current_area.numRooms = 1;
     _current_area.roomList = (Room**) malloc(sizeof(Room *) * _current_area.numRooms);
-    
-    Room *firstRoom = malloc(sizeof(Room));
-    firstRoom->width = 25;
-    firstRoom->height = 20;
-    firstRoom->tileIndices = (int *) malloc(sizeof(int) * firstRoom->height * firstRoom->width);
-    int i = 0;
-    for (i = 0; i < firstRoom->height * firstRoom->width; i++){
-        firstRoom->tileIndices[i] = 41; 
-    }
-    firstRoom->buffer = getEmptySurface(_current_area.tilesheet.tileWidth * firstRoom->width, _current_area.tilesheet.tileHeight * firstRoom->height);
-    drawRoomBuffers(firstRoom);
-    
-    _current_area.roomList[0] = firstRoom;
+    _current_area.roomList[0] = createFirstDemoRoom();
+    _current_area.roomList[1] = createSecondDemoRoom();
     _current_area.currentRoom = 0;
 }
 
@@ -63,9 +69,139 @@ static void drawRoomBuffers(Room *room){
 }
 
 void drawCurrentRoom(){
-    drawImage(_current_area.roomList[_current_area.currentRoom]->buffer, 0, 0);
+    if (!changingRooms){
+        drawImage(_current_area.roomList[_current_area.currentRoom]->buffer, 0, 0);
+    } else {
+        drawImage(_current_area.roomList[_current_area.currentRoom]->buffer, room_transition.oldX, room_transition.oldY);
+        drawImage(room_transition.newRoom->buffer, room_transition.newX, room_transition.newY);
+    }
 }
 
-/*
-draw room to buffers - one buffer per frame of animation
-*/
+void doRoom(int delta){
+    int newRoom;
+    
+    if (!changingRooms){
+        newRoom = checkForRoomChange();
+        if (newRoom >= 0 && _current_area.roomList[_current_area.currentRoom]->connectingRooms[newRoom] != -1){
+            changingRooms = 1;
+            changingToRoom = newRoom;
+            changeRoom(_current_area.roomList[_current_area.currentRoom]->connectingRooms[changingToRoom], changingToRoom, delta);
+            room_transition.changeX = 0;
+            room_transition.changeY = 0;
+            room_transition.newRoom = _current_area.roomList[_current_area.roomList[_current_area.currentRoom]->connectingRooms[newRoom]];
+            player.x = SCREEN_WIDTH/2;
+            player.y = SCREEN_HEIGHT/2;
+        }
+    } else {
+        changeRoom(_current_area.roomList[_current_area.currentRoom]->connectingRooms[changingToRoom], changingToRoom, delta);
+    }
+}
+
+static int checkForRoomChange(){
+    //eventually use player's ground bounding box for this
+    double left = player.x;
+    double right = player.x + player.sprite->width;
+    double up = player.y;
+    double down = player.y + player.sprite->image->h;
+    
+    int roomRight = _current_area.tilesheet.tileWidth * _current_area.roomList[_current_area.currentRoom]->width;
+    int roomDown = _current_area.tilesheet.tileHeight * _current_area.roomList[_current_area.currentRoom]->height;
+
+    if (left < 0){
+        return ROOM_LEFT;
+    } else if (right >roomRight){
+        return ROOM_RIGHT;
+    } else if (up < 0){
+        return ROOM_UP;
+    } else if (down > roomDown){
+        return ROOM_DOWN;
+    } else {
+        return -1;
+    }
+}
+
+void changeRoom(int roomIndex, int direction, int delta){
+    //calculate the x and y at which to draw the current room and the next room
+    //we'll know the transition is over because we know how much we started with (screen width), and we know how many pixels we've moved
+    //should put all of this into a struct
+    //then we we go to draw the room, if we're transitioning, we'll draw the image of the two rooms, else just draw normal
+    //probably should create a camera object to deal with the scrolling room?  may be a tutorial about this 
+    
+    switch (direction){
+        case ROOM_LEFT:
+            room_transition.changeX += delta * transitionPixPerMilli;
+            room_transition.oldX = room_transition.changeX;
+            room_transition.oldY = 0;
+            room_transition.newX = room_transition.changeX - SCREEN_WIDTH;
+            room_transition.newY = 0;
+            break;
+        case ROOM_RIGHT:
+            room_transition.changeX -= delta * transitionPixPerMilli;
+            room_transition.oldX = room_transition.changeX;
+            room_transition.oldY = 0;
+            room_transition.newX = room_transition.changeX + SCREEN_WIDTH;
+            room_transition.newY = 0;
+            break;
+        case ROOM_UP:
+            room_transition.changeY += delta * transitionPixPerMilli;
+            room_transition.oldX = 0;
+            room_transition.oldY = room_transition.changeY;
+            room_transition.newX = 0;
+            room_transition.newY = room_transition.changeX - SCREEN_WIDTH;
+            break;
+        case ROOM_DOWN:
+            room_transition.changeY -= delta * transitionPixPerMilli;
+            room_transition.oldX = 0;
+            room_transition.oldY = room_transition.changeY;
+            room_transition.newX = 0;
+            room_transition.newY = room_transition.changeX + SCREEN_WIDTH;
+            break;
+        default:
+            break;
+    }
+    
+    if (room_transition.changeX >= SCREEN_WIDTH || room_transition.changeX <= -SCREEN_WIDTH || room_transition.changeY >= SCREEN_HEIGHT || room_transition.changeY <= -SCREEN_HEIGHT){
+        changingRooms = 0;
+        _current_area.currentRoom = _current_area.roomList[_current_area.currentRoom]->connectingRooms[direction];
+    }
+}
+
+static Room *createFirstDemoRoom(){
+    Room *firstRoom = malloc(sizeof(Room));
+    firstRoom->width = 25;
+    firstRoom->height = 20;
+    firstRoom->tileIndices = (int *) malloc(sizeof(int) * firstRoom->height * firstRoom->width);
+    firstRoom->flags = (uint32_t *) malloc(sizeof(uint32_t) * firstRoom->height * firstRoom->width);
+    int i;
+    for (i = 0; i < firstRoom->height * firstRoom->width; i++){
+        firstRoom->tileIndices[i] = 41;
+        firstRoom->flags[i] = 0;
+    }
+    firstRoom->connectingRooms[0] = 1;
+    firstRoom->connectingRooms[1] = -1;
+    firstRoom->connectingRooms[2] = -1;
+    firstRoom->connectingRooms[3] = -1;
+    firstRoom->buffer = getEmptySurface(_current_area.tilesheet.tileWidth * firstRoom->width, _current_area.tilesheet.tileHeight * firstRoom->height);
+    drawRoomBuffers(firstRoom);
+    return firstRoom;
+}
+
+static Room *createSecondDemoRoom(){
+    Room *room = malloc(sizeof(Room));
+    room->width = 25;
+    room->height = 20;
+    room->tileIndices = (int *) malloc(sizeof(int) * room->height * room->width);
+    room->flags = (uint32_t *) malloc(sizeof(uint32_t) * room->height * room->width);
+    int i;
+    for (i = 0; i < room->height * room->width; i++){
+        room->tileIndices[i] = 20;
+        room->flags[i] = 0;
+    }
+    room->connectingRooms[0] = -1;
+    room->connectingRooms[1] = 0;
+    room->connectingRooms[2] = -1;
+    room->connectingRooms[3] = -1;
+    room->buffer = getEmptySurface(_current_area.tilesheet.tileWidth * room->width, _current_area.tilesheet.tileHeight * room->height);
+    drawRoomBuffers(room);
+    return room;
+}

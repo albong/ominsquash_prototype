@@ -90,16 +90,16 @@ static void updatePlayerPosition(int delta){
 
 static void constrainPlayerPosition(){
     if (player.x < 0){
-		player.x = 0;
+//		player.x = 0;
 	}
     if (player.x + player.w >= SCREEN_WIDTH){
-		player.x = SCREEN_WIDTH - (player.w + 1);
+//		player.x = SCREEN_WIDTH - player.w;
 	}
 	if (player.y < 0){
-		player.y = 0;
+//		player.y = 0;
 	}
 	if (player.y + player.h >= SCREEN_HEIGHT){
-		player.y = SCREEN_HEIGHT - (player.h + 1);
+//		player.y = SCREEN_HEIGHT - player.h;
 	}
 }
 

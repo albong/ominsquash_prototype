@@ -4,6 +4,7 @@
 #include "input.h"
 #include "player.h"
 #include "collisions.h"
+#include "area.h"
 
 int main(int argc, char *argv[]){
 //    unsigned int frameLimit = SDL_GetTicks() + 16;
@@ -41,6 +42,8 @@ int main(int argc, char *argv[]){
         doPlayer(delta);
         
         doEntities();
+        
+        doRoom(delta);
         
         doCollisions();
         

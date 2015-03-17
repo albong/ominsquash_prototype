@@ -24,9 +24,14 @@ typedef struct Area {
 Area _current_area;
 
 //functions
+void doRoom(int delta);
 void loadArea();
 void drawCurrentRoom();
-
+static int checkForRoomChange();
+void changeRoom(int roomIndex, int direction, int delta);
 static void drawRoomBuffers(Room *room);
+
+static Room *createFirstDemoRoom();
+static Room *createSecondDemoRoom();
 
 #endif
