@@ -1,2 +1,4 @@
 *.exe
 *.o
+stderr.txt
+stdout.txt
