@@ -8,11 +8,12 @@ Entity player;
 void initPlayer();
 void doPlayer(int delta);
 void drawPlayer();
+void setPlayerTransitioning(int direction);
+void stopPlayerTransitioning();
 
 static void updatePlayerFrame(int delta);
 static void updatePlayerOrientation();
 static void updatePlayerPosition(int delta);
-static void constrainPlayerPosition();
 
 #endif
 

@@ -3,6 +3,9 @@
 #include "constants.h"
 #include "input.h"
 
+int roomTransition = 0;
+int transitionDirection = -1;
+
 void initPlayer(){
     player.sprite = getSprite(0);
     player.orientation = DOWN;    
@@ -30,9 +33,25 @@ void doPlayer(int delta){
 		}
         
         updatePlayerPosition(delta);
-		constrainPlayerPosition();
 		updatePlayerOrientation();
 		updatePlayerFrame(delta);
+    } else if (roomTransition){
+        switch (transitionDirection){
+           case ROOM_LEFT:
+               player.x += delta * TRANSITION_PERCENT * (SCREEN_WIDTH/2 - 2*player.sprite->width);
+               break;
+            case ROOM_RIGHT:
+               player.x -= delta * TRANSITION_PERCENT * (SCREEN_WIDTH/2 - 2*player.sprite->width);
+               break;
+            case ROOM_UP:
+               player.y += delta * TRANSITION_PERCENT * (SCREEN_HEIGHT/2 - 2*player.sprite->image->h);
+               break;
+            case ROOM_DOWN:
+               player.y -= delta * TRANSITION_PERCENT * (SCREEN_HEIGHT/2 - 2*player.sprite->image->h);
+               break;
+           default:
+                break;
+        }
     }
 }
 
@@ -88,58 +107,53 @@ static void updatePlayerPosition(int delta){
 	}
 }
 
-static void constrainPlayerPosition(){
-    if (player.x < 0){
-//		player.x = 0;
-	}
-    if (player.x + player.w >= SCREEN_WIDTH){
-//		player.x = SCREEN_WIDTH - player.w;
-	}
-	if (player.y < 0){
-//		player.y = 0;
-	}
-	if (player.y + player.h >= SCREEN_HEIGHT){
-//		player.y = SCREEN_HEIGHT - player.h;
-	}
+void setPlayerTransitioning(int direction){
+    roomTransition = 1;
+    transitionDirection = direction;
+    player.active = 0;
+}
+
+void stopPlayerTransitioning(){
+    roomTransition = 0;
+    transitionDirection = -1;
+    player.active = 1;
 }
 
 void drawPlayer(){
-    if (player.active == 1){
-        if (player.isMoving){
-            int frame = ((player.milliPassed / player.milliPerFrame) + 1) % player.numFrames;
-            switch (player.orientation){
-                case UP:
-                    drawAnimatedSprite(player.sprite, 4 + frame, player.x + 0.5, player.y + 0.5);
-                    break;
-                case DOWN:
-                    drawAnimatedSprite(player.sprite, 2 + frame, player.x + 0.5, player.y + 0.5);
-                    break;
-                case LEFT:
-                    drawAnimatedSprite(player.sprite, 0 + frame, player.x + 0.5, player.y + 0.5);
-                    break;
-                case RIGHT:
-                    drawAnimatedSprite(player.sprite, 6 + frame, player.x + 0.5, player.y + 0.5);
-                    break;
-                default:
-                    break;
-            }
-        } else {
-            switch (player.orientation){
-                case UP:
-                    drawAnimatedSprite(player.sprite, 4, player.x + 0.5, player.y + 0.5);
-                    break;
-                case DOWN:
-                    drawAnimatedSprite(player.sprite, 2, player.x + 0.5, player.y + 0.5);
-                    break;
-                case LEFT:
-                    drawAnimatedSprite(player.sprite, 0, player.x + 0.5, player.y + 0.5);
-                    break;
-                case RIGHT:
-                    drawAnimatedSprite(player.sprite, 6, player.x + 0.5, player.y + 0.5);
-                    break;
-                default:
-                    break;
-            }
+    if (player.isMoving || roomTransition){
+        int frame = ((player.milliPassed / player.milliPerFrame) + 1) % player.numFrames;
+        switch (player.orientation){
+            case UP:
+                drawAnimatedSprite(player.sprite, 4 + frame, player.x + 0.5, player.y + 0.5);
+                break;
+            case DOWN:
+                drawAnimatedSprite(player.sprite, 2 + frame, player.x + 0.5, player.y + 0.5);
+                break;
+            case LEFT:
+                drawAnimatedSprite(player.sprite, 0 + frame, player.x + 0.5, player.y + 0.5);
+                break;
+            case RIGHT:
+                drawAnimatedSprite(player.sprite, 6 + frame, player.x + 0.5, player.y + 0.5);
+                break;
+            default:
+                break;
+        }
+    } else {
+        switch (player.orientation){
+            case UP:
+                drawAnimatedSprite(player.sprite, 4, player.x + 0.5, player.y + 0.5);
+                break;
+            case DOWN:
+                drawAnimatedSprite(player.sprite, 2, player.x + 0.5, player.y + 0.5);
+                break;
+            case LEFT:
+                drawAnimatedSprite(player.sprite, 0, player.x + 0.5, player.y + 0.5);
+                break;
+            case RIGHT:
+                drawAnimatedSprite(player.sprite, 6, player.x + 0.5, player.y + 0.5);
+                break;
+            default:
+                break;
         }
     }
 }

@@ -4,11 +4,6 @@
 #include "stdint.h"
 #include "SDL/SDL.h"
 
-#define ROOM_LEFT 0
-#define ROOM_RIGHT 1
-#define ROOM_UP 2
-#define ROOM_DOWN 3
-
 typedef struct Room {
     int width, height; //in tiles
     uint32_t *flags;

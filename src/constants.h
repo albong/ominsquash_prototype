@@ -6,4 +6,11 @@
 
 #define SQRT_2 1.4142135623730950
 
+#define TRANSITION_PERCENT 0.0015
+
+#define ROOM_LEFT 0
+#define ROOM_RIGHT 1
+#define ROOM_UP 2
+#define ROOM_DOWN 3
+
 #endif
