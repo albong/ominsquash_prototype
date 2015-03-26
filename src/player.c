@@ -3,8 +3,9 @@
 #include "constants.h"
 #include "input.h"
 
-int roomTransition = 0;
-int transitionDirection = -1;
+static int roomTransition = 0;
+static int transitionDirection = -1;
+static unsigned totalDelta = 0;
 
 void initPlayer(){
     player.sprite = getSprite(0);
@@ -25,6 +26,7 @@ void initPlayer(){
 }
 
 void doPlayer(int delta){
+    totalDelta += delta;
     if (player.active == 1){
 		if (_input.down || _input.up || _input.left || _input.right){
 		    player.isMoving = 1;
@@ -36,18 +38,19 @@ void doPlayer(int delta){
 		updatePlayerOrientation();
 		updatePlayerFrame(delta);
     } else if (roomTransition){
+        double transPercent = totalDelta / MILLI_PER_TRANSITION;
         switch (transitionDirection){
            case ROOM_LEFT:
-               player.x += delta * TRANSITION_PERCENT * (SCREEN_WIDTH/2 - 2*player.sprite->width);
+               player.x = transPercent * (SCREEN_WIDTH - player.w);
                break;
             case ROOM_RIGHT:
-               player.x -= delta * TRANSITION_PERCENT * (SCREEN_WIDTH/2 - 2*player.sprite->width);
+               player.x = SCREEN_WIDTH - player.w - (transPercent * (SCREEN_WIDTH - player.w));
                break;
             case ROOM_UP:
-               player.y += delta * TRANSITION_PERCENT * (SCREEN_HEIGHT/2 - 2*player.sprite->image->h);
+               player.y = transPercent * (SCREEN_HEIGHT - player.h);
                break;
             case ROOM_DOWN:
-               player.y -= delta * TRANSITION_PERCENT * (SCREEN_HEIGHT/2 - 2*player.sprite->image->h);
+               player.y = SCREEN_HEIGHT - player.h - (transPercent * (SCREEN_HEIGHT - player.h));
                break;
            default:
                 break;
@@ -111,12 +114,14 @@ void setPlayerTransitioning(int direction){
     roomTransition = 1;
     transitionDirection = direction;
     player.active = 0;
+    totalDelta = 0;
 }
 
 void stopPlayerTransitioning(){
     roomTransition = 0;
     transitionDirection = -1;
     player.active = 1;
+    totalDelta = 0;
 }
 
 void drawPlayer(){

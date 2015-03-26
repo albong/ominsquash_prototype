@@ -16,7 +16,7 @@ typedef struct Area {
     char *tilesetName;
     Tilesheet tilesheet;
     int numRooms;
-    int currentRoom;
+	Room *currentRoom;
     Room **roomList;
 } Area;
 

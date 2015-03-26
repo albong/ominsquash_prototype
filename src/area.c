@@ -8,12 +8,12 @@
 
 #include "stdint.h"
 #include "SDL/SDL.h"
-
-int changingRooms = 0;
-int changingToRoom = -1;
+ 
+static int changingRooms = 0;
+static int changingToRoom = -1;
+static unsigned totalDelta = 0;
 
 typedef struct Transition{
-    double changeX, changeY;
     double oldX, oldY;
     double newX, newY;
     Room *newRoom;
@@ -34,7 +34,7 @@ void loadArea(){
     _current_area.roomList = (Room**) malloc(sizeof(Room *) * _current_area.numRooms);
     _current_area.roomList[0] = createFirstDemoRoom();
     _current_area.roomList[1] = createSecondDemoRoom();
-    _current_area.currentRoom = 0;
+    _current_area.currentRoom = _current_area.roomList[0];
 }
 
 static void drawRoomBuffers(Room *room){
@@ -69,29 +69,29 @@ static void drawRoomBuffers(Room *room){
 
 void drawCurrentRoom(){
     if (!changingRooms){
-        drawImage(_current_area.roomList[_current_area.currentRoom]->buffer, 0, 0);
+        drawImage(_current_area.currentRoom->buffer, 0, 0);
     } else {
-        drawImage(_current_area.roomList[_current_area.currentRoom]->buffer, room_transition.oldX, room_transition.oldY);
+        drawImage(_current_area.currentRoom->buffer, room_transition.oldX, room_transition.oldY);
         drawImage(room_transition.newRoom->buffer, room_transition.newX, room_transition.newY);
     }
 }
 
 void doRoom(int delta){
+    totalDelta += delta;
     int newRoom;
-    if (changingRooms == 0){
+    if (!changingRooms){
         newRoom = checkForRoomChange();
-        if (newRoom >= 0 && _current_area.roomList[_current_area.currentRoom]->connectingRooms[newRoom] != -1){
+        if (newRoom >= 0 && _current_area.currentRoom->connectingRooms[newRoom] != -1){
+            totalDelta = 0;
             changingRooms = 1;
             changingToRoom = newRoom;
-            changeRoom(_current_area.roomList[_current_area.currentRoom]->connectingRooms[changingToRoom], changingToRoom, delta);
-            room_transition.changeX = 0;
-            room_transition.changeY = 0;
-            room_transition.newRoom = _current_area.roomList[_current_area.roomList[_current_area.currentRoom]->connectingRooms[newRoom]];
+            changeRoom(_current_area.currentRoom->connectingRooms[changingToRoom], changingToRoom, delta);
+            room_transition.newRoom = _current_area.roomList[_current_area.currentRoom->connectingRooms[newRoom]];
             setPlayerTransitioning(changingToRoom);
-            printf("am changing rooms: %d\n", changingRooms);
         }
     } else {
-        changeRoom(_current_area.roomList[_current_area.currentRoom]->connectingRooms[changingToRoom], changingToRoom, delta);
+        changeRoom(_current_area.currentRoom->connectingRooms[changingToRoom], changingToRoom, delta);
+        
     }
 }
 
@@ -102,8 +102,8 @@ static int checkForRoomChange(){
     double up = player.y + (player.sprite->image->h * 0.4);
     double down = player.y + (player.sprite->image->h * 0.6);
     
-    int roomRight = _current_area.tilesheet.tileWidth * _current_area.roomList[_current_area.currentRoom]->width;
-    int roomDown = _current_area.tilesheet.tileHeight * _current_area.roomList[_current_area.currentRoom]->height;
+    int roomRight = _current_area.tilesheet.tileWidth * _current_area.currentRoom->width;
+    int roomDown = _current_area.tilesheet.tileHeight * _current_area.currentRoom->height;
 
     if (left < 0){
         return ROOM_LEFT;
@@ -124,49 +124,40 @@ void changeRoom(int roomIndex, int direction, int delta){
     //should put all of this into a struct
     //then we we go to draw the room, if we're transitioning, we'll draw the image of the two rooms, else just draw normal
     //probably should create a camera object to deal with the scrolling room?  may be a tutorial about this 
-    
-    int finishedTransition = 0;
+    double transPercent = totalDelta / MILLI_PER_TRANSITION;
     
     switch (direction){
         case ROOM_LEFT:
-            room_transition.changeX += delta * TRANSITION_PERCENT * SCREEN_WIDTH;
-            room_transition.oldX = room_transition.changeX;
+            room_transition.oldX = transPercent * SCREEN_WIDTH;
             room_transition.oldY = 0;
-            room_transition.newX = room_transition.changeX - SCREEN_WIDTH;
+            room_transition.newX = (transPercent * SCREEN_WIDTH) - SCREEN_WIDTH;
             room_transition.newY = 0;
-            finishedTransition = room_transition.changeX >= SCREEN_WIDTH;
             break;
         case ROOM_RIGHT:
-            room_transition.changeX -= delta * TRANSITION_PERCENT * SCREEN_WIDTH;
-            room_transition.oldX = room_transition.changeX;
+            room_transition.oldX = -transPercent * SCREEN_WIDTH;
             room_transition.oldY = 0;
-            room_transition.newX = room_transition.changeX + SCREEN_WIDTH;
+            room_transition.newX = -(transPercent * SCREEN_WIDTH) + SCREEN_WIDTH;
             room_transition.newY = 0;
-            finishedTransition = room_transition.changeX <= -SCREEN_WIDTH;
             break;
         case ROOM_UP:
-            room_transition.changeY += delta * TRANSITION_PERCENT * SCREEN_HEIGHT;
             room_transition.oldX = 0;
-            room_transition.oldY = room_transition.changeY;
+            room_transition.oldY = transPercent * SCREEN_HEIGHT;
             room_transition.newX = 0;
-            room_transition.newY = room_transition.changeY - SCREEN_HEIGHT;
-            finishedTransition = room_transition.changeY >= SCREEN_HEIGHT;
+            room_transition.newY = (transPercent * SCREEN_HEIGHT) - SCREEN_HEIGHT;
             break;
         case ROOM_DOWN:
-            room_transition.changeY -= delta * TRANSITION_PERCENT * SCREEN_HEIGHT;
             room_transition.oldX = 0;
-            room_transition.oldY = room_transition.changeY;
+            room_transition.oldY = -transPercent * SCREEN_HEIGHT;
             room_transition.newX = 0;
-            room_transition.newY = room_transition.changeY + SCREEN_HEIGHT;
-            finishedTransition = room_transition.changeY <= -SCREEN_HEIGHT;
+            room_transition.newY = -(transPercent * SCREEN_HEIGHT) + SCREEN_HEIGHT;
             break;
         default:
             break;
     }
     
-    if (finishedTransition){
+    if (transPercent >= 1){
         changingRooms = 0;
-        _current_area.currentRoom = _current_area.roomList[_current_area.currentRoom]->connectingRooms[direction];
+        _current_area.currentRoom = _current_area.roomList[_current_area.currentRoom->connectingRooms[direction]];
         stopPlayerTransitioning();
     }
 }
