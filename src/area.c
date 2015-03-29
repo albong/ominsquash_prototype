@@ -34,7 +34,7 @@ void loadArea(){
     _current_area.roomList = (Room**) malloc(sizeof(Room *) * _current_area.numRooms);
     _current_area.roomList[0] = createFirstDemoRoom();
     _current_area.roomList[1] = createSecondDemoRoom();
-    _current_area.currentRoom = _current_area.roomList[0];
+    _current_area.currentRoom = _current_area.roomList[1];
 }
 
 static void drawRoomBuffers(Room *room){
@@ -193,6 +193,16 @@ static Room *createSecondDemoRoom(){
         room->tileIndices[i] = 20;
         room->flags[i] = 0;
     }
+    
+    room->tileIndices[ROOM_WIDTH*3 + 5] = 7;
+    room->tileIndices[ROOM_WIDTH*3 + 6] = 9;
+    room->tileIndices[ROOM_WIDTH*4 + 5] = 37;
+    room->tileIndices[ROOM_WIDTH*4 + 6] = 39;
+    setFlag(room, ROOM_WIDTH*3 + 5, ROOMF_IMPASSABLE);
+    setFlag(room, ROOM_WIDTH*3 + 6, ROOMF_IMPASSABLE);
+    setFlag(room, ROOM_WIDTH*4 + 5, ROOMF_IMPASSABLE);
+    setFlag(room, ROOM_WIDTH*4 + 6, ROOMF_IMPASSABLE);
+    
     room->connectingRooms[0] = 0;
     room->connectingRooms[1] = 0;
     room->connectingRooms[2] = 0;

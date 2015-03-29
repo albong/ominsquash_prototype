@@ -8,6 +8,9 @@
 
 #define MILLI_PER_TRANSITION 750.0
 
+#define ROOM_WIDTH 25
+#define ROOM_HEIGHT 20
+
 #define ROOM_LEFT 0
 #define ROOM_RIGHT 1
 #define ROOM_UP 2

@@ -4,6 +4,8 @@
 #include "stdint.h"
 #include "SDL/SDL.h"
 
+#define ROOMF_IMPASSABLE 0
+
 typedef struct Room {
     int width, height; //in tiles
     uint32_t *flags;
@@ -16,6 +18,9 @@ typedef struct Room {
 } Room;
 
 int getFlag(Room *room, int index, int flagNum);
+void setFlag(Room *room, int index, int flagNum);
+void clearFlag(Room *room, int index, int flagNum);
+void toggleFlag(Room *room, int index, int flagNum);
 
 /*
 we need some sort of way to associate a tileset with a room - might make sense to
