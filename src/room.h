@@ -1,13 +1,14 @@
 #ifndef ROOM_H
 #define ROOM_H
 
+#include "collisions.h"
 #include "stdint.h"
 #include "SDL/SDL.h"
 
 #define ROOMF_IMPASSABLE 0
 
 typedef struct Room {
-    int width, height; //in tiles
+    
     uint32_t *flags;
     //Enemy enemies[];
     int *tileIndices;
@@ -15,12 +16,14 @@ typedef struct Room {
     int *transitionToRoom;
     SDL_Surface *buffer;
     int connectingRooms[4]; //left right up down
+    HitBox walls;
 } Room;
 
 int getFlag(Room *room, int index, int flagNum);
 void setFlag(Room *room, int index, int flagNum);
 void clearFlag(Room *room, int index, int flagNum);
 void toggleFlag(Room *room, int index, int flagNum);
+void generateWallList(Room *room, int tileSize);
 
 /*
 we need some sort of way to associate a tileset with a room - might make sense to

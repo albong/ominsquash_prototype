@@ -39,12 +39,33 @@ void doEntities(){
 void drawEntities(){
     int i;
     
-    //loop through the entities and perform their action
+    //loop through the entities and call their draw
     for (i = 0; i < MAX_ENTITIES; i++){
         self = &entity[i];
         if (self->active == 1){
             self->draw();
         }
+    }
+}
+
+void moveEntities(){
+    int i;
+    
+    //loop through the entities and update their positions
+    for (i = 0; i < MAX_ENTITIES; i++){
+        self = &entity[i];
+        if (self->active == 1){
+            self->x += self->changeX;
+            self->y += self->changeY;
+            self->changeX = 0;
+            self->changeY = 0;
+        }
+    }
+}
+
+void collideWithWall(CollRect wall, Entity e, int collCode){
+    if (collCode & 1){
+        e.changeX = wall.x - e.x;
     }
 }
 

@@ -47,6 +47,9 @@ int main(int argc, char *argv[]){
         
         doCollisions();
         
+        movePlayer();
+        moveEntities();
+        
         draw();
         
         SDL_Delay(16);

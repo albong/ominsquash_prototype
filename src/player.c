@@ -23,6 +23,19 @@ void initPlayer(){
     player.numFrames = 2;
     
     player.active = 1;
+    
+    player.type = PLAYER;
+    
+    player.moveHitBox = malloc(sizeof(HitBox) * 1);
+    player.moveHitBox[0].numCircle = 0;
+    player.moveHitBox[0].numRect = 1;
+    player.moveHitBox[0].rects = malloc(sizeof(CollRect) * 1);
+    player.moveHitBox[0].rects[0].x = 0;
+    player.moveHitBox[0].rects[0].y = 5;
+    player.moveHitBox[0].rects[0].w = player.w;
+    player.moveHitBox[0].rects[0].y = player.sprite->image->h - 5;
+    
+    player.interactHitBox = malloc(sizeof(HitBox) * 1);
 }
 
 void doPlayer(int delta){
@@ -80,34 +93,69 @@ static void updatePlayerOrientation(){
 }
 
 static void updatePlayerPosition(int delta){
+//    if (_input.up && _input.left){
+//        player.x -= player.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2);
+//        player.y -= player.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2);
+//
+//    } else if (_input.up && _input.right){
+//        player.x += player.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2);
+//        player.y -= player.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2);
+//
+//    } else if (_input.down && _input.left){
+//        player.x -= player.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2);
+//        player.y += player.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2);
+//
+//    } else if (_input.down && _input.right){
+//        player.x += player.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2);
+//        player.y += player.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2);
+//        
+//	} else if (_input.up == 1){
+//		player.y -= player.pixelsPerMilli * delta/1000.0;
+//
+//	} else if (_input.down == 1){
+//		player.y += player.pixelsPerMilli * delta/1000.0;
+//
+//	} else if (_input.left == 1){
+//		player.x -= player.pixelsPerMilli * delta/1000.0;
+//
+//	} else if (_input.right == 1){
+//		player.x += player.pixelsPerMilli * delta/1000.0;
+//	}
     if (_input.up && _input.left){
-        player.x -= player.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2);
-        player.y -= player.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2);
+        player.changeX = player.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2) * -1;
+        player.changeY = player.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2) * -1;
 
     } else if (_input.up && _input.right){
-        player.x += player.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2);
-        player.y -= player.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2);
+        player.changeX = player.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2);
+        player.changeY = player.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2) * -1;
 
     } else if (_input.down && _input.left){
-        player.x -= player.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2);
-        player.y += player.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2);
+        player.changeX = player.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2) * -1;
+        player.changeY = player.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2);
 
     } else if (_input.down && _input.right){
-        player.x += player.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2);
-        player.y += player.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2);
+        player.changeX = player.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2);
+        player.changeY = player.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2);
         
 	} else if (_input.up == 1){
-		player.y -= player.pixelsPerMilli * delta/1000.0;
+		player.changeY = player.pixelsPerMilli * delta/1000.0 * -1;
 
 	} else if (_input.down == 1){
-		player.y += player.pixelsPerMilli * delta/1000.0;
+		player.changeY = player.pixelsPerMilli * delta/1000.0;
 
 	} else if (_input.left == 1){
-		player.x -= player.pixelsPerMilli * delta/1000.0;
+		player.changeX = player.pixelsPerMilli * delta/1000.0 * -1;
 
 	} else if (_input.right == 1){
-		player.x += player.pixelsPerMilli * delta/1000.0;
+		player.changeX = player.pixelsPerMilli * delta/1000.0;
 	}
+}
+
+void movePlayer(){
+    player.x += player.changeX;
+    player.y += player.changeY;
+    player.changeX = 0;
+    player.changeY = 0;
 }
 
 void setPlayerTransitioning(int direction){

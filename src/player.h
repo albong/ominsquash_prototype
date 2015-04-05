@@ -10,6 +10,7 @@ void doPlayer(int delta);
 void drawPlayer();
 void setPlayerTransitioning(int direction);
 void stopPlayerTransitioning();
+void movePlayer();
 
 static void updatePlayerFrame(int delta);
 static void updatePlayerOrientation();

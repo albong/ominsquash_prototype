@@ -30,6 +30,7 @@ void drawCurrentRoom();
 static int checkForRoomChange();
 void changeRoom(int roomIndex, int direction, int delta);
 static void drawRoomBuffers(Room *room);
+HitBox getCurrentWalls();
 
 static Room *createFirstDemoRoom();
 static Room *createSecondDemoRoom();

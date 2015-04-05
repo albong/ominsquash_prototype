@@ -40,8 +40,8 @@ void loadArea(){
 static void drawRoomBuffers(Room *room){
 //    int currentRoom = _current_area.currentRoom;
 //    Room *room = _current_area.roomList[currentRoom];
-    int roomWidth = room->width;
-    int roomHeight = room->height;
+    int roomWidth = ROOM_WIDTH;
+    int roomHeight = ROOM_HEIGHT;
     int tileWidth = _current_area.tilesheet.tileWidth;
     int tileHeight = _current_area.tilesheet.tileHeight;
     int numTilesWide = (_current_area.tilesheet.sheet->w - 1) / tileWidth;
@@ -102,8 +102,8 @@ static int checkForRoomChange(){
     double up = player.y + (player.sprite->image->h * 0.4);
     double down = player.y + (player.sprite->image->h * 0.6);
     
-    int roomRight = _current_area.tilesheet.tileWidth * _current_area.currentRoom->width;
-    int roomDown = _current_area.tilesheet.tileHeight * _current_area.currentRoom->height;
+    int roomRight = _current_area.tilesheet.tileWidth * ROOM_WIDTH;
+    int roomDown = _current_area.tilesheet.tileHeight * ROOM_HEIGHT;
 
     if (left < 0){
         return ROOM_LEFT;
@@ -162,14 +162,16 @@ void changeRoom(int roomIndex, int direction, int delta){
     }
 }
 
+HitBox getCurrentWalls(){
+    return _current_area.currentRoom->walls;
+}
+
 static Room *createFirstDemoRoom(){
     Room *firstRoom = malloc(sizeof(Room));
-    firstRoom->width = 25;
-    firstRoom->height = 20;
-    firstRoom->tileIndices = (int *) malloc(sizeof(int) * firstRoom->height * firstRoom->width);
-    firstRoom->flags = (uint32_t *) malloc(sizeof(uint32_t) * firstRoom->height * firstRoom->width);
+    firstRoom->tileIndices = (int *) malloc(sizeof(int) * ROOM_HEIGHT * ROOM_WIDTH);
+    firstRoom->flags = (uint32_t *) malloc(sizeof(uint32_t) * ROOM_HEIGHT * ROOM_WIDTH);
     int i;
-    for (i = 0; i < firstRoom->height * firstRoom->width; i++){
+    for (i = 0; i < ROOM_HEIGHT * ROOM_WIDTH; i++){
         firstRoom->tileIndices[i] = 41;
         firstRoom->flags[i] = 0;
     }
@@ -177,19 +179,18 @@ static Room *createFirstDemoRoom(){
     firstRoom->connectingRooms[1] = 1;
     firstRoom->connectingRooms[2] = 1;
     firstRoom->connectingRooms[3] = 1;
-    firstRoom->buffer = getEmptySurface(_current_area.tilesheet.tileWidth * firstRoom->width, _current_area.tilesheet.tileHeight * firstRoom->height);
+    firstRoom->buffer = getEmptySurface(_current_area.tilesheet.tileWidth * ROOM_WIDTH, _current_area.tilesheet.tileHeight * ROOM_HEIGHT);
     drawRoomBuffers(firstRoom);
+    generateWallList(firstRoom, _current_area.tilesheet.tileWidth);
     return firstRoom;
 }
 
 static Room *createSecondDemoRoom(){
     Room *room = malloc(sizeof(Room));
-    room->width = 25;
-    room->height = 20;
-    room->tileIndices = (int *) malloc(sizeof(int) * room->height * room->width);
-    room->flags = (uint32_t *) malloc(sizeof(uint32_t) * room->height * room->width);
+    room->tileIndices = (int *) malloc(sizeof(int) * ROOM_HEIGHT * ROOM_WIDTH);
+    room->flags = (uint32_t *) malloc(sizeof(uint32_t) * ROOM_HEIGHT * ROOM_WIDTH);
     int i;
-    for (i = 0; i < room->height * room->width; i++){
+    for (i = 0; i < ROOM_HEIGHT * ROOM_WIDTH; i++){
         room->tileIndices[i] = 20;
         room->flags[i] = 0;
     }
@@ -207,7 +208,8 @@ static Room *createSecondDemoRoom(){
     room->connectingRooms[1] = 0;
     room->connectingRooms[2] = 0;
     room->connectingRooms[3] = 0;
-    room->buffer = getEmptySurface(_current_area.tilesheet.tileWidth * room->width, _current_area.tilesheet.tileHeight * room->height);
+    room->buffer = getEmptySurface(_current_area.tilesheet.tileWidth * ROOM_WIDTH, _current_area.tilesheet.tileHeight * ROOM_HEIGHT);
     drawRoomBuffers(room);
+    generateWallList(room, _current_area.tilesheet.tileWidth);
     return room;
 }
