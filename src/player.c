@@ -33,7 +33,7 @@ void initPlayer(){
     player.moveHitBox[0].rects[0].x = 0;
     player.moveHitBox[0].rects[0].y = 5;
     player.moveHitBox[0].rects[0].w = player.w;
-    player.moveHitBox[0].rects[0].y = player.sprite->image->h - 5;
+    player.moveHitBox[0].rects[0].h = player.sprite->image->h - 5;
     
     player.interactHitBox = malloc(sizeof(HitBox) * 1);
 }

@@ -46,11 +46,27 @@ static void doWallCollisions(){
     int i, j, k, collCode;
     
     //check the player first
+    
+    
+    //
+    //
+    // PLAYER'S C COLLISION RECTANGLE HAS RELATIVE POSITION:
+    // NEED TO ADD PLAYER'S POSITION TO X & Y TO GET ACTUAL RECTANGLE
+    // RECOMMEND MAKING A TEMP CollRect TO STORE THIS DATA IN
+    //
+    //
+    CollRect temp;
+    
     for (j = 0; j < player.moveHitBox->numRect; j++){
         for (k = 0; k < walls.numRect; k++){
-            collCode = rectangleCollide(walls.rects[k], player.moveHitBox->rects[j]);
-            if (collCode > 0){
-                collideWithWall(walls.rects[k], player, collCode);
+            temp.x = player.x + player.moveHitBox->rects[j].x;
+            temp.y = player.y + player.moveHitBox->rects[j].y;
+            temp.w = player.moveHitBox->rects[j].w;
+            temp.h = player.moveHitBox->rects[j].h;
+//            collCode = rectangleCollide(walls.rects[k], player.moveHitBox->rects[j]);
+            collCode = rectangleCollide(walls.rects[k], temp);
+            if (collCode){
+                collideWithWall(walls.rects[k], &player, temp, collCode);
             }
         }
     }
@@ -61,7 +77,8 @@ static void doWallCollisions(){
             for (k = 0; k < walls.numRect; k++){
                 collCode = rectangleCollide(walls.rects[k], entity[i].moveHitBox->rects[j]);
                 if (collCode > 0){
-                    collideWithWall(walls.rects[k], entity[i], collCode);
+                    collideWithWall(walls.rects[k], &entity[i], temp, collCode);
+                    
                 }
             }
         }
@@ -74,18 +91,30 @@ static void doWallCollisions(){
 static int rectangleCollide(CollRect r1, CollRect r2){
     //1 = left, 2, = right, 3 = up, 4 = down - these are for which side of r1 is hit by r2
     int result = 0;
+    
+//    //fast check before we check all sides
+    if (r1.x+r1.w <= r2.x || r2.x+r2.w <= r1.x || r1.y+r1.h <= r2.y || r2.y+r2.h <= r1.y){
+        return 0;
+    }
+    
+    //if we have a collision, then determine the side
     if (r2.x < r1.x && r1.x < r2.x+r2.w){
         result |= 1;
     }
-    if (r2.x < r1.x+r1.w && r1.x+r1.w < r2.x+r2.w){
+    else if (r2.x < r1.x+r1.w && r1.x+r1.w < r2.x+r2.w){
         result |= 2;
     }
-    if (r2.y < r1.y && r1.y < r2.y+r2.h){
+    else if (r2.y < r1.y && r1.y < r2.y+r2.h){
         result |= 4;
     }
-    if (r2.y < r1.y+r1.h && r1.y+r1.h < r2.y+r2.h){
+    else if (r2.y < r1.y+r1.h && r1.y+r1.h < r2.y+r2.h){
         result |= 8;
     }
+    if (!result){
+        result = -1;
+    }
+    printf("%d\n", result);
+
     return result;
 }
 

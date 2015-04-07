@@ -32,8 +32,8 @@ void generateWallList(Room *room, int tileSize){
     int count = 0;
     for (i = 0; i < ROOM_WIDTH * ROOM_HEIGHT; i++){
         if ((room->flags[i] >> ROOMF_IMPASSABLE) & 1){
-            room->walls.rects[count].x = (i % ROOM_HEIGHT) * tileSize;
-            room->walls.rects[count].y = (i / ROOM_HEIGHT) * tileSize;
+            room->walls.rects[count].x = (i % ROOM_WIDTH) * tileSize;
+            room->walls.rects[count].y = (i / ROOM_HEIGHT - 1) * tileSize;
             room->walls.rects[count].w = tileSize;
             room->walls.rects[count].h = tileSize;
             count++;

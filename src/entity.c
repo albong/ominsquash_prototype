@@ -63,9 +63,18 @@ void moveEntities(){
     }
 }
 
-void collideWithWall(CollRect wall, Entity e, int collCode){
+void collideWithWall(CollRect wall, Entity *e, CollRect r, int collCode){
     if (collCode & 1){
-        e.changeX = wall.x - e.x;
+        e->changeX = wall.x - r.x - r.w;
+    }
+    else if (collCode & 2){
+        e->changeX = wall.x + wall.w - r.x;
+    }
+    else if (collCode & 4){
+        e->changeY = wall.y - r.y - r.h;
+    }
+    else if (collCode & 8){
+        e->changeY = wall.y + wall.h - r.y;
     }
 }
 
