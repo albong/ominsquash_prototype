@@ -65,6 +65,7 @@ static void doWallCollisions(){
 //            collCode = rectangleCollide(walls.rects[k], player.moveHitBox->rects[j]);
             collCode = rectangleCollide(walls.rects[k], temp);
             
+            
             temp.x = player.x + player.moveHitBox->rects[j].x;
             temp.y = player.y + player.changeY + player.moveHitBox->rects[j].y;
             temp.w = player.moveHitBox->rects[j].w;
@@ -72,17 +73,12 @@ static void doWallCollisions(){
 //            collCode = rectangleCollide(walls.rects[k], player.moveHitBox->rects[j]);
             collCode2 = rectangleCollide(walls.rects[k], temp);
             if (collCode || collCode2){
-                printf("------\n");
-                printf("%f, %f - %f, %f\n", player.y, player.y+player.h, player.y+player.changeY, player.y+player.h+player.changeY);
                 if (collCode){
                     collideWithWall(walls.rects[k], &player, temp, collCode, 1);
                 }
                 if (collCode2){
-                    collideWithWall(walls.rects[k], &player, temp, collCode, 0);
+                    collideWithWall(walls.rects[k], &player, temp, collCode2, 0);
                 }
-                printf("%d,%d : %d - %d\n", j, k, collCode, collCode2);
-                printf("%f, %f - %f, %f\n", player.y, player.y+player.h, player.y+player.changeY, player.y+player.h+player.changeY);
-                printf("-------\n");
             }
         }
     }
