@@ -30,10 +30,10 @@ void initPlayer(){
     player.moveHitBox[0].numCircle = 0;
     player.moveHitBox[0].numRect = 1;
     player.moveHitBox[0].rects = malloc(sizeof(CollRect) * 1);
-    player.moveHitBox[0].rects[0].x = 0;
+    player.moveHitBox[0].rects[0].x = 2;
     player.moveHitBox[0].rects[0].y = 5;
-    player.moveHitBox[0].rects[0].w = player.w;
-    player.moveHitBox[0].rects[0].h = player.sprite->image->h - 5;
+    player.moveHitBox[0].rects[0].w = player.w-2;
+    player.moveHitBox[0].rects[0].h = player.sprite->image->h - 5 -4;
     
     player.interactHitBox = malloc(sizeof(HitBox) * 1);
 }
@@ -121,6 +121,8 @@ static void updatePlayerPosition(int delta){
 //	} else if (_input.right == 1){
 //		player.x += player.pixelsPerMilli * delta/1000.0;
 //	}
+    player.changeX = 0;
+    player.changeY = 0;
     if (_input.up && _input.left){
         player.changeX = player.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2) * -1;
         player.changeY = player.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2) * -1;

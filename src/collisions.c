@@ -44,7 +44,7 @@ void doCollisions(){
 static void doWallCollisions(){
     HitBox walls = getCurrentWalls();
     int i, j, k, collCode;
-    
+    int collCode2;
     //check the player first
     
     
@@ -56,17 +56,33 @@ static void doWallCollisions(){
     //
     //
     CollRect temp;
-    
     for (j = 0; j < player.moveHitBox->numRect; j++){
         for (k = 0; k < walls.numRect; k++){
-            temp.x = player.x + player.moveHitBox->rects[j].x;
+            temp.x = player.x + player.changeX + player.moveHitBox->rects[j].x;
             temp.y = player.y + player.moveHitBox->rects[j].y;
             temp.w = player.moveHitBox->rects[j].w;
             temp.h = player.moveHitBox->rects[j].h;
 //            collCode = rectangleCollide(walls.rects[k], player.moveHitBox->rects[j]);
             collCode = rectangleCollide(walls.rects[k], temp);
-            if (collCode){
-                collideWithWall(walls.rects[k], &player, temp, collCode);
+            
+            temp.x = player.x + player.moveHitBox->rects[j].x;
+            temp.y = player.y + player.changeY + player.moveHitBox->rects[j].y;
+            temp.w = player.moveHitBox->rects[j].w;
+            temp.h = player.moveHitBox->rects[j].h;
+//            collCode = rectangleCollide(walls.rects[k], player.moveHitBox->rects[j]);
+            collCode2 = rectangleCollide(walls.rects[k], temp);
+            if (collCode || collCode2){
+                printf("------\n");
+                printf("%f, %f - %f, %f\n", player.y, player.y+player.h, player.y+player.changeY, player.y+player.h+player.changeY);
+                if (collCode){
+                    collideWithWall(walls.rects[k], &player, temp, collCode, 1);
+                }
+                if (collCode2){
+                    collideWithWall(walls.rects[k], &player, temp, collCode, 0);
+                }
+                printf("%d,%d : %d - %d\n", j, k, collCode, collCode2);
+                printf("%f, %f - %f, %f\n", player.y, player.y+player.h, player.y+player.changeY, player.y+player.h+player.changeY);
+                printf("-------\n");
             }
         }
     }
@@ -77,7 +93,7 @@ static void doWallCollisions(){
             for (k = 0; k < walls.numRect; k++){
                 collCode = rectangleCollide(walls.rects[k], entity[i].moveHitBox->rects[j]);
                 if (collCode > 0){
-                    collideWithWall(walls.rects[k], &entity[i], temp, collCode);
+                    collideWithWall(walls.rects[k], &entity[i], temp, collCode, 0);
                     
                 }
             }
@@ -93,27 +109,33 @@ static int rectangleCollide(CollRect r1, CollRect r2){
     int result = 0;
     
 //    //fast check before we check all sides
-    if (r1.x+r1.w <= r2.x || r2.x+r2.w <= r1.x || r1.y+r1.h <= r2.y || r2.y+r2.h <= r1.y){
+//    if (r1.x+r1.w <= r2.x || r2.x+r2.w <= r1.x 
+//        || r1.y+r1.h <= r2.y || r2.y+r2.h <= r1.y){
+//        return 0;
+//    }
+    if (r1.x+r1.w <= r2.x || r2.x+r2.w <= r1.x 
+        || r1.y+r1.h <= r2.y || r2.y+r2.h <= r1.y){
         return 0;
     }
     
     //if we have a collision, then determine the side
-    if (r2.x < r1.x && r1.x < r2.x+r2.w){
+    if (r2.x <= r1.x && r1.x <= r2.x+r2.w){
         result |= 1;
     }
-    else if (r2.x < r1.x+r1.w && r1.x+r1.w < r2.x+r2.w){
+    if (r2.x <= r1.x+r1.w && r1.x+r1.w <= r2.x+r2.w){
         result |= 2;
     }
-    else if (r2.y < r1.y && r1.y < r2.y+r2.h){
+    if (r2.y <= r1.y && r1.y <= r2.y+r2.h){
         result |= 4;
     }
-    else if (r2.y < r1.y+r1.h && r1.y+r1.h < r2.y+r2.h){
+    if (r2.y <= r1.y+r1.h && r1.y+r1.h <= r2.y+r2.h){
         result |= 8;
     }
     if (!result){
         result = -1;
     }
-    printf("%d\n", result);
+//    printf("%f, %f - %f, %f\n", r1.x, r1.x+r1.w, r2.x, r2.x+r2.w);
+//    printf("%d\n", result);
 
     return result;
 }
