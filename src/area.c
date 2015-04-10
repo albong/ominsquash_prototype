@@ -53,6 +53,7 @@ static void drawRoomBuffers(Room *room){
         x = room->tileIndices[i] % numTilesWide;
         y = room->tileIndices[i] / numTilesWide;
         
+        
         src.x = x * (tileWidth + 1) + 1;
         src.y = y * (tileHeight + 1) + 1;
         src.w = tileWidth;
@@ -62,7 +63,7 @@ static void drawRoomBuffers(Room *room){
         dst.y = (i / roomWidth) * tileHeight;
         dst.w = tileWidth;
         dst.h = tileHeight;
-        
+
 //        drawImageSrcDst(_current_area.tilesheet.sheet, src, dst);
         SDL_BlitSurface(_current_area.tilesheet.sheet, &src, room->buffer, &dst);
     }
@@ -244,7 +245,7 @@ static Room *createThirdDemoRoom(){
     room->connectingRooms[2] = -1;
     room->connectingRooms[3] = -1;
     room->buffer = getEmptySurface(_current_area.tilesheet.tileWidth * ROOM_WIDTH, _current_area.tilesheet.tileHeight * ROOM_HEIGHT);
-    drawRoomBuffers(room);
     generateWallList(room, _current_area.tilesheet.tileWidth);
+    drawRoomBuffers(room);
     return room;
 }
