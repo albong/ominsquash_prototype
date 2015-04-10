@@ -42,6 +42,7 @@ void doEntities();
 void drawEntities();
 void drawStandardEntity();
 void moveEntities();
-void collideWithWall(CollRect wall, Entity *e, CollRect r, int collCode, int isX);
+void collideWithWallX(CollRect wall, Entity *e, CollRect r, int collCode);
+void collideWithWallY(CollRect wall, Entity *e, CollRect r, int collCode);
 
 #endif

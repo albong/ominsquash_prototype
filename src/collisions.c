@@ -44,17 +44,8 @@ void doCollisions(){
 static void doWallCollisions(){
     HitBox walls = getCurrentWalls();
     int i, j, k, collCode;
-    int collCode2;
+
     //check the player first
-    
-    
-    //
-    //
-    // PLAYER'S C COLLISION RECTANGLE HAS RELATIVE POSITION:
-    // NEED TO ADD PLAYER'S POSITION TO X & Y TO GET ACTUAL RECTANGLE
-    // RECOMMEND MAKING A TEMP CollRect TO STORE THIS DATA IN
-    //
-    //
     CollRect temp;
     for (j = 0; j < player.moveHitBox->numRect; j++){
         for (k = 0; k < walls.numRect; k++){
@@ -62,23 +53,18 @@ static void doWallCollisions(){
             temp.y = player.y + player.moveHitBox->rects[j].y;
             temp.w = player.moveHitBox->rects[j].w;
             temp.h = player.moveHitBox->rects[j].h;
-//            collCode = rectangleCollide(walls.rects[k], player.moveHitBox->rects[j]);
             collCode = rectangleCollide(walls.rects[k], temp);
-            
+            if (collCode){
+                collideWithWallX(walls.rects[k], &player, temp, collCode);
+            }
             
             temp.x = player.x + player.moveHitBox->rects[j].x;
             temp.y = player.y + player.changeY + player.moveHitBox->rects[j].y;
             temp.w = player.moveHitBox->rects[j].w;
             temp.h = player.moveHitBox->rects[j].h;
-//            collCode = rectangleCollide(walls.rects[k], player.moveHitBox->rects[j]);
-            collCode2 = rectangleCollide(walls.rects[k], temp);
-            if (collCode || collCode2){
-                if (collCode){
-                    collideWithWall(walls.rects[k], &player, temp, collCode, 1);
-                }
-                if (collCode2){
-                    collideWithWall(walls.rects[k], &player, temp, collCode2, 0);
-                }
+            collCode = rectangleCollide(walls.rects[k], temp);
+            if (collCode){
+                collideWithWallY(walls.rects[k], &player, temp, collCode);
             }
         }
     }
@@ -89,28 +75,38 @@ static void doWallCollisions(){
             for (k = 0; k < walls.numRect; k++){
                 collCode = rectangleCollide(walls.rects[k], entity[i].moveHitBox->rects[j]);
                 if (collCode > 0){
-                    collideWithWall(walls.rects[k], &entity[i], temp, collCode, 0);
+//                    collideWithWall(walls.rects[k], &entity[i], temp, collCode, 0);
                     
+                }
+                
+                temp.x = entity[i].x + entity[i].changeX + entity[i].moveHitBox->rects[j].x;
+                temp.y = entity[i].y + entity[i].moveHitBox->rects[j].y;
+                temp.w = entity[i].moveHitBox->rects[j].w;
+                temp.h = entity[i].moveHitBox->rects[j].h;
+                collCode = rectangleCollide(walls.rects[k], temp);
+                if (collCode){
+                    collideWithWallX(walls.rects[k], &entity[i], temp, collCode);
+                }
+                
+                temp.x = entity[i].x + entity[i].moveHitBox->rects[j].x;
+                temp.y = entity[i].y + entity[i].changeY + entity[i].moveHitBox->rects[j].y;
+                temp.w = entity[i].moveHitBox->rects[j].w;
+                temp.h = entity[i].moveHitBox->rects[j].h;
+                collCode = rectangleCollide(walls.rects[k], temp);
+                if (collCode){
+                    collideWithWallY(walls.rects[k], &entity[i], temp, collCode);
                 }
             }
         }
     }
 }
 
-/**
- ** THINK THIS HAS PROBLEMS - what if one rectangle is inside the other?
- **/
 static int rectangleCollide(CollRect r1, CollRect r2){
     //1 = left, 2, = right, 3 = up, 4 = down - these are for which side of r1 is hit by r2
     int result = 0;
     
-//    //fast check before we check all sides
-//    if (r1.x+r1.w <= r2.x || r2.x+r2.w <= r1.x 
-//        || r1.y+r1.h <= r2.y || r2.y+r2.h <= r1.y){
-//        return 0;
-//    }
-    if (r1.x+r1.w <= r2.x || r2.x+r2.w <= r1.x 
-        || r1.y+r1.h <= r2.y || r2.y+r2.h <= r1.y){
+    //fast check before we check all sides
+    if (r1.x+r1.w <= r2.x || r2.x+r2.w <= r1.x || r1.y+r1.h <= r2.y || r2.y+r2.h <= r1.y){
         return 0;
     }
     
@@ -130,8 +126,6 @@ static int rectangleCollide(CollRect r1, CollRect r2){
     if (!result){
         result = -1;
     }
-//    printf("%f, %f - %f, %f\n", r1.x, r1.x+r1.w, r2.x, r2.x+r2.w);
-//    printf("%d\n", result);
 
     return result;
 }
