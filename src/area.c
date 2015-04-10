@@ -34,7 +34,8 @@ void loadArea(){
     _current_area.roomList = (Room**) malloc(sizeof(Room *) * _current_area.numRooms);
     _current_area.roomList[0] = createFirstDemoRoom();
     _current_area.roomList[1] = createSecondDemoRoom();
-    _current_area.currentRoom = _current_area.roomList[1];
+    _current_area.roomList[2] = createThirdDemoRoom();
+    _current_area.currentRoom = _current_area.roomList[2];
 }
 
 static void drawRoomBuffers(Room *room){
@@ -119,11 +120,6 @@ static int checkForRoomChange(){
 }
 
 void changeRoom(int roomIndex, int direction, int delta){
-    //calculate the x and y at which to draw the current room and the next room
-    //we'll know the transition is over because we know how much we started with (screen width), and we know how many pixels we've moved
-    //should put all of this into a struct
-    //then we we go to draw the room, if we're transitioning, we'll draw the image of the two rooms, else just draw normal
-    //probably should create a camera object to deal with the scrolling room?  may be a tutorial about this 
     double transPercent = totalDelta / MILLI_PER_TRANSITION;
     
     switch (direction){
@@ -208,6 +204,45 @@ static Room *createSecondDemoRoom(){
     room->connectingRooms[1] = 0;
     room->connectingRooms[2] = 0;
     room->connectingRooms[3] = 0;
+    room->buffer = getEmptySurface(_current_area.tilesheet.tileWidth * ROOM_WIDTH, _current_area.tilesheet.tileHeight * ROOM_HEIGHT);
+    drawRoomBuffers(room);
+    generateWallList(room, _current_area.tilesheet.tileWidth);
+    return room;
+}
+
+static Room *createThirdDemoRoom(){
+    //61 & 63
+    Room *room = malloc(sizeof(Room));
+    room->tileIndices = (int *) malloc(sizeof(int) * ROOM_HEIGHT * ROOM_WIDTH);
+    room->flags = (uint32_t *) malloc(sizeof(uint32_t) * ROOM_HEIGHT * ROOM_WIDTH);
+    int i;
+    for (i = 0; i < ROOM_HEIGHT * ROOM_WIDTH; i++){
+        if (i % ROOM_WIDTH == 0){
+            room->tileIndices[i] = 19;
+            setFlag(room, i, ROOMF_IMPASSABLE);
+        } else if (i % ROOM_WIDTH == ROOM_WIDTH-1){
+            room->tileIndices[i] = 21;
+            setFlag(room, i, ROOMF_IMPASSABLE);
+        } else if (i / ROOM_WIDTH == 0){
+            room->tileIndices[i] = 5;
+            setFlag(room, i, ROOMF_IMPASSABLE);
+        } else if (i / ROOM_WIDTH == ROOM_HEIGHT-1){
+            room->tileIndices[i] = 35;
+            setFlag(room, i, ROOMF_IMPASSABLE);
+        } else {
+            room->tileIndices[i] = 20;
+            room->flags[i] = 0;
+        }
+    }
+    room->tileIndices[0] = 4;
+    room->tileIndices[ROOM_WIDTH-1] = 6;
+    room->tileIndices[(ROOM_HEIGHT-1)*ROOM_WIDTH] = 34;
+    room->tileIndices[ROOM_HEIGHT*ROOM_WIDTH - 1] = 36;
+        
+    room->connectingRooms[0] = -1;
+    room->connectingRooms[1] = -1;
+    room->connectingRooms[2] = -1;
+    room->connectingRooms[3] = -1;
     room->buffer = getEmptySurface(_current_area.tilesheet.tileWidth * ROOM_WIDTH, _current_area.tilesheet.tileHeight * ROOM_HEIGHT);
     drawRoomBuffers(room);
     generateWallList(room, _current_area.tilesheet.tileWidth);

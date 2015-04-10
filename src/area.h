@@ -34,5 +34,6 @@ HitBox getCurrentWalls();
 
 static Room *createFirstDemoRoom();
 static Room *createSecondDemoRoom();
+static Room *createThirdDemoRoom();
 
 #endif
