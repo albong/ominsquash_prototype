@@ -3,9 +3,14 @@
 
 #include "collisions.h"
 #include "stdint.h"
+#include "entity.h"
 #include "SDL/SDL.h"
 
 #define ROOMF_IMPASSABLE 0
+#define ROOMF_UL_ANGLED 1
+#define ROOMF_UR_ANGLED 2
+#define ROOMF_DL_ANGLED 3
+#define ROOMF_DR_ANGLED 4
 
 typedef struct Room {
     
@@ -17,6 +22,8 @@ typedef struct Room {
     SDL_Surface *buffer;
     int connectingRooms[4]; //left right up down
     HitBox walls;
+    Entity *entities;
+    int numEntities;
 } Room;
 
 int getFlag(Room *room, int index, int flagNum);

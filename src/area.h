@@ -18,6 +18,10 @@ typedef struct Area {
     int numRooms;
 	Room *currentRoom;
     Room **roomList;
+    char **entitySpriteNames;
+    int *entitySpriteWidths;
+    int *spriteIndices;
+    int numEntitySprites;
 } Area;
 
 //globals
@@ -31,6 +35,8 @@ static int checkForRoomChange();
 void changeRoom(int roomIndex, int direction, int delta);
 static void drawRoomBuffers(Room *room);
 HitBox getCurrentWalls();
+static void loadEntitySprites();
+static void drawCurrentRoomEntities();
 
 static Room *createFirstDemoRoom();
 static Room *createSecondDemoRoom();

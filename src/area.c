@@ -29,13 +29,30 @@ void loadArea(){
     _current_area.tilesheet.tileWidth = 16;
     _current_area.tilesheet.tileHeight = 16;
         
+    //load the enemy sprites - do before rooms because rooms store enemies
+    _current_area.numEntitySprites = 1;
+    _current_area.entitySpriteNames = malloc(sizeof(char *) * 1);
+    _current_area.entitySpriteNames[0] = malloc(sizeof(char) * (strlen("gfx/octoroksprite.png"))+1);
+    strcpy(_current_area.entitySpriteNames[0], "gfx/octoroksprite.png");
+    _current_area.entitySpriteWidths = malloc(sizeof(int) * 1);
+    _current_area.entitySpriteWidths[0] = 15;
+    loadEntitySprites();
+    
     //load the rooms
     _current_area.numRooms = 1;
     _current_area.roomList = (Room**) malloc(sizeof(Room *) * _current_area.numRooms);
     _current_area.roomList[0] = createFirstDemoRoom();
     _current_area.roomList[1] = createSecondDemoRoom();
     _current_area.roomList[2] = createThirdDemoRoom();
-    _current_area.currentRoom = _current_area.roomList[2];
+    _current_area.currentRoom = _current_area.roomList[0];
+}
+
+static void loadEntitySprites(){
+    _current_area.spriteIndices = malloc(sizeof(int) * _current_area.numEntitySprites);
+    int i;
+    for (i = 0; i < _current_area.numEntitySprites; i++){
+        _current_area.spriteIndices[i] = loadAnimatedSprite(_current_area.entitySpriteNames[i], _current_area.entitySpriteWidths[i]);
+    }
 }
 
 static void drawRoomBuffers(Room *room){
@@ -72,9 +89,17 @@ static void drawRoomBuffers(Room *room){
 void drawCurrentRoom(){
     if (!changingRooms){
         drawImage(_current_area.currentRoom->buffer, 0, 0);
+        drawCurrentRoomEntities();
     } else {
         drawImage(_current_area.currentRoom->buffer, room_transition.oldX, room_transition.oldY);
         drawImage(room_transition.newRoom->buffer, room_transition.newX, room_transition.newY);
+    }
+}
+
+static void drawCurrentRoomEntities(){
+    int i;
+    for (i = 0; i < _current_area.currentRoom->numEntities; i++){
+        drawAnimatedSprite(_current_area.currentRoom->entities[i].sprite, 0, _current_area.currentRoom->entities[i].x, _current_area.currentRoom->entities[i].y);
     }
 }
 
@@ -179,6 +204,14 @@ static Room *createFirstDemoRoom(){
     firstRoom->buffer = getEmptySurface(_current_area.tilesheet.tileWidth * ROOM_WIDTH, _current_area.tilesheet.tileHeight * ROOM_HEIGHT);
     drawRoomBuffers(firstRoom);
     generateWallList(firstRoom, _current_area.tilesheet.tileWidth);
+    
+    printf("%d\n", _current_area.spriteIndices[0]);
+    firstRoom->numEntities = 1;
+    firstRoom->entities = malloc(sizeof(Entity) * firstRoom->numEntities);
+    firstRoom->entities[0].sprite = getSprite(_current_area.spriteIndices[0]);
+    firstRoom->entities[0].x = ROOM_WIDTH/4 * _current_area.tilesheet.tileWidth;
+    firstRoom->entities[0].y = ROOM_HEIGHT/4 * _current_area.tilesheet.tileWidth;
+    
     return firstRoom;
 }
 
@@ -235,11 +268,15 @@ static Room *createThirdDemoRoom(){
             room->flags[i] = 0;
         }
     }
+    
     room->tileIndices[0] = 4;
     room->tileIndices[ROOM_WIDTH-1] = 6;
     room->tileIndices[(ROOM_HEIGHT-1)*ROOM_WIDTH] = 34;
     room->tileIndices[ROOM_HEIGHT*ROOM_WIDTH - 1] = 36;
-        
+    
+    room->tileIndices[ROOM_WIDTH/2] = 20;
+    clearFlag(room, ROOM_WIDTH/2, ROOMF_IMPASSABLE);
+
     room->connectingRooms[0] = -1;
     room->connectingRooms[1] = -1;
     room->connectingRooms[2] = -1;

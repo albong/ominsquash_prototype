@@ -73,12 +73,6 @@ static void doWallCollisions(){
     for (i = 0; i < MAX_ENTITIES && entity[i].active; i++){
         for (j = 0; j < entity[i].moveHitBox->numRect; j++){
             for (k = 0; k < walls.numRect; k++){
-                collCode = rectangleCollide(walls.rects[k], entity[i].moveHitBox->rects[j]);
-                if (collCode > 0){
-//                    collideWithWall(walls.rects[k], &entity[i], temp, collCode, 0);
-                    
-                }
-                
                 temp.x = entity[i].x + entity[i].changeX + entity[i].moveHitBox->rects[j].x;
                 temp.y = entity[i].y + entity[i].moveHitBox->rects[j].y;
                 temp.w = entity[i].moveHitBox->rects[j].w;

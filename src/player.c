@@ -30,10 +30,10 @@ void initPlayer(){
     player.moveHitBox[0].numCircle = 0;
     player.moveHitBox[0].numRect = 1;
     player.moveHitBox[0].rects = malloc(sizeof(CollRect) * 1);
-    player.moveHitBox[0].rects[0].x = 2;
+    player.moveHitBox[0].rects[0].x = 4;
     player.moveHitBox[0].rects[0].y = 5;
-    player.moveHitBox[0].rects[0].w = player.w-2;
-    player.moveHitBox[0].rects[0].h = player.sprite->image->h - 5 -4;
+    player.moveHitBox[0].rects[0].w = player.w-8;
+    player.moveHitBox[0].rects[0].h = player.sprite->image->h - 5-2;
     
     player.interactHitBox = malloc(sizeof(HitBox) * 1);
 }

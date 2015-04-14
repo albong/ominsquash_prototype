@@ -201,7 +201,7 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit17]
-FileName=gfx\octorocksprite.png
+FileName=gfx\octoroksprite.png
 Folder=gfx
 Compile=0
 Link=0
