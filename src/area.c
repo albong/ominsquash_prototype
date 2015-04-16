@@ -89,17 +89,21 @@ static void drawRoomBuffers(Room *room){
 void drawCurrentRoom(){
     if (!changingRooms){
         drawImage(_current_area.currentRoom->buffer, 0, 0);
-        drawCurrentRoomEntities();
+        drawRoomEntities(_current_area.currentRoom, 0, 0);
     } else {
         drawImage(_current_area.currentRoom->buffer, room_transition.oldX, room_transition.oldY);
         drawImage(room_transition.newRoom->buffer, room_transition.newX, room_transition.newY);
+        drawRoomEntities(_current_area.currentRoom, room_transition.oldX, room_transition.oldY);
+        drawRoomEntities(room_transition.newRoom, room_transition.newX, room_transition.newY);
     }
 }
 
-static void drawCurrentRoomEntities(){
+static void drawRoomEntities(Room *room, double shiftX, double shiftY){
     int i;
-    for (i = 0; i < _current_area.currentRoom->numEntities; i++){
-        drawAnimatedSprite(_current_area.currentRoom->entities[i].sprite, 0, _current_area.currentRoom->entities[i].x, _current_area.currentRoom->entities[i].y);
+    for (i = 0; i < room->numEntities; i++){
+        if (room->entities[i].active){
+            drawAnimatedSprite(room->entities[i].sprite, 0, room->entities[i].x + shiftX, room->entities[i].y + shiftY);
+        }
     }
 }
 
@@ -118,7 +122,6 @@ void doRoom(int delta){
         }
     } else {
         changeRoom(_current_area.currentRoom->connectingRooms[changingToRoom], changingToRoom, delta);
-        
     }
 }
 
@@ -205,7 +208,6 @@ static Room *createFirstDemoRoom(){
     drawRoomBuffers(firstRoom);
     generateWallList(firstRoom, _current_area.tilesheet.tileWidth);
     
-    printf("%d\n", _current_area.spriteIndices[0]);
     firstRoom->numEntities = 1;
     firstRoom->entities = malloc(sizeof(Entity) * firstRoom->numEntities);
     firstRoom->entities[0].sprite = getSprite(_current_area.spriteIndices[0]);
@@ -241,6 +243,9 @@ static Room *createSecondDemoRoom(){
     room->buffer = getEmptySurface(_current_area.tilesheet.tileWidth * ROOM_WIDTH, _current_area.tilesheet.tileHeight * ROOM_HEIGHT);
     drawRoomBuffers(room);
     generateWallList(room, _current_area.tilesheet.tileWidth);
+
+    room->numEntities = 0;
+
     return room;
 }
 
@@ -284,5 +289,8 @@ static Room *createThirdDemoRoom(){
     room->buffer = getEmptySurface(_current_area.tilesheet.tileWidth * ROOM_WIDTH, _current_area.tilesheet.tileHeight * ROOM_HEIGHT);
     generateWallList(room, _current_area.tilesheet.tileWidth);
     drawRoomBuffers(room);
+    
+    room->numEntities = 0;
+    
     return room;
 }

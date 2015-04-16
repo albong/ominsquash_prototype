@@ -36,7 +36,7 @@ void changeRoom(int roomIndex, int direction, int delta);
 static void drawRoomBuffers(Room *room);
 HitBox getCurrentWalls();
 static void loadEntitySprites();
-static void drawCurrentRoomEntities();
+static void drawRoomEntities(Room *room, double shiftX, double shiftY);
 
 static Room *createFirstDemoRoom();
 static Room *createSecondDemoRoom();
