@@ -5,6 +5,9 @@
 #include "room.h"
 #include "graphics.h"
 #include "player.h"
+#include "entity.h"
+
+#include "../entity/octorok.h"
 
 #include "stdint.h"
 #include "SDL/SDL.h"
@@ -111,7 +114,7 @@ void doRoom(int delta){
     totalDelta += delta;
     int newRoom;
     if (!changingRooms){
-        doRoomEntities();
+        doRoomEntities(delta);
         
         newRoom = checkForRoomChange();
         if (newRoom >= 0 && _current_area.currentRoom->connectingRooms[newRoom] != -1){
@@ -127,15 +130,14 @@ void doRoom(int delta){
     }
 }
 
-static void doRoomEntities(){
+static void doRoomEntities(int delta){
     int i;
-    Entity *self;
     
     //loop through all entities and perform their action
     for (i = 0; i < _current_area.currentRoom->numEntities; i++){
         self = &_current_area.currentRoom->entities[i];
-        if (self->active == 1){
-            self->action();
+        if (self->active == 1 && self->action){
+            self->action(delta);
         }
     }
 }
@@ -224,9 +226,7 @@ static Room *createFirstDemoRoom(){
     
     firstRoom->numEntities = 1;
     firstRoom->entities = malloc(sizeof(Entity) * firstRoom->numEntities);
-    firstRoom->entities[0].sprite = getSprite(_current_area.spriteIndices[0]);
-    firstRoom->entities[0].x = ROOM_WIDTH/4 * _current_area.tilesheet.tileWidth;
-    firstRoom->entities[0].y = ROOM_HEIGHT/4 * _current_area.tilesheet.tileWidth;
+    firstRoom->entities[0] = *(createOctorok(_current_area.spriteIndices[0]));
     
     return firstRoom;
 }
