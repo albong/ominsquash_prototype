@@ -22,7 +22,7 @@ typedef struct Room {
     SDL_Surface *buffer;
     int connectingRooms[4]; //left right up down
     HitBox walls;
-    Entity *entities;
+    Entity **entities;
     int numEntities;
 } Room;
 

@@ -104,8 +104,8 @@ void drawCurrentRoom(){
 static void drawRoomEntities(Room *room, double shiftX, double shiftY){
     int i;
     for (i = 0; i < room->numEntities; i++){
-        if (room->entities[i].active){
-            drawAnimatedSprite(room->entities[i].sprite, 0, room->entities[i].x + shiftX, room->entities[i].y + shiftY);
+        if (room->entities[i]->active){
+            drawAnimatedSprite(room->entities[i]->sprite, 0, room->entities[i]->x + shiftX, room->entities[i]->y + shiftY);
         }
     }
 }
@@ -135,7 +135,7 @@ static void doRoomEntities(int delta){
     
     //loop through all entities and perform their action
     for (i = 0; i < _current_area.currentRoom->numEntities; i++){
-        self = &_current_area.currentRoom->entities[i];
+        self = _current_area.currentRoom->entities[i];
         if (self->active == 1 && self->action){
             self->action(delta);
         }
@@ -226,7 +226,7 @@ static Room *createFirstDemoRoom(){
     
     firstRoom->numEntities = 1;
     firstRoom->entities = malloc(sizeof(Entity) * firstRoom->numEntities);
-    firstRoom->entities[0] = *(createOctorok(_current_area.spriteIndices[0]));
+    firstRoom->entities[0] = createOctorok(_current_area.spriteIndices[0]);
     
     return firstRoom;
 }
