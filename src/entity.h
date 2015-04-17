@@ -38,7 +38,6 @@ Entity *self;
 
 void clearEntities();
 int getFreeEntity();
-void doEntities();
 void drawEntities();
 void drawStandardEntity();
 void moveEntities();

@@ -41,7 +41,7 @@ int main(int argc, char *argv[]){
         
         doPlayer(delta);
         
-        doEntities();
+//        doEntities();
         
         doRoom(delta);
         

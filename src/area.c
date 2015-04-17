@@ -111,6 +111,8 @@ void doRoom(int delta){
     totalDelta += delta;
     int newRoom;
     if (!changingRooms){
+        doRoomEntities();
+        
         newRoom = checkForRoomChange();
         if (newRoom >= 0 && _current_area.currentRoom->connectingRooms[newRoom] != -1){
             totalDelta = 0;
@@ -122,6 +124,19 @@ void doRoom(int delta){
         }
     } else {
         changeRoom(_current_area.currentRoom->connectingRooms[changingToRoom], changingToRoom, delta);
+    }
+}
+
+static void doRoomEntities(){
+    int i;
+    Entity *self;
+    
+    //loop through all entities and perform their action
+    for (i = 0; i < _current_area.currentRoom->numEntities; i++){
+        self = &_current_area.currentRoom->entities[i];
+        if (self->active == 1){
+            self->action();
+        }
     }
 }
 

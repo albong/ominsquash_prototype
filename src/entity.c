@@ -26,18 +26,6 @@ int getFreeEntity(){
     return result;
 }
 
-void doEntities(){
-    int i;
-    
-    //loop through all entities and perform their action
-    for (i = 0; i < MAX_ENTITIES; i++){
-        self = &entity[i];
-        if (self->active == 1){
-            self->action();
-        }
-    }
-}
-
 void drawEntities(){
     int i;
     
