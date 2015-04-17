@@ -141,11 +141,10 @@ static void doRoomEntities(){
 }
 
 static int checkForRoomChange(){
-    //eventually use player's ground bounding box for this
-    double left = player.x + (player.sprite->width * 0.4);
-    double right = player.x + (player.sprite->width * 0.6);
-    double up = player.y + (player.sprite->image->h * 0.4);
-    double down = player.y + (player.sprite->image->h * 0.6);
+    double left = player.x + player.moveHitBox->rects[0].x;
+    double right = player.x + player.moveHitBox->rects[0].x + player.moveHitBox->rects[0].w;
+    double up = player.y + player.moveHitBox->rects[0].y;
+    double down = player.y + player.moveHitBox->rects[0].y + player.moveHitBox->rects[0].h;
     
     int roomRight = _current_area.tilesheet.tileWidth * ROOM_WIDTH;
     int roomDown = _current_area.tilesheet.tileHeight * ROOM_HEIGHT;
