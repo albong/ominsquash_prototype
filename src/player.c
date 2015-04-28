@@ -52,6 +52,7 @@ void doPlayer(int delta){
 		updatePlayerFrame(delta);
     } else if (roomTransition){
         double transPercent = totalDelta / MILLI_PER_TRANSITION;
+        printf("%f\n", transPercent);
         switch (transitionDirection){
            case ROOM_LEFT:
                _player.x = transPercent * (SCREEN_WIDTH - _player.w);
@@ -93,34 +94,6 @@ static void updatePlayerOrientation(){
 }
 
 static void updatePlayerPosition(int delta){
-//    if (_input.up && _input.left){
-//        _player.x -= _player.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2);
-//        _player.y -= _player.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2);
-//
-//    } else if (_input.up && _input.right){
-//        _player.x += _player.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2);
-//        _player.y -= _player.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2);
-//
-//    } else if (_input.down && _input.left){
-//        _player.x -= _player.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2);
-//        _player.y += _player.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2);
-//
-//    } else if (_input.down && _input.right){
-//        _player.x += _player.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2);
-//        _player.y += _player.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2);
-//        
-//	} else if (_input.up == 1){
-//		_player.y -= _player.pixelsPerMilli * delta/1000.0;
-//
-//	} else if (_input.down == 1){
-//		_player.y += _player.pixelsPerMilli * delta/1000.0;
-//
-//	} else if (_input.left == 1){
-//		_player.x -= _player.pixelsPerMilli * delta/1000.0;
-//
-//	} else if (_input.right == 1){
-//		_player.x += _player.pixelsPerMilli * delta/1000.0;
-//	}
     _player.changeX = 0;
     _player.changeY = 0;
     if (_input.up && _input.left){

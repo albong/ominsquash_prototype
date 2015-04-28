@@ -137,7 +137,7 @@ static void doRoomEntities(int delta){
     for (i = 0; i < _current_area.currentRoom->numEntities; i++){
         self = _current_area.currentRoom->entities[i];
         if (self->active == 1 && self->action){
-            self->action(delta);
+            self->action(delta, self);
         }
     }
 }
