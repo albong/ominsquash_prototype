@@ -26,5 +26,5 @@ Entity *createOctorok(int spriteIndex){
 }
 
 static void doOctorok(int delta){
-    printf("I AM OCTOROK!\n");
+//    printf("I AM OCTOROK!\n");
 }

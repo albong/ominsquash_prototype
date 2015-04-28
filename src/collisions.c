@@ -47,24 +47,24 @@ static void doWallCollisions(){
 
     //check the player first
     CollRect temp;
-    for (j = 0; j < player.moveHitBox->numRect; j++){
+    for (j = 0; j < _player.moveHitBox->numRect; j++){
         for (k = 0; k < walls.numRect; k++){
-            temp.x = player.x + player.changeX + player.moveHitBox->rects[j].x;
-            temp.y = player.y + player.moveHitBox->rects[j].y;
-            temp.w = player.moveHitBox->rects[j].w;
-            temp.h = player.moveHitBox->rects[j].h;
+            temp.x = _player.x + _player.changeX + _player.moveHitBox->rects[j].x;
+            temp.y = _player.y + _player.moveHitBox->rects[j].y;
+            temp.w = _player.moveHitBox->rects[j].w;
+            temp.h = _player.moveHitBox->rects[j].h;
             collCode = rectangleCollide(walls.rects[k], temp);
             if (collCode){
-                collideWithWallX(walls.rects[k], &player, temp, collCode);
+                collideWithWallX(walls.rects[k], &_player, temp, collCode);
             }
             
-            temp.x = player.x + player.moveHitBox->rects[j].x;
-            temp.y = player.y + player.changeY + player.moveHitBox->rects[j].y;
-            temp.w = player.moveHitBox->rects[j].w;
-            temp.h = player.moveHitBox->rects[j].h;
+            temp.x = _player.x + _player.moveHitBox->rects[j].x;
+            temp.y = _player.y + _player.changeY + _player.moveHitBox->rects[j].y;
+            temp.w = _player.moveHitBox->rects[j].w;
+            temp.h = _player.moveHitBox->rects[j].h;
             collCode = rectangleCollide(walls.rects[k], temp);
             if (collCode){
-                collideWithWallY(walls.rects[k], &player, temp, collCode);
+                collideWithWallY(walls.rects[k], &_player, temp, collCode);
             }
         }
     }

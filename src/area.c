@@ -143,10 +143,10 @@ static void doRoomEntities(int delta){
 }
 
 static int checkForRoomChange(){
-    double left = player.x + player.moveHitBox->rects[0].x;
-    double right = player.x + player.moveHitBox->rects[0].x + player.moveHitBox->rects[0].w;
-    double up = player.y + player.moveHitBox->rects[0].y;
-    double down = player.y + player.moveHitBox->rects[0].y + player.moveHitBox->rects[0].h;
+    double left = _player.x + _player.moveHitBox->rects[0].x;
+    double right = _player.x + _player.moveHitBox->rects[0].x + _player.moveHitBox->rects[0].w;
+    double up = _player.y + _player.moveHitBox->rects[0].y;
+    double down = _player.y + _player.moveHitBox->rects[0].y + _player.moveHitBox->rects[0].h;
     
     int roomRight = _current_area.tilesheet.tileWidth * ROOM_WIDTH;
     int roomDown = _current_area.tilesheet.tileHeight * ROOM_HEIGHT;

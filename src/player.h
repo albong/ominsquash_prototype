@@ -3,7 +3,7 @@
 
 #include "entity.h"
 
-Entity player;
+Entity _player;
 
 void initPlayer();
 void doPlayer(int delta);

@@ -8,43 +8,43 @@ static int transitionDirection = -1;
 static unsigned totalDelta = 0;
 
 void initPlayer(){
-    player.sprite = getSprite(0);
-    player.orientation = DOWN;    
+    _player.sprite = getSprite(0);
+    _player.orientation = DOWN;    
     
-    player.x = SCREEN_WIDTH / 2;
-    player.y = SCREEN_HEIGHT / 2;
+    _player.x = SCREEN_WIDTH / 2;
+    _player.y = SCREEN_HEIGHT / 2;
     
-    player.h = player.sprite->image->h;
-    player.w = 15;
+    _player.h = _player.sprite->image->h;
+    _player.w = 15;
     
-    player.milliPerFrame = 200;
-    player.milliPassed = 0;
-    player.pixelsPerMilli = 70;
-    player.numFrames = 2;
+    _player.milliPerFrame = 200;
+    _player.milliPassed = 0;
+    _player.pixelsPerMilli = 70;
+    _player.numFrames = 2;
     
-    player.active = 1;
+    _player.active = 1;
     
-    player.type = PLAYER;
+    _player.type = PLAYER;
     
-    player.moveHitBox = malloc(sizeof(HitBox) * 1);
-    player.moveHitBox[0].numCircle = 0;
-    player.moveHitBox[0].numRect = 1;
-    player.moveHitBox[0].rects = malloc(sizeof(CollRect) * 1);
-    player.moveHitBox[0].rects[0].x = 4;
-    player.moveHitBox[0].rects[0].y = 5;
-    player.moveHitBox[0].rects[0].w = player.w-8;
-    player.moveHitBox[0].rects[0].h = player.sprite->image->h - 5-2;
+    _player.moveHitBox = malloc(sizeof(HitBox) * 1);
+    _player.moveHitBox[0].numCircle = 0;
+    _player.moveHitBox[0].numRect = 1;
+    _player.moveHitBox[0].rects = malloc(sizeof(CollRect) * 1);
+    _player.moveHitBox[0].rects[0].x = 4;
+    _player.moveHitBox[0].rects[0].y = 5;
+    _player.moveHitBox[0].rects[0].w = _player.w-8;
+    _player.moveHitBox[0].rects[0].h = _player.sprite->image->h - 5-2;
     
-    player.interactHitBox = malloc(sizeof(HitBox) * 1);
+    _player.interactHitBox = malloc(sizeof(HitBox) * 1);
 }
 
 void doPlayer(int delta){
     totalDelta += delta;
-    if (player.active == 1){
+    if (_player.active == 1){
 		if (_input.down || _input.up || _input.left || _input.right){
-		    player.isMoving = 1;
+		    _player.isMoving = 1;
 		} else {
-		    player.isMoving = 0;
+		    _player.isMoving = 0;
 		}
         
         updatePlayerPosition(delta);
@@ -54,16 +54,16 @@ void doPlayer(int delta){
         double transPercent = totalDelta / MILLI_PER_TRANSITION;
         switch (transitionDirection){
            case ROOM_LEFT:
-               player.x = transPercent * (SCREEN_WIDTH - player.w);
+               _player.x = transPercent * (SCREEN_WIDTH - _player.w);
                break;
             case ROOM_RIGHT:
-               player.x = SCREEN_WIDTH - player.w - (transPercent * (SCREEN_WIDTH - player.w));
+               _player.x = SCREEN_WIDTH - _player.w - (transPercent * (SCREEN_WIDTH - _player.w));
                break;
             case ROOM_UP:
-               player.y = transPercent * (SCREEN_HEIGHT - player.h);
+               _player.y = transPercent * (SCREEN_HEIGHT - _player.h);
                break;
             case ROOM_DOWN:
-               player.y = SCREEN_HEIGHT - player.h - (transPercent * (SCREEN_HEIGHT - player.h));
+               _player.y = SCREEN_HEIGHT - _player.h - (transPercent * (SCREEN_HEIGHT - _player.h));
                break;
            default:
                 break;
@@ -72,140 +72,140 @@ void doPlayer(int delta){
 }
 
 static void updatePlayerFrame(int delta){
-    if (player.isMoving){
-        player.milliPassed += delta;
-        player.milliPassed %= (player.milliPerFrame * player.numFrames);
+    if (_player.isMoving){
+        _player.milliPassed += delta;
+        _player.milliPassed %= (_player.milliPerFrame * _player.numFrames);
     } else {
-        player.milliPassed = 0;
+        _player.milliPassed = 0;
     }
 }
 
 static void updatePlayerOrientation(){
     if (_input.up){
-        player.orientation = UP;
+        _player.orientation = UP;
     } else if (_input.down) {
-        player.orientation = DOWN;
+        _player.orientation = DOWN;
     } else if (_input.left) {
-        player.orientation = LEFT;
+        _player.orientation = LEFT;
     } else if (_input.right) {
-        player.orientation = RIGHT;
+        _player.orientation = RIGHT;
     }
 }
 
 static void updatePlayerPosition(int delta){
 //    if (_input.up && _input.left){
-//        player.x -= player.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2);
-//        player.y -= player.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2);
+//        _player.x -= _player.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2);
+//        _player.y -= _player.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2);
 //
 //    } else if (_input.up && _input.right){
-//        player.x += player.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2);
-//        player.y -= player.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2);
+//        _player.x += _player.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2);
+//        _player.y -= _player.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2);
 //
 //    } else if (_input.down && _input.left){
-//        player.x -= player.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2);
-//        player.y += player.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2);
+//        _player.x -= _player.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2);
+//        _player.y += _player.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2);
 //
 //    } else if (_input.down && _input.right){
-//        player.x += player.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2);
-//        player.y += player.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2);
+//        _player.x += _player.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2);
+//        _player.y += _player.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2);
 //        
 //	} else if (_input.up == 1){
-//		player.y -= player.pixelsPerMilli * delta/1000.0;
+//		_player.y -= _player.pixelsPerMilli * delta/1000.0;
 //
 //	} else if (_input.down == 1){
-//		player.y += player.pixelsPerMilli * delta/1000.0;
+//		_player.y += _player.pixelsPerMilli * delta/1000.0;
 //
 //	} else if (_input.left == 1){
-//		player.x -= player.pixelsPerMilli * delta/1000.0;
+//		_player.x -= _player.pixelsPerMilli * delta/1000.0;
 //
 //	} else if (_input.right == 1){
-//		player.x += player.pixelsPerMilli * delta/1000.0;
+//		_player.x += _player.pixelsPerMilli * delta/1000.0;
 //	}
-    player.changeX = 0;
-    player.changeY = 0;
+    _player.changeX = 0;
+    _player.changeY = 0;
     if (_input.up && _input.left){
-        player.changeX = player.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2) * -1;
-        player.changeY = player.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2) * -1;
+        _player.changeX = _player.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2) * -1;
+        _player.changeY = _player.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2) * -1;
 
     } else if (_input.up && _input.right){
-        player.changeX = player.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2);
-        player.changeY = player.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2) * -1;
+        _player.changeX = _player.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2);
+        _player.changeY = _player.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2) * -1;
 
     } else if (_input.down && _input.left){
-        player.changeX = player.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2) * -1;
-        player.changeY = player.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2);
+        _player.changeX = _player.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2) * -1;
+        _player.changeY = _player.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2);
 
     } else if (_input.down && _input.right){
-        player.changeX = player.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2);
-        player.changeY = player.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2);
+        _player.changeX = _player.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2);
+        _player.changeY = _player.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2);
         
 	} else if (_input.up == 1){
-		player.changeY = player.pixelsPerMilli * delta/1000.0 * -1;
+		_player.changeY = _player.pixelsPerMilli * delta/1000.0 * -1;
 
 	} else if (_input.down == 1){
-		player.changeY = player.pixelsPerMilli * delta/1000.0;
+		_player.changeY = _player.pixelsPerMilli * delta/1000.0;
 
 	} else if (_input.left == 1){
-		player.changeX = player.pixelsPerMilli * delta/1000.0 * -1;
+		_player.changeX = _player.pixelsPerMilli * delta/1000.0 * -1;
 
 	} else if (_input.right == 1){
-		player.changeX = player.pixelsPerMilli * delta/1000.0;
+		_player.changeX = _player.pixelsPerMilli * delta/1000.0;
 	}
 }
 
 void movePlayer(){
-    player.x += player.changeX;
-    player.y += player.changeY;
-    player.changeX = 0;
-    player.changeY = 0;
+    _player.x += _player.changeX;
+    _player.y += _player.changeY;
+    _player.changeX = 0;
+    _player.changeY = 0;
 }
 
 void setPlayerTransitioning(int direction){
     roomTransition = 1;
     transitionDirection = direction;
-    player.active = 0;
+    _player.active = 0;
     totalDelta = 0;
 }
 
 void stopPlayerTransitioning(){
     roomTransition = 0;
     transitionDirection = -1;
-    player.active = 1;
+    _player.active = 1;
     totalDelta = 0;
 }
 
 void drawPlayer(){
-    if (player.isMoving || roomTransition){
-        int frame = ((player.milliPassed / player.milliPerFrame) + 1) % player.numFrames;
-        switch (player.orientation){
+    if (_player.isMoving || roomTransition){
+        int frame = ((_player.milliPassed / _player.milliPerFrame) + 1) % _player.numFrames;
+        switch (_player.orientation){
             case UP:
-                drawAnimatedSprite(player.sprite, 4 + frame, player.x + 0.5, player.y + 0.5);
+                drawAnimatedSprite(_player.sprite, 4 + frame, _player.x + 0.5, _player.y + 0.5);
                 break;
             case DOWN:
-                drawAnimatedSprite(player.sprite, 2 + frame, player.x + 0.5, player.y + 0.5);
+                drawAnimatedSprite(_player.sprite, 2 + frame, _player.x + 0.5, _player.y + 0.5);
                 break;
             case LEFT:
-                drawAnimatedSprite(player.sprite, 0 + frame, player.x + 0.5, player.y + 0.5);
+                drawAnimatedSprite(_player.sprite, 0 + frame, _player.x + 0.5, _player.y + 0.5);
                 break;
             case RIGHT:
-                drawAnimatedSprite(player.sprite, 6 + frame, player.x + 0.5, player.y + 0.5);
+                drawAnimatedSprite(_player.sprite, 6 + frame, _player.x + 0.5, _player.y + 0.5);
                 break;
             default:
                 break;
         }
     } else {
-        switch (player.orientation){
+        switch (_player.orientation){
             case UP:
-                drawAnimatedSprite(player.sprite, 4, player.x + 0.5, player.y + 0.5);
+                drawAnimatedSprite(_player.sprite, 4, _player.x + 0.5, _player.y + 0.5);
                 break;
             case DOWN:
-                drawAnimatedSprite(player.sprite, 2, player.x + 0.5, player.y + 0.5);
+                drawAnimatedSprite(_player.sprite, 2, _player.x + 0.5, _player.y + 0.5);
                 break;
             case LEFT:
-                drawAnimatedSprite(player.sprite, 0, player.x + 0.5, player.y + 0.5);
+                drawAnimatedSprite(_player.sprite, 0, _player.x + 0.5, _player.y + 0.5);
                 break;
             case RIGHT:
-                drawAnimatedSprite(player.sprite, 6, player.x + 0.5, player.y + 0.5);
+                drawAnimatedSprite(_player.sprite, 6, _player.x + 0.5, _player.y + 0.5);
                 break;
             default:
                 break;
