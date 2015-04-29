@@ -38,7 +38,7 @@ void loadArea(){
     _current_area.entitySpriteNames[0] = malloc(sizeof(char) * (strlen("gfx/octoroksprite.png"))+1);
     strcpy(_current_area.entitySpriteNames[0], "gfx/octoroksprite.png");
     _current_area.entitySpriteWidths = malloc(sizeof(int) * 1);
-    _current_area.entitySpriteWidths[0] = 15;
+    _current_area.entitySpriteWidths[0] = 18;
     loadEntitySprites();
     
     //load the rooms
@@ -105,7 +105,8 @@ static void drawRoomEntities(Room *room, double shiftX, double shiftY){
     int i;
     for (i = 0; i < room->numEntities; i++){
         if (room->entities[i]->active){
-            drawAnimatedSprite(room->entities[i]->sprite, 0, room->entities[i]->x + shiftX, room->entities[i]->y + shiftY);
+//            drawAnimatedSprite(room->entities[i]->sprite, 0, room->entities[i]->x + shiftX, room->entities[i]->y + shiftY);
+            room->entities[i]->draw(room->entities[i], shiftX, shiftY);
         }
     }
 }
@@ -137,7 +138,7 @@ static void doRoomEntities(int delta){
     for (i = 0; i < _current_area.currentRoom->numEntities; i++){
         self = _current_area.currentRoom->entities[i];
         if (self->active == 1 && self->action){
-            self->action(delta, self);
+            self->action(self, delta);
         }
     }
 }
