@@ -92,16 +92,16 @@ static void drawEntity(Entity *self, double shiftX, double shiftY){
         int frame = ((self->milliPassed / self->milliPerFrame) + 1) % self->numFrames;
         switch (self->orientation){
             case UP:
-                drawAnimatedSprite(self->sprite, 4 + frame, self->x + 0.5, self->y + 0.5);
+                drawAnimatedSprite(self->sprite, 4 + frame, self->x + 0.5 + shiftX, self->y + 0.5 + shiftY);
                 break;
             case DOWN:
-                drawAnimatedSprite(self->sprite, 2 + frame, self->x + 0.5, self->y + 0.5);
+                drawAnimatedSprite(self->sprite, 2 + frame, self->x + 0.5 + shiftX, self->y + 0.5 + shiftY);
                 break;
             case LEFT:
-                drawAnimatedSprite(self->sprite, 0 + frame, self->x + 0.5, self->y + 0.5);
+                drawAnimatedSprite(self->sprite, 0 + frame, self->x + 0.5 + shiftX, self->y + 0.5 + shiftY);
                 break;
             case RIGHT:
-                drawAnimatedSprite(self->sprite, 6 + frame, self->x + 0.5, self->y + 0.5);
+                drawAnimatedSprite(self->sprite, 6 + frame, self->x + 0.5 + shiftX, self->y + 0.5 + shiftY);
                 break;
             default:
                 break;
