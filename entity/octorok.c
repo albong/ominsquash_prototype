@@ -28,7 +28,6 @@ Entity *createOctorok(int spriteIndex){
 //	void (*collide)(struct Entity*);
 	e->type = ENEMY;
 //	HitBox *moveHitBox;
-//	HitBox *interactHitBox;
     e->interactHitBox = malloc(sizeof(HitBox) * 1);
     e->interactHitBox[0].numCircle = 0;
     e->interactHitBox[0].numRect = 1;

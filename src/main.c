@@ -40,15 +40,12 @@ int main(int argc, char *argv[]){
         getInput();
         
         doPlayer(delta);
-        
-//        doEntities();
-        
+                
         doRoom(delta);
         
         doCollisions();
         
         movePlayer();
-        moveEntities();
         
         draw();
         

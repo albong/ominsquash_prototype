@@ -131,6 +131,14 @@ void doRoom(int delta){
     }
 }
 
+int getNumRoomEntities(){
+    return _current_area.currentRoom->numEntities;
+}
+
+Entity **getRoomEntityList(){
+    return _current_area.currentRoom->entities;
+}
+
 static void doRoomEntities(int delta){
     int i;
     

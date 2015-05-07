@@ -11,8 +11,8 @@ typedef enum {
 } Orientation;
 
 typedef enum {
-    NONE, PLAYER, ENEMY, WALL, PROJECTILE, OBJECT
-} CollisionType;
+    NONE, PLAYER, ENEMY, ENEMY_COLL, WALL, PROJECTILE, OBJECT
+} CollisionType; //ENEMY_COLL collides with other enemies
 
 typedef struct Entity {
     int active;
@@ -33,14 +33,6 @@ typedef struct Entity {
 	HitBox *interactHitBox;
 } Entity;
 
-Entity entity[MAX_ENTITIES];
-Entity *self;
-
-void clearEntities();
-int getFreeEntity();
-void drawEntities();
-void drawStandardEntity();
-void moveEntities();
 void collideWithWallX(CollRect wall, Entity *e, CollRect r, int collCode);
 void collideWithWallY(CollRect wall, Entity *e, CollRect r, int collCode);
 

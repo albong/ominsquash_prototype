@@ -109,9 +109,7 @@ void draw(){
     drawCurrentRoom();
     
     drawPlayer();
-    
-    drawEntities();
-    
+        
     //update the buffer
     SDL_Flip(game.screen);
 }

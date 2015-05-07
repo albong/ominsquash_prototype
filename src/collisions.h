@@ -18,6 +18,7 @@ typedef struct HitBox{
 
 void doCollisions();
 static void doWallCollisions();
+static void doEnemyCollisions();
 
 static int rectangleCollide(CollRect r1, CollRect r2);
 static int circleCollide(CollCircle c1, CollCircle c2);

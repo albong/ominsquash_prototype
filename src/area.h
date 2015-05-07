@@ -38,6 +38,8 @@ HitBox getCurrentWalls();
 static void loadEntitySprites();
 static void drawRoomEntities(Room *room, double shiftX, double shiftY);
 static void doRoomEntities();
+int getNumRoomEntities();
+Entity **getRoomEntityList();
 
 static Room *createFirstDemoRoom();
 static Room *createSecondDemoRoom();
