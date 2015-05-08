@@ -2,6 +2,7 @@
 #define GRAPHICS_H
 
 #include "SDL/SDL.h"
+#include "SDL/SDL_ttf.h"
 
 #define MAX_SPRITES 100
 
@@ -13,8 +14,12 @@ typedef struct Sprite{
 
 //globals
 Sprite _sprite_list[MAX_SPRITES];
+static SDL_Surface *screen;
+static TTF_Font *font;
 
 //methods
+void initSDL();
+void stopSDL();
 SDL_Surface *loadImage(char *name);
 SDL_Surface* getEmptySurface(int width, int height);
 void drawImage(SDL_Surface *image, int x, int y);
@@ -24,6 +29,7 @@ void drawAnimatedSprite(Sprite *s, int frame, int x, int y);
 void loadSprite(int index, char *name);
 int loadAnimatedSprite(char *name, int frameWidth);
 Sprite *getSprite(int index);
-void draw();
+void clearScreen();
+void bufferToScreen();
 
 #endif

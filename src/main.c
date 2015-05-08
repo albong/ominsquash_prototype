@@ -1,6 +1,5 @@
 #include "main.h"
 #include "SDL/SDL.h"
-#include "init.h"
 #include "input.h"
 #include "player.h"
 #include "collisions.h"
@@ -14,12 +13,14 @@ int main(int argc, char *argv[]){
     int go = 1;
     
     //start the reactor
-    init("omnisquash");
+    initSDL();
+	freopen( "CON", "w", stdout );
+    freopen( "CON", "w", stderr );
     
     //when the program exits, clean everything up
-    atexit(cleanup);
+    atexit(stopSDL);
     
-    loadAllSprites();
+    loadAnimatedSprite("gfx/linksprite.png", 15);
     
     loadArea();
     
@@ -38,17 +39,25 @@ int main(int argc, char *argv[]){
         delta = currMilliseconds - prevMilliseconds;
         
         getInput();
-        
+
+        //do logic, calculate next positions
         doPlayer(delta);
-                
         doRoom(delta);
         
+        //do any collisions
         doCollisions();
-        
+
+        //update positions
         movePlayer();
+//        moveRoomEntites();
         
-        draw();
+        //draw
+        clearScreen();
+        drawCurrentRoom();
+        drawPlayer();
+        bufferToScreen();
         
+        //sleep?  I don't recall
         SDL_Delay(16);
     }
     

@@ -1,8 +1,41 @@
 #include "graphics.h"
-#include "main.h"
-#include "entity.h"
+#include "constants.h"
 #include "SDL/SDL.h"
 #include "SDL/SDL_image.h"
+
+void initSDL(){
+    //Initialise SDL
+	if (SDL_Init(SDL_INIT_VIDEO|SDL_INIT_AUDIO) < 0){
+		printf("Could not initialize SDL: %s\n", SDL_GetError());
+		exit(1);
+	}
+	
+	//Initialise SDL_TTF 
+	if (TTF_Init() < 0){
+		printf("Couldn't initialize SDL TTF: %s\n", SDL_GetError());
+		exit(1);
+	}
+	
+	//Open a screen
+	screen = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 0, SDL_HWPALETTE|SDL_DOUBLEBUF);
+	if (screen == NULL){
+		printf("Couldn't set screen mode to %d x %d: %s\n", SCREEN_WIDTH, SCREEN_HEIGHT, SDL_GetError());
+		exit(1);
+	}
+	
+	//Set the audio rate to 22050, 16 bit stereo, 2 channels and a 4096 byte buffer
+//	if (Mix_OpenAudio(22050, AUDIO_S16SYS, 2, 4096) != 0){
+//		printf("Could not open audio: %s\n", Mix_GetError());
+//		exit(1);
+//	}
+	
+	//Set the screen title 
+	SDL_WM_SetCaption("omnisquash", NULL);
+}
+
+void stopSDL(){
+    SDL_Quit();
+}
 
 SDL_Surface *loadImage(char *name){
     SDL_Surface* loadedImage = NULL;
@@ -33,7 +66,7 @@ SDL_Surface *loadImage(char *name){
 }
 
 SDL_Surface *getEmptySurface(int width, int height){
-    SDL_PixelFormat *fmt = game.screen->format;
+    SDL_PixelFormat *fmt = screen->format;
     return SDL_CreateRGBSurface(SDL_HWSURFACE,
         width,
         height,
@@ -54,11 +87,11 @@ void drawImage(SDL_Surface *image, int x, int y){
     dest.h = image->h;
     
     //blit the entire image onto the screen
-    SDL_BlitSurface(image, NULL, game.screen, &dest);
+    SDL_BlitSurface(image, NULL, screen, &dest);
 }
 
 void drawImageSrcDst(SDL_Surface *image, SDL_Rect src, SDL_Rect dst){
-    SDL_BlitSurface(image, &src, game.screen, &dst);
+    SDL_BlitSurface(image, &src, screen, &dst);
 }
 
 void drawSprite(Sprite *s, int x, int y){
@@ -78,7 +111,7 @@ void drawAnimatedSprite(Sprite *s, int frame, int x, int y){
     dest.w = s->width;
     dest.h = s->image->h;
     
-    SDL_BlitSurface(s->image, &src, game.screen, &dest);
+    SDL_BlitSurface(s->image, &src, screen, &dest);
 }
 
 void loadSprite(int index, char *name){
@@ -102,14 +135,10 @@ Sprite *getSprite(int index){
     return &_sprite_list[index];
 }
 
-void draw(){
-    //blank out the screen
-    SDL_FillRect(game.screen, NULL, 0);
-    
-    drawCurrentRoom();
-    
-    drawPlayer();
-        
-    //update the buffer
-    SDL_Flip(game.screen);
+void clearScreen(){
+    SDL_FillRect(screen, NULL, 0);
+}
+
+void bufferToScreen(){
+    SDL_Flip(screen);
 }
