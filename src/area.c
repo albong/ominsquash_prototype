@@ -141,6 +141,7 @@ Entity **getRoomEntityList(){
 
 static void doRoomEntities(int delta){
     int i;
+    Entity *self;
     
     //loop through all entities and perform their action
     for (i = 0; i < _current_area.currentRoom->numEntities; i++){
@@ -148,6 +149,13 @@ static void doRoomEntities(int delta){
         if (self->active == 1 && self->action){
             self->action(self, delta);
         }
+    }
+}
+
+void moveRoomEntites(){
+    int i;
+    for (i = 0; i < _current_area.currentRoom->numEntities; i++){
+        moveEntity(_current_area.currentRoom->entities[i]);
     }
 }
 

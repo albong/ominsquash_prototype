@@ -33,6 +33,7 @@ typedef struct Entity {
 	HitBox *interactHitBox;
 } Entity;
 
+void moveEntity(Entity *e);
 void collideWithWallX(CollRect wall, Entity *e, CollRect r, int collCode);
 void collideWithWallY(CollRect wall, Entity *e, CollRect r, int collCode);
 

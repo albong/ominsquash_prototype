@@ -49,7 +49,7 @@ int main(int argc, char *argv[]){
 
         //update positions
         movePlayer();
-//        moveRoomEntites();
+        moveRoomEntites();
         
         //draw
         clearScreen();

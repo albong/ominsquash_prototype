@@ -62,7 +62,6 @@ static void doOctorok(Entity *self, int delta){
     }
     updateFrame(self, delta);
     updatePosition(self, delta);
-    move(self);
 }
 
 static void updatePosition(Entity *e, int delta){
@@ -85,13 +84,6 @@ static void updatePosition(Entity *e, int delta){
 	if (e->y + e->changeY < 0 || e->y + e->sprite->image->h + e->changeY > SCREEN_HEIGHT){
 	    e->changeY = 0;
 	}
-}
-
-static void move(Entity *e){
-    e->x += e->changeX;
-    e->y += e->changeY;
-    e->changeX = 0;
-    e->changeY = 0;
 }
 
 static void drawEntity(Entity *self, double shiftX, double shiftY){
