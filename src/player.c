@@ -36,6 +36,8 @@ void initPlayer(){
     _player.moveHitBox[0].rects[0].h = _player.sprite->image->h - 5-2;
     
     _player.interactHitBox = malloc(sizeof(HitBox) * 1);
+    
+    _player.health = 12;
 }
 
 void doPlayer(int delta){

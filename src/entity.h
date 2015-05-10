@@ -31,6 +31,7 @@ typedef struct Entity {
 	CollisionType type;
 	HitBox *moveHitBox;
 	HitBox *interactHitBox;
+	int health;
 } Entity;
 
 void moveEntity(Entity *e);

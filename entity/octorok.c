@@ -37,6 +37,8 @@ Entity *createOctorok(int spriteIndex){
     e->interactHitBox[0].rects[0].w = 16;
     e->interactHitBox[0].rects[0].h = 11;
     
+    e->health = 8;
+    
     return e;
 }
 
