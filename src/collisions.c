@@ -99,9 +99,9 @@ static void doWallCollisions(){
 static void doEnemyCollisions(){
     int numEntities = getNumRoomEntities();
     Entity **entityList = getRoomEntityList();
-    CollRect temp;
-    int i, j, k, collX, collY;
-    
+    CollRect temp, playerTemp;
+    int i, j, k, collCode;
+
     /*
     We need to check all the enemies against the player and against all other entities - even walls?
     What if we want an enemy that absorbs other enemies, we need to check collisions between all enemies too, or do we
@@ -111,27 +111,26 @@ static void doEnemyCollisions(){
     //player first
     for (i = 0; i < numEntities && entityList[i]->active && (entityList[i]->type == ENEMY || entityList[i]->type == ENEMY_COLL); i++){
         for (j = 0; j < entityList[i]->interactHitBox->numRect; j++){
+            temp.x = entityList[i]->x + entityList[i]->changeX + entityList[i]->interactHitBox->rects[j].x;
+            temp.y = entityList[i]->y + entityList[i]->interactHitBox->rects[j].y;
+            temp.w = entityList[i]->interactHitBox->rects[j].w;
+            temp.h = entityList[i]->interactHitBox->rects[j].h;
+                
             for (k = 0; k < _player.interactHitBox->numRect; k++){
-//                temp.x = entity[i].x + entity[i].changeX + entity[i].moveHitBox->rects[j].x;
-//                temp.y = entity[i].y + entity[i].moveHitBox->rects[j].y;
-//                temp.w = entity[i].moveHitBox->rects[j].w;
-//                temp.h = entity[i].moveHitBox->rects[j].h;
-//                collCode = rectangleCollide(walls.rects[k], temp);
-//                if (collCode){
-//                    collideWithWallX(walls.rects[k], &entity[i], temp, collCode);
-//                }
-//                
-//                temp.x = entity[i].x + entity[i].moveHitBox->rects[j].x;
-//                temp.y = entity[i].y + entity[i].changeY + entity[i].moveHitBox->rects[j].y;
-//                temp.w = entity[i].moveHitBox->rects[j].w;
-//                temp.h = entity[i].moveHitBox->rects[j].h;
-//                collCode = rectangleCollide(walls.rects[k], temp);
-//                if (collCode){
-//                    collideWithWallY(walls.rects[k], &entity[i], temp, collCode);
-//                }
+                playerTemp.x = _player.x + _player.changeX + _player.interactHitBox->rects[k].x;
+                playerTemp.y = _player.y + _player.changeY + _player.interactHitBox->rects[k].y;
+                playerTemp.w = _player.interactHitBox->rects[k].w;
+                playerTemp.h = _player.interactHitBox->rects[k].h;
+                
+                collCode = rectangleCollide(playerTemp, temp);
+                if (collCode){
+                    playerCollideWithEnemy(entityList[i], collCode);
+                }
             }
         }
     }
+    
+    //other entites?
 }
 
 static int rectangleCollide(CollRect r1, CollRect r2){

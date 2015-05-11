@@ -36,7 +36,14 @@ void initPlayer(){
     _player.moveHitBox[0].rects[0].h = _player.sprite->image->h - 5-2;
     
     _player.interactHitBox = malloc(sizeof(HitBox) * 1);
-    
+    _player.interactHitBox[0].numCircle = 0;
+    _player.interactHitBox[0].numRect = 1;
+    _player.interactHitBox[0].rects = malloc(sizeof(CollRect) * 1);
+    _player.interactHitBox[0].rects[0].x = 1;
+    _player.interactHitBox[0].rects[0].y = 1;
+    _player.interactHitBox[0].rects[0].w = 14;
+    _player.interactHitBox[0].rects[0].h = 16;
+        
     _player.health = 12;
 }
 
@@ -186,4 +193,10 @@ void drawPlayer(){
                 break;
         }
     }
+}
+
+void playerCollideWithEnemy(Entity *enemy, int collCode){
+    //check if in hitstun first
+    
+    printf("WE HIT\n");
 }

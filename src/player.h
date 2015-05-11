@@ -11,6 +11,7 @@ void drawPlayer();
 void setPlayerTransitioning(int direction);
 void stopPlayerTransitioning();
 void movePlayer();
+void playerCollideWithEnemy(Entity *enemy, int collCode);
 
 static void updatePlayerFrame(int delta);
 static void updatePlayerOrientation();
