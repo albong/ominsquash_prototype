@@ -61,7 +61,6 @@ void doPlayer(int delta){
 		updatePlayerFrame(delta);
     } else if (roomTransition){
         double transPercent = totalDelta / MILLI_PER_TRANSITION;
-        printf("%f\n", transPercent);
         switch (transitionDirection){
            case ROOM_LEFT:
                _player.x = transPercent * (SCREEN_WIDTH - _player.w);
@@ -150,6 +149,21 @@ void setPlayerTransitioning(int direction){
 }
 
 void stopPlayerTransitioning(){
+    switch(transitionDirection){
+        case ROOM_LEFT:
+            _player.x = SCREEN_WIDTH - _player.w;
+            break;
+        case ROOM_RIGHT:
+            _player.x = 0;
+            break;
+        case ROOM_UP:
+            _player.y = SCREEN_HEIGHT - _player.h;
+            break;
+        case ROOM_DOWN:
+            _player.y = 0;
+            break;
+    }
+
     roomTransition = 0;
     transitionDirection = -1;
     _player.active = 1;
