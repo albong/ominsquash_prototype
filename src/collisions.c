@@ -71,29 +71,33 @@ static void doWallCollisions(){
     }
     
     //now check all entitites
-//    for (i = 0; i < MAX_ENTITIES && entity[i].active; i++){
-//        for (j = 0; j < entity[i].moveHitBox->numRect; j++){
-//            for (k = 0; k < walls.numRect; k++){
-//                temp.x = entity[i].x + entity[i].changeX + entity[i].moveHitBox->rects[j].x;
-//                temp.y = entity[i].y + entity[i].moveHitBox->rects[j].y;
-//                temp.w = entity[i].moveHitBox->rects[j].w;
-//                temp.h = entity[i].moveHitBox->rects[j].h;
-//                collCode = rectangleCollide(walls.rects[k], temp);
-//                if (collCode){
-//                    collideWithWallX(walls.rects[k], &entity[i], temp, collCode);
-//                }
-//                
-//                temp.x = entity[i].x + entity[i].moveHitBox->rects[j].x;
-//                temp.y = entity[i].y + entity[i].changeY + entity[i].moveHitBox->rects[j].y;
-//                temp.w = entity[i].moveHitBox->rects[j].w;
-//                temp.h = entity[i].moveHitBox->rects[j].h;
-//                collCode = rectangleCollide(walls.rects[k], temp);
-//                if (collCode){
-//                    collideWithWallY(walls.rects[k], &entity[i], temp, collCode);
-//                }
-//            }
-//        }
-//    }
+    Entity **entityList = getRoomEntityList();
+    for (i = 0; i < getNumRoomEntities(); i++){
+        if (!entityList[i]->active){
+            continue;
+        }
+        for (j = 0; j < entityList[i]->moveHitBox->numRect; j++){
+            for (k = 0; k < walls.numRect; k++){
+                temp.x = entityList[i]->x + entityList[i]->changeX + entityList[i]->moveHitBox->rects[j].x;
+                temp.y = entityList[i]->y + entityList[i]->moveHitBox->rects[j].y;
+                temp.w = entityList[i]->moveHitBox->rects[j].w;
+                temp.h = entityList[i]->moveHitBox->rects[j].h;
+                collCode = rectangleCollide(walls.rects[k], temp);
+                if (collCode){
+                    collideWithWallX(walls.rects[k], entityList[i], temp, collCode);
+                }
+                
+                temp.x = entityList[i]->x + entityList[i]->moveHitBox->rects[j].x;
+                temp.y = entityList[i]->y + entityList[i]->changeY + entityList[i]->moveHitBox->rects[j].y;
+                temp.w = entityList[i]->moveHitBox->rects[j].w;
+                temp.h = entityList[i]->moveHitBox->rects[j].h;
+                collCode = rectangleCollide(walls.rects[k], temp);
+                if (collCode){
+                    collideWithWallY(walls.rects[k], entityList[i], temp, collCode);
+                }
+            }
+        }
+    }
 }
 
 static void doEnemyCollisions(){
@@ -109,7 +113,10 @@ static void doEnemyCollisions(){
     */
     
     //player first
-    for (i = 0; i < numEntities && entityList[i]->active && (entityList[i]->type == ENEMY || entityList[i]->type == ENEMY_COLL); i++){
+    for (i = 0; i < numEntities; i++){
+        if (!entityList[i]->active || !(entityList[i]->type == ENEMY || entityList[i]->type == ENEMY_COLL)){
+            continue;
+        }
         for (j = 0; j < entityList[i]->interactHitBox->numRect; j++){
             temp.x = entityList[i]->x + entityList[i]->changeX + entityList[i]->interactHitBox->rects[j].x;
             temp.y = entityList[i]->y + entityList[i]->interactHitBox->rects[j].y;
