@@ -29,8 +29,8 @@ typedef struct Entity {
 	void (*draw)(struct Entity*, double, double);
 	void (*collide)(struct Entity*);
 	CollisionType type;
-	HitBox *moveHitBox;
-	HitBox *interactHitBox;
+	HitBox *moveHitBox;//array
+	HitBox *interactHitBox;//array
 	int health;
 } Entity;
 

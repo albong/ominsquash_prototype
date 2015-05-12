@@ -124,8 +124,8 @@ static void doEnemyCollisions(){
             temp.h = entityList[i]->interactHitBox->rects[j].h;
                 
             for (k = 0; k < _player.interactHitBox->numRect; k++){
-                playerTemp.x = _player.x + _player.changeX + _player.interactHitBox->rects[k].x;
-                playerTemp.y = _player.y + _player.changeY + _player.interactHitBox->rects[k].y;
+                playerTemp.x = _player.x + _player.changeX + _player.interactHitBox[0].rects[k].x;
+                playerTemp.y = _player.y + _player.changeY + _player.interactHitBox[0].rects[k].y;
                 playerTemp.w = _player.interactHitBox->rects[k].w;
                 playerTemp.h = _player.interactHitBox->rects[k].h;
                 
