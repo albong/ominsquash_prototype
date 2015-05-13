@@ -24,6 +24,8 @@ typedef struct Room {
     HitBox walls;
     Entity **entities;
     int numEntities;
+    double *entityX;
+    double *entityY;
 } Room;
 
 int getFlag(Room *room, int index, int flagNum);
@@ -31,6 +33,8 @@ void setFlag(Room *room, int index, int flagNum);
 void clearFlag(Room *room, int index, int flagNum);
 void toggleFlag(Room *room, int index, int flagNum);
 void generateWallList(Room *room, int tileSize);
+void setEntityInitalPositions(Room *room);
+void resetEntityPositions(Room *room);
 
 /*
 we need some sort of way to associate a tileset with a room - might make sense to

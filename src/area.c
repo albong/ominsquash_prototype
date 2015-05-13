@@ -124,6 +124,7 @@ void doRoom(int delta){
             changingToRoom = newRoom;
             changeRoom(_current_area.currentRoom->connectingRooms[changingToRoom], changingToRoom, delta);
             room_transition.newRoom = _current_area.roomList[_current_area.currentRoom->connectingRooms[newRoom]];
+            resetEntityPositions(room_transition.newRoom);
             setPlayerTransitioning(changingToRoom);
         }
     } else {
@@ -244,6 +245,7 @@ static Room *createFirstDemoRoom(){
     firstRoom->numEntities = 1;
     firstRoom->entities = malloc(sizeof(Entity) * firstRoom->numEntities);
     firstRoom->entities[0] = createOctorok(_current_area.spriteIndices[0]);
+    setEntityInitalPositions(firstRoom);
     
     return firstRoom;
 }

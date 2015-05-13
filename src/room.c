@@ -40,3 +40,22 @@ void generateWallList(Room *room, int tileSize){
         }
     }
 }
+
+void setEntityInitalPositions(Room *room){
+    int i;
+    room->entityX = malloc(sizeof(double) * room->numEntities);
+    room->entityY = malloc(sizeof(double) * room->numEntities);
+    for (i = 0; i < room->numEntities; i++){
+        room->entityX[i] = room->entities[i]->x;
+        room->entityY[i] = room->entities[i]->y;
+    }
+}
+
+void resetEntityPositions(Room *room){
+    int i;
+    for (i = 0; i < room->numEntities; i++){
+        //no need to check if active?  probably won't matter
+        room->entities[i]->x = room->entityX[i];
+        room->entities[i]->y = room->entityY[i];
+    }
+}
