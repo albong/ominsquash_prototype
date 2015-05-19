@@ -4,6 +4,7 @@
 #include "player.h"
 #include "collisions.h"
 #include "area.h"
+#include "weapon.h"
 
 int main(int argc, char *argv[]){
 //    unsigned int frameLimit = SDL_GetTicks() + 16;
@@ -21,6 +22,8 @@ int main(int argc, char *argv[]){
     atexit(stopSDL);
     
     loadAnimatedSprite("gfx/linksprite.png", 15);
+    
+    initWeaponLists(); //before the area and player
     
     loadArea();
     

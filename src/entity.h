@@ -11,7 +11,7 @@ typedef enum {
 } Orientation;
 
 typedef enum {
-    NONE, PLAYER, ENEMY, ENEMY_COLL, WALL, PROJECTILE, OBJECT
+    NONE, PLAYER, ENEMY, ENEMY_COLL, WALL, WEAPON, OBJECT
 } CollisionType; //ENEMY_COLL collides with other enemies
 
 typedef struct Entity {
