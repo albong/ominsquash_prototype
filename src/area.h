@@ -20,7 +20,7 @@ typedef struct Area {
     Room **roomList;
     char **entitySpriteNames;
     int *entitySpriteWidths;
-    int *spriteIndices;
+    Sprite **sprites;
     int numEntitySprites;
 } Area;
 

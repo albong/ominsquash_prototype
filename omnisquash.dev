@@ -24,12 +24,12 @@ HostApplication=
 UseCustomMakefile=0
 CustomMakefile=
 CommandLine=
-Folders=entity,gfx,src
+Folders=entity,gfx,src,weapons
 IncludeVersionInfo=0
 SupportXPThemes=0
 CompilerSet=4
 CompilerSettings=0000000100000000001000000
-UnitCount=22
+UnitCount=26
 
 [VersionInfo]
 Major=1
@@ -261,9 +261,9 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit23]
-FileName=entity\octorok.c
+FileName=src\weapon.h
 CompileCpp=0
-Folder=entity
+Folder=src
 Compile=1
 Link=1
 Priority=1000
@@ -271,9 +271,9 @@ OverrideBuildCmd=0
 BuildCmd=
 
 [Unit24]
-FileName=entity\octorok.h
+FileName=src\weapon.c
 CompileCpp=0
-Folder=entity
+Folder=src
 Compile=1
 Link=1
 Priority=1000
@@ -284,6 +284,26 @@ BuildCmd=
 FileName=src\main.h
 CompileCpp=0
 Folder=src
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit25]
+FileName=weapons\sword.h
+CompileCpp=0
+Folder=weapons
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit26]
+FileName=weapons\sword.c
+CompileCpp=0
+Folder=weapons
 Compile=1
 Link=1
 Priority=1000

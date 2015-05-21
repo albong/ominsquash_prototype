@@ -5,11 +5,11 @@ static Sprite *swordSprite;
 
 static void loadSwordSprite(){
     if (swordSprite == NULL){
-        swordSprite = getSprite(loadAnimatedSprite("gfx/swordsprite.png", 31));
+        swordSprite = loadAnimatedSprite("gfx/swordsprite.png", 31);
     }
 }
 
-Entity *createSword(){
+Weapon *createSword(){
     loadSwordSprite();
     Entity *e = malloc(sizeof(Entity));
     
@@ -37,10 +37,10 @@ Entity *createSword(){
     return e;
 }
 
-static void doSword(Entity *self, int delta){
+static void doSword(Weapon *self, int delta){
     
 }
 
-static void drawSword(Entity *self, double shiftX, double shiftY){
+static void drawSword(Weapon *self, double shiftX, double shiftY){
     
 }

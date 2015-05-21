@@ -25,9 +25,9 @@ typedef struct Entity {
 	int numFrames;
 	Sprite *sprite;
 	Orientation orientation;
-	void (*action)(struct Entity*, int);
-	void (*draw)(struct Entity*, double, double);
-	void (*collide)(struct Entity*);
+	void (*action)(void *, int);
+	void (*draw)(void *, double, double);
+	void (*collide)(void *);
 	CollisionType type;
 	HitBox *moveHitBox;//array
 	HitBox *interactHitBox;//array

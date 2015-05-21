@@ -114,25 +114,12 @@ void drawAnimatedSprite(Sprite *s, int frame, int x, int y){
     SDL_BlitSurface(s->image, &src, screen, &dest);
 }
 
-void loadSprite(int index, char *name){
-    _sprite_list[index].image = loadImage(name);
-    _sprite_list[index].width = _sprite_list[index].image->w;
-}
-
-int loadAnimatedSprite(char *name, int frameWidth){
+Sprite *loadAnimatedSprite(char *name, int frameWidth){
     int i;
-    for (i = 0; i < MAX_SPRITES; i++){
-        if (!_sprite_list[i].image){
-            break;
-        }
-    }
-    _sprite_list[i].image = loadImage(name);
-    _sprite_list[i].width = frameWidth;
-    return i;
-}
-
-Sprite *getSprite(int index){
-    return &_sprite_list[index];
+    Sprite *result = (Sprite *) malloc(sizeof(Sprite));
+    result->image = loadImage(name);
+    result->width = frameWidth;
+    return result;
 }
 
 void clearScreen(){

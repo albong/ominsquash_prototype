@@ -3,7 +3,7 @@
 
 #include "../src/Entity.h"
 
-Entity *createOctorok(int spriteIndex);
+Entity *createOctorok(Sprite *sprite);
 static void doOctorok(Entity *self, int delta);
 static void updatePosition(Entity *self, int delta);
 static void drawEntity(Entity *self, double shiftX, double shiftY);

@@ -13,7 +13,6 @@ typedef struct Sprite{
 } Sprite;
 
 //globals
-Sprite _sprite_list[MAX_SPRITES];
 static SDL_Surface *screen;
 static TTF_Font *font;
 
@@ -26,9 +25,7 @@ void drawImage(SDL_Surface *image, int x, int y);
 void drawImageSrcDst(SDL_Surface *image, SDL_Rect src, SDL_Rect dst);
 void drawSprite(Sprite *s, int x, int y);
 void drawAnimatedSprite(Sprite *s, int frame, int x, int y);
-void loadSprite(int index, char *name);
-int loadAnimatedSprite(char *name, int frameWidth);
-Sprite *getSprite(int index);
+Sprite *loadAnimatedSprite(char *name, int frameWidth);
 void clearScreen();
 void bufferToScreen();
 

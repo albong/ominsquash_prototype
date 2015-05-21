@@ -8,7 +8,7 @@ static int transitionDirection = -1;
 static unsigned totalDelta = 0;
 
 void initPlayer(){
-    _player.sprite = getSprite(0);
+    _player.sprite = loadAnimatedSprite("gfx/linksprite.png", 15);
     _player.orientation = DOWN;    
     
     _player.x = SCREEN_WIDTH / 2;

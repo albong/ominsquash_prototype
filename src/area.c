@@ -51,10 +51,10 @@ void loadArea(){
 }
 
 static void loadEntitySprites(){
-    _current_area.spriteIndices = malloc(sizeof(int) * _current_area.numEntitySprites);
+    _current_area.sprites = malloc(sizeof(Sprite *) * _current_area.numEntitySprites);
     int i;
     for (i = 0; i < _current_area.numEntitySprites; i++){
-        _current_area.spriteIndices[i] = loadAnimatedSprite(_current_area.entitySpriteNames[i], _current_area.entitySpriteWidths[i]);
+        _current_area.sprites[i] = loadAnimatedSprite(_current_area.entitySpriteNames[i], _current_area.entitySpriteWidths[i]);
     }
 }
 
@@ -244,7 +244,7 @@ static Room *createFirstDemoRoom(){
     
     firstRoom->numEntities = 1;
     firstRoom->entities = malloc(sizeof(Entity) * firstRoom->numEntities);
-    firstRoom->entities[0] = createOctorok(_current_area.spriteIndices[0]);
+    firstRoom->entities[0] = createOctorok(_current_area.sprites[0]);
     setEntityInitalPositions(firstRoom);
     
     return firstRoom;

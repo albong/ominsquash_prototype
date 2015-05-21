@@ -6,8 +6,8 @@ void initWeaponLists(){
     _enemy_weapons.num = 0;
 }
 
-void addPlayerWeapon(Entity *e){
+void addPlayerWeapon(Weapon *w){
     realloc(_player_weapons.weapons, _player_weapons.num + 1);
-    _player_weapons.weapons[_player_weapons.num] = e;
+    _player_weapons.weapons[_player_weapons.num] = w;
     _player_weapons.num += 1;
 }

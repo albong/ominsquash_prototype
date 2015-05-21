@@ -4,13 +4,13 @@
 
 static int totalDelta = 0;
 
-Entity *createOctorok(int spriteIndex){
+Entity *createOctorok(Sprite *sprite){
     Entity *e = malloc(sizeof(Entity));
     
     e->active = 1;
     
     e->action = &doOctorok;
-    e->sprite = getSprite(spriteIndex);
+    e->sprite = sprite;
     
     e->pixelsPerMilli = 50;
 //    double changeX, changeY;
