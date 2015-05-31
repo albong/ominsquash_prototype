@@ -7,7 +7,7 @@ void initWeaponLists(){
 }
 
 void addPlayerWeapon(Weapon *w){
-    realloc(_player_weapons.weapons, _player_weapons.num + 1);
+    _player_weapons.weapons = (Weapon **)realloc(_player_weapons.weapons, _player_weapons.num + 1);
     _player_weapons.weapons[_player_weapons.num] = w;
-    _player_weapons.num += 1;
+    _player_weapons.num++;
 }

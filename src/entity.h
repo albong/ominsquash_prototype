@@ -22,6 +22,7 @@ typedef struct Entity {
 	int w, h;
 	int isMoving;
 	int milliPerFrame, milliPassed;
+	int currFrame;
 	int numFrames;
 	Sprite *sprite;
 	Orientation orientation;

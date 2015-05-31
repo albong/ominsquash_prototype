@@ -5,8 +5,8 @@
 
 static void loadSwordSprite();
 Weapon *createSword();
-static void doSword(Weapon *self, int delta);
-static void drawSword(Weapon *self, double shiftX, double shiftY);
+static void doSword(void *self, int delta);
+static void drawSword(void *self, double shiftX, double shiftY);
 //Entity *createOctorok(int spriteIndex);
 //static void doOctorok(Entity *self, int delta);
 //static void updatePosition(Entity *self, int delta);

@@ -4,8 +4,8 @@
 #include "../src/Entity.h"
 
 Entity *createOctorok(Sprite *sprite);
-static void doOctorok(Entity *self, int delta);
+static void doOctorok(void *e, int delta);
 static void updatePosition(Entity *self, int delta);
-static void drawEntity(Entity *self, double shiftX, double shiftY);
+static void drawEntity(void * e, double shiftX, double shiftY);
 static void updateFrame(Entity *self, int delta);
 #endif

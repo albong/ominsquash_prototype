@@ -51,7 +51,8 @@ Entity *createOctorok(Sprite *sprite){
     return e;
 }
 
-static void doOctorok(Entity *self, int delta){
+static void doOctorok(void *e, int delta){
+    Entity *self = (Entity *)e;
     totalDelta += delta;
     
     if (totalDelta >= 1500){
@@ -97,7 +98,8 @@ static void updatePosition(Entity *e, int delta){
 	}
 }
 
-static void drawEntity(Entity *self, double shiftX, double shiftY){
+static void drawEntity(void *e, double shiftX, double shiftY){
+    Entity *self = (Entity *)e;
     if (self->isMoving){
         int frame = ((self->milliPassed / self->milliPerFrame) + 1) % self->numFrames;
         switch (self->orientation){

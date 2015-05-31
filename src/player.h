@@ -3,7 +3,13 @@
 
 #include "entity.h"
 
-Entity _player;
+typedef struct Player {
+    Entity e;
+    int equippedAInd;
+    int equippedBInd;
+} Player;
+
+Player _player;
 
 void initPlayer();
 void doPlayer(int delta);
