@@ -30,7 +30,10 @@ void initPlayer(){
     
     _player.e.type = PLAYER;
     
+    _player.e.currHitBox = 0;
+    
     //movement hitbox
+    _player.e.hasMoveHitBox = 1;
     _player.e.moveHitBox = malloc(sizeof(HitBox) * 1);
     _player.e.moveHitBox[0].numCircle = 0;
     _player.e.moveHitBox[0].numRect = 1;
@@ -41,6 +44,7 @@ void initPlayer(){
     _player.e.moveHitBox[0].rects[0].h = _player.e.sprite->image->h - 5-2;
     
     //interaction hitbox
+    _player.e.hasInteractHitBox = 1;
     _player.e.interactHitBox = malloc(sizeof(HitBox) * 1);
     _player.e.interactHitBox[0].numCircle = 0;
     _player.e.interactHitBox[0].numRect = 1;

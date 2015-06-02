@@ -30,6 +30,9 @@ typedef struct Entity {
 	void (*draw)(void *, double, double);
 	void (*collide)(void *);
 	CollisionType type;
+	int currHitBox;
+	int hasMoveHitBox;
+	int hasInteractHitBox;
 	HitBox *moveHitBox;//array
 	HitBox *interactHitBox;//array
 	int health;

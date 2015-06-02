@@ -48,21 +48,22 @@ static void doWallCollisions(){
 
     //check the player first
     CollRect temp;
-    for (j = 0; j < _player.e.moveHitBox->numRect; j++){
+    int hitFrame = _player.e.currHitBox;
+    for (j = 0; j < _player.e.moveHitBox[hitFrame].numRect; j++){
         for (k = 0; k < walls.numRect; k++){
-            temp.x = _player.e.x + _player.e.changeX + _player.e.moveHitBox->rects[j].x;
-            temp.y = _player.e.y + _player.e.moveHitBox->rects[j].y;
-            temp.w = _player.e.moveHitBox->rects[j].w;
-            temp.h = _player.e.moveHitBox->rects[j].h;
+            temp.x = _player.e.x + _player.e.changeX + _player.e.moveHitBox[hitFrame].rects[j].x;
+            temp.y = _player.e.y + _player.e.moveHitBox[hitFrame].rects[j].y;
+            temp.w = _player.e.moveHitBox[hitFrame].rects[j].w;
+            temp.h = _player.e.moveHitBox[hitFrame].rects[j].h;
             collCode = rectangleCollide(walls.rects[k], temp);
             if (collCode){
                 collideWithWallX(walls.rects[k], &_player.e, temp, collCode);
             }
             
-            temp.x = _player.e.x + _player.e.moveHitBox->rects[j].x;
-            temp.y = _player.e.y + _player.e.changeY + _player.e.moveHitBox->rects[j].y;
-            temp.w = _player.e.moveHitBox->rects[j].w;
-            temp.h = _player.e.moveHitBox->rects[j].h;
+            temp.x = _player.e.x + _player.e.moveHitBox[hitFrame].rects[j].x;
+            temp.y = _player.e.y + _player.e.changeY + _player.e.moveHitBox[hitFrame].rects[j].y;
+            temp.w = _player.e.moveHitBox[hitFrame].rects[j].w;
+            temp.h = _player.e.moveHitBox[hitFrame].rects[j].h;
             collCode = rectangleCollide(walls.rects[k], temp);
             if (collCode){
                 collideWithWallY(walls.rects[k], &_player.e, temp, collCode);
@@ -73,24 +74,25 @@ static void doWallCollisions(){
     //now check all entitites
     Entity **entityList = getRoomEntityList();
     for (i = 0; i < getNumRoomEntities(); i++){
-        if (!entityList[i]->active){
+        if (!entityList[i]->active || !entityList[i]->hasMoveHitBox){
             continue;
         }
-        for (j = 0; j < entityList[i]->moveHitBox->numRect; j++){
+        hitFrame = entityList[i]->currHitBox;
+        for (j = 0; j < entityList[i]->moveHitBox[hitFrame].numRect; j++){
             for (k = 0; k < walls.numRect; k++){
-                temp.x = entityList[i]->x + entityList[i]->changeX + entityList[i]->moveHitBox->rects[j].x;
-                temp.y = entityList[i]->y + entityList[i]->moveHitBox->rects[j].y;
-                temp.w = entityList[i]->moveHitBox->rects[j].w;
-                temp.h = entityList[i]->moveHitBox->rects[j].h;
+                temp.x = entityList[i]->x + entityList[i]->changeX + entityList[i]->moveHitBox[hitFrame].rects[j].x;
+                temp.y = entityList[i]->y + entityList[i]->moveHitBox[hitFrame].rects[j].y;
+                temp.w = entityList[i]->moveHitBox[hitFrame].rects[j].w;
+                temp.h = entityList[i]->moveHitBox[hitFrame].rects[j].h;
                 collCode = rectangleCollide(walls.rects[k], temp);
                 if (collCode){
                     collideWithWallX(walls.rects[k], entityList[i], temp, collCode);
                 }
                 
-                temp.x = entityList[i]->x + entityList[i]->moveHitBox->rects[j].x;
-                temp.y = entityList[i]->y + entityList[i]->changeY + entityList[i]->moveHitBox->rects[j].y;
-                temp.w = entityList[i]->moveHitBox->rects[j].w;
-                temp.h = entityList[i]->moveHitBox->rects[j].h;
+                temp.x = entityList[i]->x + entityList[i]->moveHitBox[hitFrame].rects[j].x;
+                temp.y = entityList[i]->y + entityList[i]->changeY + entityList[i]->moveHitBox[hitFrame].rects[j].y;
+                temp.w = entityList[i]->moveHitBox[hitFrame].rects[j].w;
+                temp.h = entityList[i]->moveHitBox[hitFrame].rects[j].h;
                 collCode = rectangleCollide(walls.rects[k], temp);
                 if (collCode){
                     collideWithWallY(walls.rects[k], entityList[i], temp, collCode);

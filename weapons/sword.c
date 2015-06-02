@@ -42,7 +42,7 @@ Weapon *createSword(){
 
 static void doSword(void *w, int delta){
     Weapon *self = (Weapon*)w;
-    
+
     self->e.milliPassed += delta;
     self->e.orientation = self->owner->orientation;
     self->e.x = self->owner->x;
@@ -54,7 +54,7 @@ static void doSword(void *w, int delta){
         self->e.milliPassed -= delta;
     }
     
-    //x and y adjustments would have to be handled specifically for the sprite?
+    //x and y adjustments would have to be handled specifically for the sprite?  Do they need to be set by the owner?
     if (self->e.orientation == UP){
         self->e.currFrame = frameNum + 9;
         self->e.y -= self->owner->h;
@@ -73,6 +73,5 @@ static void doSword(void *w, int delta){
 
 static void drawSword(void *w, double shiftX, double shiftY){
     Weapon *self = (Weapon *)w;
-
     drawAnimatedSprite(self->e.sprite, self->e.currFrame, self->e.x + 0.5 + shiftX, self->e.y + 0.5 + shiftY);
 }
