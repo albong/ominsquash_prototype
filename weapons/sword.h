@@ -5,6 +5,7 @@
 
 static void loadSwordSprite();
 Weapon *createSword();
+static void createHitBoxes(Weapon *w);
 static void doSword(void *self, int delta);
 static void drawSword(void *self, double shiftX, double shiftY);
 //Entity *createOctorok(int spriteIndex);

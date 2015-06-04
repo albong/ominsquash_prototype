@@ -37,7 +37,102 @@ Weapon *createSword(){
 	
 	w->totalDelta = 0;
        
+    createHitBoxes(w);
+       
     return w;
+}
+
+static void createHitBoxes(Weapon *w){
+    w->e.currHitBox = 0;
+	w->e.hasInteractHitBox = 1;
+	w->e.interactHitBox = malloc(sizeof(HitBox) * 12);
+	
+	w->e.interactHitBox[0].numRect = 1;
+	w->e.interactHitBox[0].rects = malloc(sizeof(CollRect));
+	w->e.interactHitBox[0].rects[0].x = 1;
+	w->e.interactHitBox[0].rects[0].y = 10;
+	w->e.interactHitBox[0].rects[0].w = 15;
+	w->e.interactHitBox[0].rects[0].h = 4;
+	
+	w->e.interactHitBox[1].numRect = 1;
+	w->e.interactHitBox[1].rects = malloc(sizeof(CollRect));
+	w->e.interactHitBox[1].rects[0].x = 4;
+	w->e.interactHitBox[1].rects[0].y = 16;
+	w->e.interactHitBox[1].rects[0].w = 15;
+	w->e.interactHitBox[1].rects[0].h = 15;
+	
+	w->e.interactHitBox[2].numRect = 1;
+	w->e.interactHitBox[2].rects = malloc(sizeof(CollRect));
+	w->e.interactHitBox[2].rects[0].x = 25;
+	w->e.interactHitBox[2].rects[0].y = 17;
+	w->e.interactHitBox[2].rects[0].w = 4;
+	w->e.interactHitBox[2].rects[0].h = 15;
+	
+	
+	w->e.interactHitBox[3].numRect = 1;
+	w->e.interactHitBox[3].rects = malloc(sizeof(CollRect));
+	w->e.interactHitBox[3].rects[0].x = 21;
+	w->e.interactHitBox[3].rects[0].y = 1;
+	w->e.interactHitBox[3].rects[0].w = 4;
+	w->e.interactHitBox[3].rects[0].h = 15;
+	
+	w->e.interactHitBox[4].numRect = 1;
+	w->e.interactHitBox[4].rects = malloc(sizeof(CollRect));
+	w->e.interactHitBox[4].rects[0].x = 4;
+	w->e.interactHitBox[4].rects[0].y = 4;
+	w->e.interactHitBox[4].rects[0].w = 15;
+	w->e.interactHitBox[4].rects[0].h = 15;
+	
+	w->e.interactHitBox[5].numRect = 1;
+	w->e.interactHitBox[5].rects = malloc(sizeof(CollRect));
+	w->e.interactHitBox[5].rects[0].x = 1;
+	w->e.interactHitBox[5].rects[0].y = 26;
+	w->e.interactHitBox[5].rects[0].w = 15;
+	w->e.interactHitBox[5].rects[0].h = 4;
+	
+	
+    w->e.interactHitBox[6].numRect = 1;
+	w->e.interactHitBox[6].rects = malloc(sizeof(CollRect));
+	w->e.interactHitBox[6].rects[0].x = 6;
+	w->e.interactHitBox[6].rects[0].y = 1;
+	w->e.interactHitBox[6].rects[0].w = 4;
+	w->e.interactHitBox[6].rects[0].h = 15;
+	
+	w->e.interactHitBox[7].numRect = 1;
+	w->e.interactHitBox[7].rects = malloc(sizeof(CollRect));
+	w->e.interactHitBox[7].rects[0].x = 12;
+	w->e.interactHitBox[7].rects[0].y = 4;
+	w->e.interactHitBox[7].rects[0].w = 15;
+	w->e.interactHitBox[7].rects[0].h = 15;
+	
+	w->e.interactHitBox[8].numRect = 1;
+	w->e.interactHitBox[8].rects = malloc(sizeof(CollRect));
+	w->e.interactHitBox[8].rects[0].x = 15;
+	w->e.interactHitBox[8].rects[0].y = 26;
+	w->e.interactHitBox[8].rects[0].w = 15;
+	w->e.interactHitBox[8].rects[0].h = 4;
+	
+	
+	w->e.interactHitBox[9].numRect = 1;
+	w->e.interactHitBox[9].rects = malloc(sizeof(CollRect));
+	w->e.interactHitBox[9].rects[0].x = 15;
+	w->e.interactHitBox[9].rects[0].y = 22;
+	w->e.interactHitBox[9].rects[0].w = 15;
+	w->e.interactHitBox[9].rects[0].h = 4;
+	
+	w->e.interactHitBox[10].numRect = 1;
+	w->e.interactHitBox[10].rects = malloc(sizeof(CollRect));
+	w->e.interactHitBox[10].rects[0].x = 12;
+	w->e.interactHitBox[10].rects[0].y = 4;
+	w->e.interactHitBox[10].rects[0].w = 15;
+	w->e.interactHitBox[10].rects[0].h = 15;
+	
+	w->e.interactHitBox[11].numRect = 1;
+	w->e.interactHitBox[11].rects = malloc(sizeof(CollRect));
+	w->e.interactHitBox[11].rects[0].x = 1;
+	w->e.interactHitBox[11].rects[0].y = 2;
+	w->e.interactHitBox[11].rects[0].w = 4;
+	w->e.interactHitBox[11].rects[0].h = 15;
 }
 
 static void doSword(void *w, int delta){
