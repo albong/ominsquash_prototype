@@ -2,7 +2,7 @@
 #define ENTITY_H
 
 #include "graphics.h"
-#include "collisions.h"
+#include "hitbox.h"
 
 #define MAX_ENTITIES 50
 

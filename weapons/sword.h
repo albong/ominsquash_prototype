@@ -8,6 +8,8 @@ Weapon *createSword();
 static void createHitBoxes(Weapon *w);
 static void doSword(void *self, int delta);
 static void drawSword(void *self, double shiftX, double shiftY);
+static void collideWithSword(Weapon *self, void *o, int collCode, CollisionType t);
+
 //Entity *createOctorok(int spriteIndex);
 //static void doOctorok(Entity *self, int delta);
 //static void updatePosition(Entity *self, int delta);

@@ -1,7 +1,7 @@
 #ifndef ROOM_H
 #define ROOM_H
 
-#include "collisions.h"
+#include "hitbox.h"
 #include "stdint.h"
 #include "entity.h"
 #include "SDL/SDL.h"

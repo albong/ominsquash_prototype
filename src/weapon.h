@@ -12,6 +12,7 @@ typedef struct Weapon {
     Entity e;
     Entity *owner;
     int totalDelta;
+    void (*collide)(struct Weapon *, void *, int collCode, CollisionType);
 } Weapon;
 
 typedef struct WeaponList {

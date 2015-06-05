@@ -38,7 +38,8 @@ Weapon *createSword(){
 	w->totalDelta = 0;
        
     createHitBoxes(w);
-       
+    w->collide = &collideWithSword;
+    
     return w;
 }
 
@@ -164,9 +165,17 @@ static void doSword(void *w, int delta){
         self->e.currFrame = frameNum + 6;
         self->e.y -= self->owner->h;
     }
+    self->e.currHitBox = self->e.currFrame;
 }
 
 static void drawSword(void *w, double shiftX, double shiftY){
     Weapon *self = (Weapon *)w;
     drawAnimatedSprite(self->e.sprite, self->e.currFrame, self->e.x + 0.5 + shiftX, self->e.y + 0.5 + shiftY);
+}
+
+static void collideWithSword(Weapon *self, void *o, int collCode, CollisionType t){
+    if (t == ENEMY){
+//        Enemy *e = (Enemy *)o; //NO SUCH THING AS ENEMY TYPE YET
+        printf("Hit something\n");
+    }
 }

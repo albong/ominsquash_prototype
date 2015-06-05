@@ -1,13 +1,16 @@
 #include "collisions.h"
+#include "hitbox.h"
 #include "area.h"
 #include "entity.h"
 #include "player.h"
+#include "weapon.h"
 
 #define square(x) (x*x)
 
 void doCollisions(){
     doWallCollisions();
     doEnemyCollisions();
+    doWeaponCollisions();
     /*
     I think we need an order to check collisions in, so as to make sure things
     happen in the proper way (loosely relates to entity type).
@@ -140,6 +143,63 @@ static void doEnemyCollisions(){
     }
     
     //other entites?
+}
+
+static void doWeaponCollisions(){
+    /********************************************************
+    Could we optimize this into one loop, checking both things?
+    Player will (likely) only ever have 2 weapons, so that might make sense...
+    ********************************************************/
+    if (_player.equippedAInd != -1){
+        if (_player_weapons.weapons[_player.equippedAInd]->e.active && _player_weapons.weapons[_player.equippedAInd]->e.hasInteractHitBox){
+            enemiesCollideWithWeapon(_player_weapons.weapons[_player.equippedAInd]);
+        }
+    }
+    if (_player.equippedBInd != -1){
+       if (_player_weapons.weapons[_player.equippedBInd]->e.active && _player_weapons.weapons[_player.equippedBInd]->e.hasInteractHitBox){
+            enemiesCollideWithWeapon(_player_weapons.weapons[_player.equippedBInd]);
+        }
+    }
+    
+    //enemy weapons/projectiles will go here
+}
+
+static void enemiesCollideWithWeapon(Weapon *w){
+    int numEntities = getNumRoomEntities();
+    Entity **entityList = getRoomEntityList();
+    CollRect temp, weaponTemp;
+    int i, j, k, collCode;
+
+    /*
+    We need to check all the enemies against the player and against all other entities - even walls?
+    What if we want an enemy that absorbs other enemies, we need to check collisions between all enemies too, or do we
+    make a special type of enemy that can collide with others?
+    */
+    
+    //player first
+    for (i = 0; i < numEntities; i++){
+        if (!entityList[i]->active || !(entityList[i]->type == ENEMY || entityList[i]->type == ENEMY_COLL)){
+            continue;
+        }
+        for (j = 0; j < entityList[i]->interactHitBox->numRect; j++){
+            temp.x = entityList[i]->x + entityList[i]->changeX + entityList[i]->interactHitBox->rects[j].x;
+            temp.y = entityList[i]->y + entityList[i]->interactHitBox->rects[j].y;
+            temp.w = entityList[i]->interactHitBox->rects[j].w;
+            temp.h = entityList[i]->interactHitBox->rects[j].h;
+                
+            for (k = 0; k < _player.e.interactHitBox->numRect; k++){
+                weaponTemp.x = w->e.x + w->e.changeX + w->e.interactHitBox[w->e.currHitBox].rects[k].x;
+                weaponTemp.y = w->e.y + w->e.changeY + w->e.interactHitBox[w->e.currHitBox].rects[k].y;
+                weaponTemp.w = w->e.interactHitBox[w->e.currHitBox].rects[k].w;
+                weaponTemp.h = w->e.interactHitBox[w->e.currHitBox].rects[k].h;
+                
+                collCode = rectangleCollide(weaponTemp, temp);
+                if (collCode){
+                    w->collide(w, entityList[i], collCode, entityList[i]->type);
+                }
+            }
+        }
+    }
 }
 
 static int rectangleCollide(CollRect r1, CollRect r2){
