@@ -60,7 +60,7 @@ int main(int argc, char *argv[]){
         clearScreen();
         drawCurrentRoom();
         drawPlayer();
-        drawHitBoxes();
+        drawHitBoxes(1, 1);
         bufferToScreen();
         
         //sleep?  I don't recall
