@@ -122,6 +122,19 @@ Sprite *loadAnimatedSprite(char *name, int frameWidth){
     return result;
 }
 
+void drawUnfilledRect(int x, int y, int w, int h){
+    SDL_Rect temp;
+    Uint32 color = SDL_MapRGB(screen->format, 255, 0, 0);
+    temp = (SDL_Rect){ x, y, 1, h };
+    SDL_FillRect(screen, &temp, color);
+    temp = (SDL_Rect){ x+w-1, y, 1, h };
+    SDL_FillRect(screen, &temp, color);
+    temp = (SDL_Rect){ x, y, w, 1 };
+    SDL_FillRect(screen, &temp, color);
+    temp = (SDL_Rect){ x, y+h-1, w, 1 };
+    SDL_FillRect(screen, &temp, color);
+}
+
 void clearScreen(){
     SDL_FillRect(screen, NULL, 0);
 }

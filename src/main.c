@@ -6,6 +6,8 @@
 #include "area.h"
 #include "weapon.h"
 
+#include "../debug/hitbox_drawer.h"
+
 int main(int argc, char *argv[]){
 //    unsigned int frameLimit = SDL_GetTicks() + 16;
     unsigned currMilliseconds = 0;
@@ -58,6 +60,7 @@ int main(int argc, char *argv[]){
         clearScreen();
         drawCurrentRoom();
         drawPlayer();
+        drawHitBoxes();
         bufferToScreen();
         
         //sleep?  I don't recall

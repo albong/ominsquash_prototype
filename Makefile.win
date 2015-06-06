@@ -4,8 +4,8 @@
 CPP      = g++.exe -D__DEBUG__
 CC       = gcc.exe -D__DEBUG__
 WINDRES  = windres.exe
-OBJ      = src/main.o src/input.o src/entity.o src/graphics.o src/player.o src/collisions.o src/area.o src/room.o entity/octorok.o src/weapon.o weapons/sword.o
-LINKOBJ  = src/main.o src/input.o src/entity.o src/graphics.o src/player.o src/collisions.o src/area.o src/room.o entity/octorok.o src/weapon.o weapons/sword.o
+OBJ      = src/main.o src/input.o src/entity.o src/graphics.o src/player.o src/collisions.o src/area.o src/room.o entity/octorok.o src/weapon.o weapons/sword.o debug/hitbox_drawer.o
+LINKOBJ  = src/main.o src/input.o src/entity.o src/graphics.o src/player.o src/collisions.o src/area.o src/room.o entity/octorok.o src/weapon.o weapons/sword.o debug/hitbox_drawer.o
 LIBS     = -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib32" -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib32" -L"D:/SDL-1.2.15/lib" -static-libgcc -lmingw32 -lSDLmain -lSDL -lSDL_image -lSDL_mixer -lSDL_ttf -m32 -g3
 INCS     = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.8.1/include" -I"D:/SDL-1.2.15/include"
 CXXINCS  = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.8.1/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++"
@@ -56,3 +56,6 @@ src/weapon.o: src/weapon.c
 
 weapons/sword.o: weapons/sword.c
 	$(CC) -c weapons/sword.c -o weapons/sword.o $(CFLAGS)
+
+debug/hitbox_drawer.o: debug/hitbox_drawer.c
+	$(CC) -c debug/hitbox_drawer.c -o debug/hitbox_drawer.o $(CFLAGS)
