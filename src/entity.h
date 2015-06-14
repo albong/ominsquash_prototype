@@ -6,6 +6,7 @@
 
 #define MAX_ENTITIES 50
 
+// Enums
 typedef enum {
     UP, DOWN, LEFT, RIGHT
 } Orientation;
@@ -14,6 +15,7 @@ typedef enum {
     NONE, PLAYER, ENEMY, ENEMY_COLL, WALL, WEAPON, OBJECT
 } CollisionType; //ENEMY_COLL collides with other enemies
 
+// Structs
 typedef struct Entity {
     int active;
     double pixelsPerMilli;
@@ -38,6 +40,7 @@ typedef struct Entity {
 	int health;
 } Entity;
 
+// Logic
 void moveEntity(Entity *e);
 void collideWithWallX(CollRect wall, Entity *e, CollRect r, int collCode);
 void collideWithWallY(CollRect wall, Entity *e, CollRect r, int collCode);

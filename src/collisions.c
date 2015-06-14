@@ -7,6 +7,9 @@
 
 #define square(x) (x*x)
 
+/////////////////////////////////////////////////
+// Logic
+/////////////////////////////////////////////////
 void doCollisions(){
     doWallCollisions();
     doEnemyCollisions();
@@ -202,6 +205,10 @@ static void enemiesCollideWithWeapon(Weapon *w){
     }
 }
 
+
+/////////////////////////////////////////////////
+// Collisions
+/////////////////////////////////////////////////
 static int rectangleCollide(CollRect r1, CollRect r2){
     //1 = left, 2, = right, 3 = up, 4 = down - these are for which side of r1 is hit by r2
     int result = 0;

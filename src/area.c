@@ -25,6 +25,9 @@ typedef struct Transition{
 
 Transition room_transition;
 
+/////////////////////////////////////////////////
+// Loading
+/////////////////////////////////////////////////
 void loadArea(){
     //load the tilesheet
     _current_area.tilesetName = "gfx/area1tiles.png";
@@ -89,28 +92,10 @@ static void drawRoomBuffers(Room *room){
     }
 }
 
-void drawCurrentRoom(){
-    if (!changingRooms){
-        drawImage(_current_area.currentRoom->buffer, 0, 0);
-        drawRoomEntities(_current_area.currentRoom, 0, 0);
-    } else {
-        drawImage(_current_area.currentRoom->buffer, room_transition.oldX, room_transition.oldY);
-        drawImage(room_transition.newRoom->buffer, room_transition.newX, room_transition.newY);
-        drawRoomEntities(_current_area.currentRoom, room_transition.oldX, room_transition.oldY);
-        drawRoomEntities(room_transition.newRoom, room_transition.newX, room_transition.newY);
-    }
-}
 
-static void drawRoomEntities(Room *room, double shiftX, double shiftY){
-    int i;
-    for (i = 0; i < room->numEntities; i++){
-        if (room->entities[i]->active){
-//            drawAnimatedSprite(room->entities[i]->sprite, 0, room->entities[i]->x + shiftX, room->entities[i]->y + shiftY);
-            room->entities[i]->draw(room->entities[i], shiftX, shiftY);
-        }
-    }
-}
-
+/////////////////////////////////////////////////
+// Logic
+/////////////////////////////////////////////////
 void doRoom(int delta){
     totalDelta += delta;
     int newRoom;
@@ -129,59 +114,6 @@ void doRoom(int delta){
         }
     } else {
         changeRoom(_current_area.currentRoom->connectingRooms[changingToRoom], changingToRoom, delta);
-    }
-}
-
-int getNumRoomEntities(){
-    return _current_area.currentRoom->numEntities;
-}
-
-Entity **getRoomEntityList(){
-    return _current_area.currentRoom->entities;
-}
-
-static void doRoomEntities(int delta){
-    int i;
-    Entity *self;
-    
-    //loop through all entities and perform their action
-    for (i = 0; i < _current_area.currentRoom->numEntities; i++){
-        self = _current_area.currentRoom->entities[i];
-        if (self->active == 1 && self->action){
-            self->action(self, delta);
-        }
-    }
-}
-
-void moveRoomEntites(){
-    int i;
-    for (i = 0; i < _current_area.currentRoom->numEntities; i++){
-        moveEntity(_current_area.currentRoom->entities[i]);
-    }
-}
-
-static int checkForRoomChange(){
-    /*
-            THIS NEEDS TO BE MADE MORE GENERAL
-    */
-    double left = _player.e.x + _player.e.moveHitBox[0].rects[0].x;
-    double right = _player.e.x + _player.e.moveHitBox[0].rects[0].x + _player.e.moveHitBox[0].rects[0].w;
-    double up = _player.e.y + _player.e.moveHitBox[0].rects[0].y;
-    double down = _player.e.y + _player.e.moveHitBox[0].rects[0].y + _player.e.moveHitBox[0].rects[0].h;
-    
-    int roomRight = _current_area.tilesheet.tileWidth * ROOM_WIDTH;
-    int roomDown = _current_area.tilesheet.tileHeight * ROOM_HEIGHT;
-
-    if (left < 0){
-        return ROOM_LEFT;
-    } else if (right >roomRight){
-        return ROOM_RIGHT;
-    } else if (up < 0){
-        return ROOM_UP;
-    } else if (down > roomDown){
-        return ROOM_DOWN;
-    } else {
-        return -1;
     }
 }
 
@@ -224,10 +156,97 @@ void changeRoom(int roomIndex, int direction, int delta){
     }
 }
 
+void moveRoomEntites(){
+    int i;
+    for (i = 0; i < _current_area.currentRoom->numEntities; i++){
+        moveEntity(_current_area.currentRoom->entities[i]);
+    }
+}
+
+static int checkForRoomChange(){
+    /*
+            THIS NEEDS TO BE MADE MORE GENERAL
+    */
+    double left = _player.e.x + _player.e.moveHitBox[0].rects[0].x;
+    double right = _player.e.x + _player.e.moveHitBox[0].rects[0].x + _player.e.moveHitBox[0].rects[0].w;
+    double up = _player.e.y + _player.e.moveHitBox[0].rects[0].y;
+    double down = _player.e.y + _player.e.moveHitBox[0].rects[0].y + _player.e.moveHitBox[0].rects[0].h;
+    
+    int roomRight = _current_area.tilesheet.tileWidth * ROOM_WIDTH;
+    int roomDown = _current_area.tilesheet.tileHeight * ROOM_HEIGHT;
+
+    if (left < 0){
+        return ROOM_LEFT;
+    } else if (right >roomRight){
+        return ROOM_RIGHT;
+    } else if (up < 0){
+        return ROOM_UP;
+    } else if (down > roomDown){
+        return ROOM_DOWN;
+    } else {
+        return -1;
+    }
+}
+
+static void doRoomEntities(int delta){
+    int i;
+    Entity *self;
+    
+    //loop through all entities and perform their action
+    for (i = 0; i < _current_area.currentRoom->numEntities; i++){
+        self = _current_area.currentRoom->entities[i];
+        if (self->active == 1 && self->action){
+            self->action(self, delta);
+        }
+    }
+}
+
+
+/////////////////////////////////////////////////
+// Drawing
+/////////////////////////////////////////////////
+void drawCurrentRoom(){
+    if (!changingRooms){
+        drawImage(_current_area.currentRoom->buffer, 0, 0);
+        drawRoomEntities(_current_area.currentRoom, 0, 0);
+    } else {
+        drawImage(_current_area.currentRoom->buffer, room_transition.oldX, room_transition.oldY);
+        drawImage(room_transition.newRoom->buffer, room_transition.newX, room_transition.newY);
+        drawRoomEntities(_current_area.currentRoom, room_transition.oldX, room_transition.oldY);
+        drawRoomEntities(room_transition.newRoom, room_transition.newX, room_transition.newY);
+    }
+}
+
+static void drawRoomEntities(Room *room, double shiftX, double shiftY){
+    int i;
+    for (i = 0; i < room->numEntities; i++){
+        if (room->entities[i]->active){
+//            drawAnimatedSprite(room->entities[i]->sprite, 0, room->entities[i]->x + shiftX, room->entities[i]->y + shiftY);
+            room->entities[i]->draw(room->entities[i], shiftX, shiftY);
+        }
+    }
+}
+
+
+/////////////////////////////////////////////////
+// Access Functions
+/////////////////////////////////////////////////
 HitBox getCurrentWalls(){
     return _current_area.currentRoom->walls;
 }
 
+int getNumRoomEntities(){
+    return _current_area.currentRoom->numEntities;
+}
+
+Entity **getRoomEntityList(){
+    return _current_area.currentRoom->entities;
+}
+
+
+/////////////////////////////////////////////////
+// Demo
+/////////////////////////////////////////////////
 static Room *createFirstDemoRoom(){
     Room *firstRoom = malloc(sizeof(Room));
     firstRoom->tileIndices = (int *) malloc(sizeof(int) * ROOM_HEIGHT * ROOM_WIDTH);

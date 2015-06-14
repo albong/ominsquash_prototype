@@ -3,6 +3,9 @@
 #include "SDL/SDL.h"
 #include "SDL/SDL_image.h"
 
+/////////////////////////////////////////////////
+// SDL
+/////////////////////////////////////////////////
 void initSDL(){
     //Initialise SDL
 	if (SDL_Init(SDL_INIT_VIDEO|SDL_INIT_AUDIO) < 0){
@@ -37,6 +40,10 @@ void stopSDL(){
     SDL_Quit();
 }
 
+
+/////////////////////////////////////////////////
+// Loading
+/////////////////////////////////////////////////
 SDL_Surface *loadImage(char *name){
     SDL_Surface* loadedImage = NULL;
     SDL_Surface* optimizedImage = NULL;
@@ -65,6 +72,14 @@ SDL_Surface *loadImage(char *name){
     return optimizedImage;
 }
 
+Sprite *loadAnimatedSprite(char *name, int frameWidth){
+    int i;
+    Sprite *result = (Sprite *) malloc(sizeof(Sprite));
+    result->image = loadImage(name);
+    result->width = frameWidth;
+    return result;
+}
+
 SDL_Surface *getEmptySurface(int width, int height){
     SDL_PixelFormat *fmt = screen->format;
     return SDL_CreateRGBSurface(SDL_HWSURFACE,
@@ -77,6 +92,10 @@ SDL_Surface *getEmptySurface(int width, int height){
         fmt->Amask);
 }
 
+
+/////////////////////////////////////////////////
+// Drawing
+/////////////////////////////////////////////////
 void drawImage(SDL_Surface *image, int x, int y){
     SDL_Rect dest;
     
@@ -114,14 +133,6 @@ void drawAnimatedSprite(Sprite *s, int frame, int x, int y){
     SDL_BlitSurface(s->image, &src, screen, &dest);
 }
 
-Sprite *loadAnimatedSprite(char *name, int frameWidth){
-    int i;
-    Sprite *result = (Sprite *) malloc(sizeof(Sprite));
-    result->image = loadImage(name);
-    result->width = frameWidth;
-    return result;
-}
-
 void drawUnfilledRect(int x, int y, int w, int h, int r, int g, int b){
     SDL_Rect temp;
     Uint32 color = SDL_MapRGB(screen->format, r, g, b);
@@ -135,6 +146,10 @@ void drawUnfilledRect(int x, int y, int w, int h, int r, int g, int b){
     SDL_FillRect(screen, &temp, color);
 }
 
+
+/////////////////////////////////////////////////
+// Screen Management
+/////////////////////////////////////////////////
 void clearScreen(){
     SDL_FillRect(screen, NULL, 0);
 }

@@ -3,25 +3,31 @@
 
 #include "entity.h"
 
+// Structs
 typedef struct Player {
     Entity e;
     int equippedAInd;
     int equippedBInd;
 } Player;
 
+//Globals
 Player _player;
 
+// Loading
 void initPlayer();
+
+// Logic
 void doPlayer(int delta);
-void drawPlayer();
 void setPlayerTransitioning(int direction);
 void stopPlayerTransitioning();
 void movePlayer();
 void playerCollideWithEnemy(Entity *enemy, int collCode);
-
 static void updatePlayerFrame(int delta);
 static void updatePlayerOrientation();
 static void updatePlayerPosition(int delta);
+
+// Drawing
+void drawPlayer();
 
 #endif
 

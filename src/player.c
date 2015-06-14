@@ -11,6 +11,9 @@ static int roomTransition = 0;
 static int transitionDirection = -1;
 static unsigned totalDelta = 0;
 
+/////////////////////////////////////////////////
+// Loading
+/////////////////////////////////////////////////
 void initPlayer(){
     _player.e.sprite = loadAnimatedSprite("gfx/linksprite.png", 15);
     _player.e.orientation = DOWN;    
@@ -64,6 +67,10 @@ void initPlayer(){
     _player.equippedBInd = -1; //may want to have a none be at index 0
 }
 
+
+/////////////////////////////////////////////////
+// Logic
+/////////////////////////////////////////////////
 void doPlayer(int delta){
     totalDelta += delta;
     if (_player.e.active == 1){
@@ -117,6 +124,48 @@ void doPlayer(int delta){
                 break;
         }
     }
+}
+
+void setPlayerTransitioning(int direction){
+    roomTransition = 1;
+    transitionDirection = direction;
+    _player.e.active = 0;
+    totalDelta = 0;
+}
+
+void stopPlayerTransitioning(){
+    switch(transitionDirection){
+        case ROOM_LEFT:
+            _player.e.x = SCREEN_WIDTH - _player.e.w;
+            break;
+        case ROOM_RIGHT:
+            _player.e.x = 0;
+            break;
+        case ROOM_UP:
+            _player.e.y = SCREEN_HEIGHT - _player.e.h;
+            break;
+        case ROOM_DOWN:
+            _player.e.y = 0;
+            break;
+    }
+
+    roomTransition = 0;
+    transitionDirection = -1;
+    _player.e.active = 1;
+    totalDelta = 0;
+}
+
+void playerCollideWithEnemy(Entity *enemy, int collCode){
+    //check if in hitstun first
+    
+    printf("WE HIT\n");
+}
+
+void movePlayer(){
+    _player.e.x += _player.e.changeX;
+    _player.e.y += _player.e.changeY;
+    _player.e.changeX = 0;
+    _player.e.changeY = 0;
 }
 
 static void updatePlayerFrame(int delta){
@@ -173,42 +222,10 @@ static void updatePlayerPosition(int delta){
 	}
 }
 
-void movePlayer(){
-    _player.e.x += _player.e.changeX;
-    _player.e.y += _player.e.changeY;
-    _player.e.changeX = 0;
-    _player.e.changeY = 0;
-}
 
-void setPlayerTransitioning(int direction){
-    roomTransition = 1;
-    transitionDirection = direction;
-    _player.e.active = 0;
-    totalDelta = 0;
-}
-
-void stopPlayerTransitioning(){
-    switch(transitionDirection){
-        case ROOM_LEFT:
-            _player.e.x = SCREEN_WIDTH - _player.e.w;
-            break;
-        case ROOM_RIGHT:
-            _player.e.x = 0;
-            break;
-        case ROOM_UP:
-            _player.e.y = SCREEN_HEIGHT - _player.e.h;
-            break;
-        case ROOM_DOWN:
-            _player.e.y = 0;
-            break;
-    }
-
-    roomTransition = 0;
-    transitionDirection = -1;
-    _player.e.active = 1;
-    totalDelta = 0;
-}
-
+/////////////////////////////////////////////////
+// Drawing
+/////////////////////////////////////////////////
 void drawPlayer(){
     if (_player.e.isMoving || roomTransition){
         int frame = ((_player.e.milliPassed / _player.e.milliPerFrame) + 1) % _player.e.numFrames;
@@ -254,10 +271,4 @@ void drawPlayer(){
 	if (_player.equippedBInd >= 0 && _player_weapons.weapons[_player.equippedBInd]->e.active){
         _player_weapons.weapons[_player.equippedAInd]->e.draw(_player_weapons.weapons[_player.equippedBInd], 0, 0);
     }
-}
-
-void playerCollideWithEnemy(Entity *enemy, int collCode){
-    //check if in hitstun first
-    
-    printf("WE HIT\n");
 }

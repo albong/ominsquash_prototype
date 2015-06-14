@@ -12,8 +12,8 @@
 #define ROOMF_DL_ANGLED 3
 #define ROOMF_DR_ANGLED 4
 
+// Structs
 typedef struct Room {
-    
     uint32_t *flags;
     //Enemy enemies[];
     int *tileIndices;
@@ -28,6 +28,7 @@ typedef struct Room {
     double *entityY;
 } Room;
 
+// Access
 int getFlag(Room *room, int index, int flagNum);
 void setFlag(Room *room, int index, int flagNum);
 void clearFlag(Room *room, int index, int flagNum);

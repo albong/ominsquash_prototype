@@ -6,7 +6,7 @@
 #include "graphics.h"
 #include "room.h"
 
-//structs
+// Structs
 typedef struct Tilesheet {
     SDL_Surface *sheet;
     int tileWidth, tileHeight;
@@ -24,24 +24,31 @@ typedef struct Area {
     int numEntitySprites;
 } Area;
 
-//globals
+// Globals
 Area _current_area;
 
-//functions
-void doRoom(int delta);
+// Loading
 void loadArea();
-void drawCurrentRoom();
-static int checkForRoomChange();
-void changeRoom(int roomIndex, int direction, int delta);
-static void drawRoomBuffers(Room *room);
-HitBox getCurrentWalls();
 static void loadEntitySprites();
-static void drawRoomEntities(Room *room, double shiftX, double shiftY);
-static void doRoomEntities();
+static void drawRoomBuffers(Room *room);
+
+// Logic
+void doRoom(int delta);
+void changeRoom(int roomIndex, int direction, int delta);
 void moveRoomEntities();
+static int checkForRoomChange();
+static void doRoomEntities();
+
+// Drawing
+void drawCurrentRoom();
+static void drawRoomEntities(Room *room, double shiftX, double shiftY);
+
+// Access
+HitBox getCurrentWalls();
 int getNumRoomEntities();
 Entity **getRoomEntityList();
 
+// Demo
 static Room *createFirstDemoRoom();
 static Room *createSecondDemoRoom();
 static Room *createThirdDemoRoom();

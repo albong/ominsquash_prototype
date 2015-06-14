@@ -8,6 +8,7 @@
 
 //do we need two sets of weapons - one for the player (owner is player) and one for enemies (owner is enemy)?
 
+// Structs
 typedef struct Weapon {
     Entity e;
     Entity *owner;
@@ -20,10 +21,14 @@ typedef struct WeaponList {
     Weapon **weapons; //array
 } WeaponList;
 
+// Globals
 WeaponList _player_weapons;
 WeaponList _enemy_weapons;
 
+// Loading
 void initWeaponLists();
+
+// Access
 void addPlayerWeapon(Weapon *w);
 
 #endif
