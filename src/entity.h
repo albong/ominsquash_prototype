@@ -20,6 +20,7 @@ typedef struct Entity {
     int active;
     double pixelsPerMilli;
     double x, y;
+    double startX, startY;
     double changeX, changeY;
 	int w, h;
 	int isMoving;
@@ -29,15 +30,14 @@ typedef struct Entity {
 	Sprite *sprite;
 	Orientation orientation;
 	void (*action)(void *, int);
-	void (*draw)(void *, double, double);
-	void (*collide)(void *);
+	void (*draw)(struct Entity *, double, double);
+//	void (*collide)(void *);
 	CollisionType type;
 	int currHitBox;
 	int hasMoveHitBox;
 	int hasInteractHitBox;
 	HitBox *moveHitBox;//array
 	HitBox *interactHitBox;//array
-	int health;
 } Entity;
 
 // Logic

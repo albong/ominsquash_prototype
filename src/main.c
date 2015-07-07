@@ -36,7 +36,6 @@ int main(int argc, char *argv[]){
     //set the font
     
     initPlayer();
-    
     while (go){
         //calculate the time delta
         prevMilliseconds = currMilliseconds;
@@ -60,10 +59,10 @@ int main(int argc, char *argv[]){
         clearScreen();
         drawCurrentRoom();
         drawPlayer();
-        drawHitBoxes(1, 1);
+        drawHitBoxes(DRAW_MOVE_HITBOX, DRAW_INTERACT_HITBOX);
         bufferToScreen();
         
-        //sleep?  I don't recall
+        //sleep?  I don't recall why
         SDL_Delay(16);
     }
     

@@ -264,10 +264,12 @@ static Room *createFirstDemoRoom(){
     drawRoomBuffers(firstRoom);
     generateWallList(firstRoom, _current_area.tilesheet.tileWidth);
     
-    firstRoom->numEntities = 1;
-    firstRoom->entities = malloc(sizeof(Entity) * firstRoom->numEntities);
-    firstRoom->entities[0] = createOctorok(_current_area.sprites[0]);
+    firstRoom->numEntities = 0;
+    firstRoom->numEnemies = 0;
+    firstRoom->enemies = malloc(sizeof(Enemy) * firstRoom->numEntities);
+    firstRoom->enemies[0] = createOctorok(_current_area.sprites[0]);
     setEntityInitalPositions(firstRoom);
+    setEnemyInitalPositions(firstRoom);
     
     return firstRoom;
 }

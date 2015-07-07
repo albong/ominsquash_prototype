@@ -1,4 +1,5 @@
 #include "sword.h"
+#include "../src/enemy.h"
 #include "../src/graphics.h"
 
 static Sprite *swordSprite;
@@ -168,14 +169,14 @@ static void doSword(void *w, int delta){
     self->e.currHitBox = self->e.currFrame;
 }
 
-static void drawSword(void *w, double shiftX, double shiftY){
-    Weapon *self = (Weapon *)w;
-    drawAnimatedSprite(self->e.sprite, self->e.currFrame, self->e.x + 0.5 + shiftX, self->e.y + 0.5 + shiftY);
+static void drawSword(Entity *self, double shiftX, double shiftY){
+    drawAnimatedSprite(self->sprite, self->currFrame, self->x + 0.5 + shiftX, self->y + 0.5 + shiftY);
 }
 
 static void collideWithSword(Weapon *self, void *o, int collCode, CollisionType t){
     if (t == ENEMY){
-//        Enemy *e = (Enemy *)o; //NO SUCH THING AS ENEMY TYPE YET
         printf("Hit something\n");
+        Enemy *enemy = (Enemy *)o;
+        enemy->health -= 1;
     }
 }

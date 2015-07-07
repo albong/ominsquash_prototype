@@ -46,11 +46,17 @@ void generateWallList(Room *room, int tileSize){
 
 void setEntityInitalPositions(Room *room){
     int i;
-    room->entityX = malloc(sizeof(double) * room->numEntities);
-    room->entityY = malloc(sizeof(double) * room->numEntities);
     for (i = 0; i < room->numEntities; i++){
-        room->entityX[i] = room->entities[i]->x;
-        room->entityY[i] = room->entities[i]->y;
+        room->entities[i]->startX = room->entities[i]->x;
+        room->entities[i]->startY = room->entities[i]->y;
+    }
+}
+
+void setEnemyInitalPositions(Room *room){
+    int i;
+    for (i = 0; i < room->numEnemies; i++){
+        room->enemies[i]->e.startX = room->enemies[i]->e.x;
+        room->enemies[i]->e.startY = room->enemies[i]->e.y;
     }
 }
 
@@ -58,7 +64,16 @@ void resetEntityPositions(Room *room){
     int i;
     for (i = 0; i < room->numEntities; i++){
         //no need to check if active?  probably won't matter
-        room->entities[i]->x = room->entityX[i];
-        room->entities[i]->y = room->entityY[i];
+        room->entities[i]->x = room->entities[i]->startX;
+        room->entities[i]->y = room->entities[i]->startY;
+    }
+}
+
+void resetEnemyPositions(Room *room){
+    int i;
+    for (i = 0; i < room->numEnemies; i++){
+        //no need to check if active?  probably won't matter
+        room->enemies[i]->e.x = room->enemies[i]->e.startX;
+        room->enemies[i]->e.y = room->enemies[i]->e.startY;
     }
 }

@@ -8,6 +8,7 @@ typedef struct Player {
     Entity e;
     int equippedAInd;
     int equippedBInd;
+    int health;
 } Player;
 
 //Globals

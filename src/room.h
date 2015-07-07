@@ -4,6 +4,7 @@
 #include "hitbox.h"
 #include "stdint.h"
 #include "entity.h"
+#include "enemy.h"
 #include "SDL/SDL.h"
 
 #define ROOMF_IMPASSABLE 0
@@ -24,8 +25,8 @@ typedef struct Room {
     HitBox walls;
     Entity **entities;
     int numEntities;
-    double *entityX;
-    double *entityY;
+    Enemy **enemies;
+    int numEnemies;
 } Room;
 
 // Access
@@ -35,7 +36,9 @@ void clearFlag(Room *room, int index, int flagNum);
 void toggleFlag(Room *room, int index, int flagNum);
 void generateWallList(Room *room, int tileSize);
 void setEntityInitalPositions(Room *room);
+void setEnemyInitalPositions(Room *room);
 void resetEntityPositions(Room *room);
+void resetEnemyPositions(Room *room);
 
 /*
 we need some sort of way to associate a tileset with a room - might make sense to

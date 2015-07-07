@@ -57,7 +57,7 @@ void initPlayer(){
     _player.e.interactHitBox[0].rects[0].w = 14;
     _player.e.interactHitBox[0].rects[0].h = 16;
         
-    _player.e.health = 12;
+    _player.health = 12;
     
     //weapon
     Weapon *sword = createSword();
@@ -266,9 +266,9 @@ void drawPlayer(){
     
     //draw my weapons
     if (_player.equippedAInd >= 0 && _player_weapons.weapons[_player.equippedAInd]->e.active){
-    	_player_weapons.weapons[_player.equippedAInd]->e.draw(_player_weapons.weapons[_player.equippedAInd], 0, 0);
+    	_player_weapons.weapons[_player.equippedAInd]->e.draw(&_player_weapons.weapons[_player.equippedAInd]->e, 0, 0);
     }
 	if (_player.equippedBInd >= 0 && _player_weapons.weapons[_player.equippedBInd]->e.active){
-        _player_weapons.weapons[_player.equippedAInd]->e.draw(_player_weapons.weapons[_player.equippedBInd], 0, 0);
+        _player_weapons.weapons[_player.equippedAInd]->e.draw(&_player_weapons.weapons[_player.equippedBInd]->e, 0, 0);
     }
 }

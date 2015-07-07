@@ -4,59 +4,58 @@
 
 static int totalDelta = 0;
 
-Entity *createOctorok(Sprite *sprite){
-    Entity *e = malloc(sizeof(Entity));
+Enemy *createOctorok(Sprite *sprite){
+    Enemy *enemy = malloc(sizeof(Enemy));
     
-    e->active = 1;
+    enemy->e.active = 1;
     
-    e->action = &doOctorok;
-    e->sprite = sprite;
+    enemy->action = &doOctorok;
+    enemy->e.sprite = sprite;
     
-    e->pixelsPerMilli = 50;
+    enemy->e.pixelsPerMilli = 50;
 //    double changeX, changeY;
-    e->x = 0;
-    e->y = 0;
-    e->changeX = 0;
-    e->changeY = 0;
+    enemy->e.x = 0;
+    enemy->e.y = 0;
+    enemy->e.changeX = 0;
+    enemy->e.changeY = 0;
 //	int w, h;
-    e->isMoving = 1;
-    e->milliPassed = 0;
-    e->milliPerFrame = 200;
-    e->numFrames = 2;
-	e->orientation = DOWN;
-    e->draw = &drawEntity;
+    enemy->e.isMoving = 1;
+    enemy->e.milliPassed = 0;
+    enemy->e.milliPerFrame = 200;
+    enemy->e.numFrames = 2;
+	enemy->e.orientation = DOWN;
+    enemy->e.draw = &drawEntity;
 //	void (*collide)(struct Entity*);
-	e->type = ENEMY;
+	enemy->e.type = ENEMY;
 
-    e->currHitBox = 0;
+    enemy->e.currHitBox = 0;
     
-    e->hasMoveHitBox = 1;
-    e->moveHitBox = malloc(sizeof(HitBox) * 1);
-    e->moveHitBox[0].numCircle = 0;
-    e->moveHitBox[0].numRect = 1;
-    e->moveHitBox[0].rects = malloc(sizeof(CollRect) * 1);
-    e->moveHitBox[0].rects[0].x = 1;
-    e->moveHitBox[0].rects[0].y = 5;
-    e->moveHitBox[0].rects[0].w = 16;
-    e->moveHitBox[0].rects[0].h = 8;
+    enemy->e.hasMoveHitBox = 1;
+    enemy->e.moveHitBox = malloc(sizeof(HitBox) * 1);
+    enemy->e.moveHitBox[0].numCircle = 0;
+    enemy->e.moveHitBox[0].numRect = 1;
+    enemy->e.moveHitBox[0].rects = malloc(sizeof(CollRect) * 1);
+    enemy->e.moveHitBox[0].rects[0].x = 1;
+    enemy->e.moveHitBox[0].rects[0].y = 5;
+    enemy->e.moveHitBox[0].rects[0].w = 16;
+    enemy->e.moveHitBox[0].rects[0].h = 8;
 
-    e->hasInteractHitBox = 1;
-    e->interactHitBox = malloc(sizeof(HitBox) * 1);
-    e->interactHitBox[0].numCircle = 0;
-    e->interactHitBox[0].numRect = 1;
-    e->interactHitBox[0].rects = malloc(sizeof(CollRect) * 1);
-    e->interactHitBox[0].rects[0].x = 1;
-    e->interactHitBox[0].rects[0].y = 2;
-    e->interactHitBox[0].rects[0].w = 16;
-    e->interactHitBox[0].rects[0].h = 11;
+    enemy->e.hasInteractHitBox = 1;
+    enemy->e.interactHitBox = malloc(sizeof(HitBox) * 1);
+    enemy->e.interactHitBox[0].numCircle = 0;
+    enemy->e.interactHitBox[0].numRect = 1;
+    enemy->e.interactHitBox[0].rects = malloc(sizeof(CollRect) * 1);
+    enemy->e.interactHitBox[0].rects[0].x = 1;
+    enemy->e.interactHitBox[0].rects[0].y = 2;
+    enemy->e.interactHitBox[0].rects[0].w = 16;
+    enemy->e.interactHitBox[0].rects[0].h = 11;
     
-    e->health = 8;
+    enemy->health = 8;
     
-    return e;
+    return enemy;
 }
 
-static void doOctorok(void *e, int delta){
-    Entity *self = (Entity *)e;
+static void doOctorok(Enemy *self, int delta){
     totalDelta += delta;
     
     if (totalDelta >= 1500){
@@ -80,30 +79,29 @@ static void doOctorok(void *e, int delta){
     updatePosition(self, delta);
 }
 
-static void updatePosition(Entity *e, int delta){
-    e->changeX = 0;
-    e->changeY = 0;
-    if (e->orientation == UP){
-		e->changeY = e->pixelsPerMilli * delta/1000.0 * -1;
-	} else if (e->orientation == DOWN){
-		e->changeY = e->pixelsPerMilli * delta/1000.0;
-	} else if (e->orientation == LEFT){
-		e->changeX = e->pixelsPerMilli * delta/1000.0 * -1;
-	} else if (e->orientation == RIGHT){
-		e->changeX = e->pixelsPerMilli * delta/1000.0;
+static void updatePosition(Enemy *self, int delta){
+    self->e.changeX = 0;
+    self->e.changeY = 0;
+    if (self->e.orientation == UP){
+		self->e.changeY = self->e.pixelsPerMilli * delta/1000.0 * -1;
+	} else if (self->e.orientation == DOWN){
+		self->e.changeY = self->e.pixelsPerMilli * delta/1000.0;
+	} else if (self->e.orientation == LEFT){
+		self->e.changeX = self->e.pixelsPerMilli * delta/1000.0 * -1;
+	} else if (self->e.orientation == RIGHT){
+		self->e.changeX = self->e.pixelsPerMilli * delta/1000.0;
 	}
 	
 	//prevent from drifting off the screen
-	if (e->x + e->changeX < 0 || e->x + e->sprite->width + e->changeX > SCREEN_WIDTH){
-	    e->changeX = 0;
+	if (self->e.x + self->e.changeX < 0 || self->e.x + self->e.sprite->width + self->e.changeX > SCREEN_WIDTH){
+	    self->e.changeX = 0;
 	}
-	if (e->y + e->changeY < 0 || e->y + e->sprite->image->h + e->changeY > SCREEN_HEIGHT){
-	    e->changeY = 0;
+	if (self->e.y + self->e.changeY < 0 || self->e.y + self->e.sprite->image->h + self->e.changeY > SCREEN_HEIGHT){
+	    self->e.changeY = 0;
 	}
 }
 
-static void drawEntity(void *e, double shiftX, double shiftY){
-    Entity *self = (Entity *)e;
+static void drawEntity(Entity *self, double shiftX, double shiftY){
     if (self->isMoving){
         int frame = ((self->milliPassed / self->milliPerFrame) + 1) % self->numFrames;
         switch (self->orientation){
@@ -142,11 +140,11 @@ static void drawEntity(void *e, double shiftX, double shiftY){
     }
 }
 
-static void updateFrame(Entity *self, int delta){
-    if (self->isMoving){
-        self->milliPassed += delta;
-        self->milliPassed %= (self->milliPerFrame * self->numFrames);
+static void updateFrame(Enemy *self, int delta){
+    if (self->e.isMoving){
+        self->e.milliPassed += delta;
+        self->e.milliPassed %= (self->e.milliPerFrame * self->e.numFrames);
     } else {
-        self->milliPassed = 0;
+        self->e.milliPassed = 0;
     }
 }
