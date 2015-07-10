@@ -101,6 +101,7 @@ void doRoom(int delta){
     int newRoom;
     if (!changingRooms){
         doRoomEntities(delta);
+        doRoomEnemies(delta);
         
         newRoom = checkForRoomChange();
         if (newRoom >= 0 && _current_area.currentRoom->connectingRooms[newRoom] != -1){
@@ -110,6 +111,7 @@ void doRoom(int delta){
             changeRoom(_current_area.currentRoom->connectingRooms[changingToRoom], changingToRoom, delta);
             room_transition.newRoom = _current_area.roomList[_current_area.currentRoom->connectingRooms[newRoom]];
             resetEntityPositions(room_transition.newRoom);
+            resetEnemyPositions(room_transition.newRoom);
             setPlayerTransitioning(changingToRoom);
         }
     } else {
@@ -156,10 +158,17 @@ void changeRoom(int roomIndex, int direction, int delta){
     }
 }
 
-void moveRoomEntites(){
+void moveRoomEntities(){
     int i;
     for (i = 0; i < _current_area.currentRoom->numEntities; i++){
         moveEntity(_current_area.currentRoom->entities[i]);
+    }
+}
+
+void moveRoomEnemies(){
+    int i;
+    for (i = 0; i < _current_area.currentRoom->numEnemies; i++){
+        moveEntity(&_current_area.currentRoom->enemies[i]->e);
     }
 }
 
@@ -201,6 +210,19 @@ static void doRoomEntities(int delta){
     }
 }
 
+static void doRoomEnemies(int delta){
+    int i;
+    Enemy *self;
+    
+    //loop through all entities and perform their action
+    for (i = 0; i < _current_area.currentRoom->numEnemies; i++){
+        self = _current_area.currentRoom->enemies[i];
+        if (self->e.active == 1 && self->action){
+            self->action(self, delta);
+        }
+    }
+}
+
 
 /////////////////////////////////////////////////
 // Drawing
@@ -209,11 +231,16 @@ void drawCurrentRoom(){
     if (!changingRooms){
         drawImage(_current_area.currentRoom->buffer, 0, 0);
         drawRoomEntities(_current_area.currentRoom, 0, 0);
+        drawRoomEnemies(_current_area.currentRoom, 0, 0);
     } else {
         drawImage(_current_area.currentRoom->buffer, room_transition.oldX, room_transition.oldY);
         drawImage(room_transition.newRoom->buffer, room_transition.newX, room_transition.newY);
+        
         drawRoomEntities(_current_area.currentRoom, room_transition.oldX, room_transition.oldY);
         drawRoomEntities(room_transition.newRoom, room_transition.newX, room_transition.newY);
+        
+        drawRoomEnemies(_current_area.currentRoom, room_transition.oldX, room_transition.oldY);
+        drawRoomEnemies(room_transition.newRoom, room_transition.newX, room_transition.newY);
     }
 }
 
@@ -223,6 +250,16 @@ static void drawRoomEntities(Room *room, double shiftX, double shiftY){
         if (room->entities[i]->active){
 //            drawAnimatedSprite(room->entities[i]->sprite, 0, room->entities[i]->x + shiftX, room->entities[i]->y + shiftY);
             room->entities[i]->draw(room->entities[i], shiftX, shiftY);
+        }
+    }
+}
+
+static void drawRoomEnemies(Room *room, double shiftX, double shiftY){
+    int i;
+    for (i = 0; i < room->numEnemies; i++){
+        if (room->enemies[i]->e.active){
+//            drawAnimatedSprite(room->entities[i]->sprite, 0, room->entities[i]->x + shiftX, room->entities[i]->y + shiftY);
+            room->enemies[i]->e.draw(&room->enemies[i]->e, shiftX, shiftY);
         }
     }
 }
@@ -265,8 +302,8 @@ static Room *createFirstDemoRoom(){
     generateWallList(firstRoom, _current_area.tilesheet.tileWidth);
     
     firstRoom->numEntities = 0;
-    firstRoom->numEnemies = 0;
-    firstRoom->enemies = malloc(sizeof(Enemy) * firstRoom->numEntities);
+    firstRoom->numEnemies = 1;
+    firstRoom->enemies = malloc(sizeof(Enemy) * firstRoom->numEnemies);
     firstRoom->enemies[0] = createOctorok(_current_area.sprites[0]);
     setEntityInitalPositions(firstRoom);
     setEnemyInitalPositions(firstRoom);

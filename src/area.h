@@ -36,12 +36,15 @@ static void drawRoomBuffers(Room *room);
 void doRoom(int delta);
 void changeRoom(int roomIndex, int direction, int delta);
 void moveRoomEntities();
+void moveRoomEnemies();
 static int checkForRoomChange();
 static void doRoomEntities();
+static void doRoomEnemies();
 
 // Drawing
 void drawCurrentRoom();
 static void drawRoomEntities(Room *room, double shiftX, double shiftY);
+static void drawRoomEnemies(Room *room, double shiftX, double shiftY);
 
 // Access
 HitBox getCurrentWalls();
