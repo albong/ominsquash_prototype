@@ -49,7 +49,9 @@ static void drawRoomEnemies(Room *room, double shiftX, double shiftY);
 // Access
 HitBox getCurrentWalls();
 int getNumRoomEntities();
+int getNumRoomEnemies();
 Entity **getRoomEntityList();
+Enemy **getRoomEnemyList();
 
 // Demo
 static Room *createFirstDemoRoom();

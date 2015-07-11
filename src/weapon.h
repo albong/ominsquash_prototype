@@ -8,6 +8,13 @@
 
 //do we need two sets of weapons - one for the player (owner is player) and one for enemies (owner is enemy)?
 
+
+///////
+// We should have damage types - not in a rock paper scissors way a la pokemon, more a way for enemies to indicate their vulnerability to types
+// makes it easy for weapons to determine if they do damage to an enemy
+///////
+
+
 // Structs
 typedef struct Weapon {
     Entity e;

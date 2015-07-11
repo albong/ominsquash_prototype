@@ -3,6 +3,7 @@
 #include "../src/graphics.h"
 
 static Sprite *swordSprite;
+static const int DAMAGE = 4;
 
 static void loadSwordSprite(){
     if (swordSprite == NULL){
@@ -177,6 +178,6 @@ static void collideWithSword(Weapon *self, void *o, int collCode, CollisionType 
     if (t == ENEMY){
         printf("Hit something\n");
         Enemy *enemy = (Enemy *)o;
-        enemy->health -= 1;
+        enemy->takeDamage(enemy, DAMAGE);
     }
 }

@@ -6,6 +6,7 @@
 #include "graphics.h"
 #include "player.h"
 #include "entity.h"
+#include "enemy.h"
 
 #include "../entity/octorok.h"
 
@@ -276,8 +277,16 @@ int getNumRoomEntities(){
     return _current_area.currentRoom->numEntities;
 }
 
+int getNumRoomEnemies(){
+    return _current_area.currentRoom->numEnemies;
+}
+
 Entity **getRoomEntityList(){
     return _current_area.currentRoom->entities;
+}
+
+Enemy **getRoomEnemyList(){
+    return _current_area.currentRoom->enemies;
 }
 
 

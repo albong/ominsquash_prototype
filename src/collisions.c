@@ -4,6 +4,7 @@
 #include "entity.h"
 #include "player.h"
 #include "weapon.h"
+#include "enemy.h"
 
 #define square(x) (x*x)
 
@@ -14,6 +15,7 @@ void doCollisions(){
     doWallCollisions();
     doEnemyCollisions();
     doWeaponCollisions();
+    
     /*
     I think we need an order to check collisions in, so as to make sure things
     happen in the proper way (loosely relates to entity type).
@@ -168,8 +170,8 @@ static void doWeaponCollisions(){
 }
 
 static void enemiesCollideWithWeapon(Weapon *w){
-    int numEntities = getNumRoomEntities();
-    Entity **entityList = getRoomEntityList();
+    int numEnemies = getNumRoomEnemies();
+    Enemy **enemyList = getRoomEnemyList();
     CollRect temp, weaponTemp;
     int i, j, k, collCode;
 
@@ -180,15 +182,15 @@ static void enemiesCollideWithWeapon(Weapon *w){
     */
     
     //player first
-    for (i = 0; i < numEntities; i++){
-        if (!entityList[i]->active || !(entityList[i]->type == ENEMY || entityList[i]->type == ENEMY_COLL)){
+    for (i = 0; i < numEnemies; i++){
+        if (!enemyList[i]->e.active){
             continue;
         }
-        for (j = 0; j < entityList[i]->interactHitBox->numRect; j++){
-            temp.x = entityList[i]->x + entityList[i]->changeX + entityList[i]->interactHitBox->rects[j].x;
-            temp.y = entityList[i]->y + entityList[i]->interactHitBox->rects[j].y;
-            temp.w = entityList[i]->interactHitBox->rects[j].w;
-            temp.h = entityList[i]->interactHitBox->rects[j].h;
+        for (j = 0; j < enemyList[i]->e.interactHitBox->numRect; j++){
+            temp.x = enemyList[i]->e.x + enemyList[i]->e.changeX + enemyList[i]->e.interactHitBox->rects[j].x;
+            temp.y = enemyList[i]->e.y + enemyList[i]->e.interactHitBox->rects[j].y;
+            temp.w = enemyList[i]->e.interactHitBox->rects[j].w;
+            temp.h = enemyList[i]->e.interactHitBox->rects[j].h;
                 
             for (k = 0; k < _player.e.interactHitBox->numRect; k++){
                 weaponTemp.x = w->e.x + w->e.changeX + w->e.interactHitBox[w->e.currHitBox].rects[k].x;
@@ -198,7 +200,7 @@ static void enemiesCollideWithWeapon(Weapon *w){
                 
                 collCode = rectangleCollide(weaponTemp, temp);
                 if (collCode){
-                    w->collide(w, entityList[i], collCode, entityList[i]->type);
+                    w->collide(w, enemyList[i], collCode, enemyList[i]->e.type);
                 }
             }
         }

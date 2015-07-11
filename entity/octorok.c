@@ -51,6 +51,7 @@ Enemy *createOctorok(Sprite *sprite){
     enemy->e.interactHitBox[0].rects[0].h = 11;
     
     enemy->health = 8;
+    enemy->takeDamage = &damageOctorok;
     
     return enemy;
 }
@@ -146,5 +147,12 @@ static void updateFrame(Enemy *self, int delta){
         self->e.milliPassed %= (self->e.milliPerFrame * self->e.numFrames);
     } else {
         self->e.milliPassed = 0;
+    }
+}
+
+static void damageOctorok(Enemy *self, int damage){
+    self->health -= damage;
+    if (self->health <= 0){
+        self->e.active = 0;
     }
 }
