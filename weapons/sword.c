@@ -38,6 +38,7 @@ Weapon *createSword(){
 	w->e.type = WEAPON;
 	
 	w->totalDelta = 0;
+	w->cancelled = 0;
        
     createHitBoxes(w);
     w->collide = &collideWithSword;
@@ -179,5 +180,7 @@ static void collideWithSword(Weapon *self, void *o, int collCode, CollisionType 
         printf("Hit something\n");
         Enemy *enemy = (Enemy *)o;
         enemy->takeDamage(enemy, DAMAGE);
+        self->e.active = 0;
+        self->cancelled = 1;
     }
 }

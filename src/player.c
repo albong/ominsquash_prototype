@@ -83,21 +83,23 @@ void doPlayer(int delta){
 		
 		//weapon key pressed
 		if (_player.equippedAInd >= 0){
-    		if (_input.a){
+    		if (_input.a && !_player_weapons.weapons[_player.equippedAInd]->cancelled){
     		    _player_weapons.weapons[_player.equippedAInd]->e.active = 1;
     		    _player_weapons.weapons[_player.equippedAInd]->e.action(_player_weapons.weapons[_player.equippedAInd], delta);
-    		} else {
+    		} else if (!_input.a){
     		    _player_weapons.weapons[_player.equippedAInd]->e.active = 0;
-    		    _player_weapons.weapons[_player.equippedAInd]->e.milliPassed = 0;		    
+    		    _player_weapons.weapons[_player.equippedAInd]->e.milliPassed = 0;
+    		    _player_weapons.weapons[_player.equippedAInd]->cancelled = 0;
     		}
         }
 		if (_player.equippedBInd >= 0){
-    		if (_input.b){
+    		if (_input.b && !_player_weapons.weapons[_player.equippedBInd]->cancelled){
     		    _player_weapons.weapons[_player.equippedBInd]->e.active = 1;
     		    _player_weapons.weapons[_player.equippedBInd]->e.action(_player_weapons.weapons[_player.equippedBInd], delta);
-    		} else {
+    		} else if (!_input.b){
     		    _player_weapons.weapons[_player.equippedBInd]->e.active = 0;
-    		    _player_weapons.weapons[_player.equippedBInd]->e.milliPassed = 0;		    
+    		    _player_weapons.weapons[_player.equippedBInd]->e.milliPassed = 0;
+    		    _player_weapons.weapons[_player.equippedBInd]->cancelled = 0;
     		}
         }
         

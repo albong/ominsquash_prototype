@@ -20,6 +20,7 @@ typedef struct Weapon {
     Entity e;
     Entity *owner;
     int totalDelta;
+    int cancelled;
     void (*collide)(struct Weapon *self, void *o, int collCode, CollisionType type);
 } Weapon;
 
