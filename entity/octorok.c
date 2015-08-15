@@ -93,6 +93,8 @@ static void updatePosition(Enemy *self, int delta){
 		self->e.changeX = self->e.pixelsPerMilli * delta/1000.0;
 	}
 	
+	applyExternalMoves(&self->e, delta);
+	
 	//prevent from drifting off the screen
 	if (self->e.x + self->e.changeX < 0 || self->e.x + self->e.sprite->width + self->e.changeX > SCREEN_WIDTH){
 	    self->e.changeX = 0;

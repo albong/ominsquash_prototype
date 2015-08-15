@@ -1,4 +1,6 @@
 #include "entity.h"
+#include <math.h>
+#include <string.h>
 
 #define square(x) (x*x)
 
@@ -27,6 +29,57 @@ void collideWithWallY(CollRect wall, Entity *e, CollRect r, int collCode){
     }
     if (collCode & 8){
         e->changeY = wall.y + wall.h - r.y;
+    }
+}
+
+void defaultExternalMove(Entity *self, double x, double y, double magnitude){
+    //compute the components of the change vector
+    double delY = sqrt(square(magnitude) / (square(x/y) + 1));
+    double delX = (x/y) * y;
+    
+    //set the sign
+    delX = (x < 0 && delX > 0) ? -delX : delX;
+    delY = (y < 0 && delY > 0) ? -delY : delY;
+    
+}
+
+void addExternalMove(Entity *self, double x, double y, double magnitude, double velocity){
+    //compute the components of the change vector
+    double delY = sqrt(square(magnitude) / (square(x/y) + 1));
+    double delX = (x/y) * y;
+    delX = (x < 0 && delX > 0) ? -delX : delX;
+    delY = (y < 0 && delY > 0) ? -delY : delY;
+    
+    //add to the array
+    self->numExternalMove++;
+    self->externalMove = realloc(self->externalMove, sizeof(EntityExtMove) * self->numExternalMove);
+    self->externalMove[self->numExternalMove-1].delX = delX;
+    self->externalMove[self->numExternalMove-1].delY = delY;
+    self->externalMove[self->numExternalMove-1].distance = magnitude;
+    self->externalMove[self->numExternalMove-1].velocity = velocity;
+}
+
+void applyExternalMoves(Entity *self, int delta){
+    size_t i;
+    double delX, delY, distance, scale;
+    int velocity;
+    for (i = 0; i < self->numExternalMove; i++){
+        delX = self->externalMove[i].delX;
+        delY = self->externalMove[i].delY;
+        distance = self->externalMove[i].distance;
+        velocity = self->externalMove[i].velocity;
+        scale = sqrt(square(velocity * delta) / (square(delX) + square(delY)));
+        self->changeX += scale * delX;
+        self->changeY += scale * delY;
+        distance -= velocity * delta;
+        if (distance <= 0){
+            memmove(self->externalMove + i, self->externalMove + i + 1, sizeof(EntityExtMove) * (self->numExternalMove - i - 1));
+            self->numExternalMove--;
+            self->externalMove = realloc(self->externalMove, sizeof(EntityExtMove) * self->numExternalMove);
+            i--;
+        } else {
+            self->externalMove[i].distance = distance;
+        }
     }
 }
 

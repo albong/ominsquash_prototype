@@ -16,12 +16,20 @@ typedef enum {
 } CollisionType; //ENEMY_COLL collides with other enemies
 
 // Structs
+typedef struct EntityExtMove {
+    double delX, delY;
+    double distance;
+    double velocity;
+} EntityExtMove;
+
 typedef struct Entity {
     int active;
     double pixelsPerMilli;
     double x, y;
     double startX, startY;
     double changeX, changeY;
+    size_t numExternalMove;
+    EntityExtMove *externalMove;
 	int w, h;
 	int isMoving;
 	int milliPerFrame, milliPassed;
@@ -44,5 +52,7 @@ typedef struct Entity {
 void moveEntity(Entity *e);
 void collideWithWallX(CollRect wall, Entity *e, CollRect r, int collCode);
 void collideWithWallY(CollRect wall, Entity *e, CollRect r, int collCode);
+void addExternalMove(Entity *self, double x, double y, double magnitude, double velocity);
+void applyExternalMoves(Entity *self, int delta);
 
 #endif
