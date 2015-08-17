@@ -81,6 +81,10 @@ static void doOctorok(Enemy *self, int delta){
 }
 
 static void updatePosition(Enemy *self, int delta){
+    if (self->health <= 0){
+        return;
+    }
+    
     self->e.changeX = 0;
     self->e.changeY = 0;
     if (self->e.orientation == UP){
@@ -105,56 +109,73 @@ static void updatePosition(Enemy *self, int delta){
 }
 
 static void drawEntity(Entity *self, double shiftX, double shiftY){
-    if (self->isMoving){
-        int frame = ((self->milliPassed / self->milliPerFrame) + 1) % self->numFrames;
-        switch (self->orientation){
-            case UP:
-                drawAnimatedSprite(self->sprite, 4 + frame, self->x + 0.5 + shiftX, self->y + 0.5 + shiftY);
-                break;
-            case DOWN:
-                drawAnimatedSprite(self->sprite, 2 + frame, self->x + 0.5 + shiftX, self->y + 0.5 + shiftY);
-                break;
-            case LEFT:
-                drawAnimatedSprite(self->sprite, 0 + frame, self->x + 0.5 + shiftX, self->y + 0.5 + shiftY);
-                break;
-            case RIGHT:
-                drawAnimatedSprite(self->sprite, 6 + frame, self->x + 0.5 + shiftX, self->y + 0.5 + shiftY);
-                break;
-            default:
-                break;
+    int frame;
+    if (((Enemy *)self)->health > 0){
+        if (self->isMoving){
+            frame = ((self->milliPassed / self->milliPerFrame) + 1) % self->numFrames;
+            switch (self->orientation){
+                case UP:
+                    drawAnimatedSprite(self->sprite, 4 + frame, self->x + 0.5 + shiftX, self->y + 0.5 + shiftY);
+                    break;
+                case DOWN:
+                    drawAnimatedSprite(self->sprite, 2 + frame, self->x + 0.5 + shiftX, self->y + 0.5 + shiftY);
+                    break;
+                case LEFT:
+                    drawAnimatedSprite(self->sprite, 0 + frame, self->x + 0.5 + shiftX, self->y + 0.5 + shiftY);
+                    break;
+                case RIGHT:
+                    drawAnimatedSprite(self->sprite, 6 + frame, self->x + 0.5 + shiftX, self->y + 0.5 + shiftY);
+                    break;
+                default:
+                    break;
+            }
+        } else {
+    //        switch (self->orientation){
+    //            case UP:
+    //                drawAnimatedSprite(self->sprite, 4, self->x + 0.5, self->y + 0.5);
+    //                break;
+    //            case DOWN:
+    //                drawAnimatedSprite(self->sprite, 2, self->x + 0.5, self->y + 0.5);
+    //                break;
+    //            case LEFT:
+    //                drawAnimatedSprite(self->sprite, 0, self->x + 0.5, self->y + 0.5);
+    //                break;
+    //            case RIGHT:
+    //                drawAnimatedSprite(self->sprite, 6, self->x + 0.5, self->y + 0.5);
+    //                break;
+    //            default:
+    //                break;
+    //        }
         }
     } else {
-//        switch (self->orientation){
-//            case UP:
-//                drawAnimatedSprite(self->sprite, 4, self->x + 0.5, self->y + 0.5);
-//                break;
-//            case DOWN:
-//                drawAnimatedSprite(self->sprite, 2, self->x + 0.5, self->y + 0.5);
-//                break;
-//            case LEFT:
-//                drawAnimatedSprite(self->sprite, 0, self->x + 0.5, self->y + 0.5);
-//                break;
-//            case RIGHT:
-//                drawAnimatedSprite(self->sprite, 6, self->x + 0.5, self->y + 0.5);
-//                break;
-//            default:
-//                break;
-//        }
+        frame = self->milliPassed / MILLI_PER_DEFAULT_DEATH_FRAME;
+        printf("yo, %d\n", frame);
+        if (frame < NUM_FRAMES_DEFAULT_DEATH){
+            printf("splosion?\n");
+            drawAnimatedSprite(getDefaultDeathSprite(), 0 + frame, self->x + 0.5 + shiftX, self->y + 0.5 + shiftY);
+        } else {
+            self->active = 0;
+        }
     }
 }
 
 static void updateFrame(Enemy *self, int delta){
-    if (self->e.isMoving){
-        self->e.milliPassed += delta;
-        self->e.milliPassed %= (self->e.milliPerFrame * self->e.numFrames);
+    if (self->health > 0){
+        if (self->e.isMoving){
+            self->e.milliPassed += delta;
+            self->e.milliPassed %= (self->e.milliPerFrame * self->e.numFrames);
+        } else {
+            self->e.milliPassed = 0;
+        }
     } else {
-        self->e.milliPassed = 0;
+        self->e.milliPassed += delta;
     }
 }
 
 static void damageOctorok(Enemy *self, int damage){
     self->health -= damage;
     if (self->health <= 0){
-        self->e.active = 0;
+//        self->e.active = 0;
+        self->e.milliPassed = 0;
     }
 }
