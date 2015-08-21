@@ -2,6 +2,7 @@
 #include "constants.h"
 #include "SDL/SDL.h"
 #include "SDL/SDL_image.h"
+#include <stdint.h>
 
 /////////////////////////////////////////////////
 // SDL
@@ -131,6 +132,52 @@ void drawAnimatedSprite(Sprite *s, int frame, int x, int y){
     dest.h = s->image->h;
     
     SDL_BlitSurface(s->image, &src, screen, &dest);
+}
+
+/*
+Given the processing cost associated with this, it may make more sense to store an inverted version of the sprite in memory?
+*/
+void drawInvertedAnimatedSprite(Sprite *s, int frame, int x, int y, int invert){
+    if (!invert){
+        drawAnimatedSprite(s, frame, x, y);
+        return;
+    }
+    
+    SDL_Rect src, dest;
+    
+    src.x = frame * s->width;
+    src.y = 0;
+    src.w = s->width;
+    src.h = s->image->h;
+    
+    dest.x = x;
+    dest.y = y;
+    dest.w = s->width;
+    dest.h = s->image->h;
+    
+    size_t px, py;
+    uint32_t *pixels = (uint32_t *)s->image->pixels;
+    uint8_t r, g, b;
+    for (px = 0; px < s->image->w; px++){
+        for (py = 0; py < s->image->h; py++){
+            SDL_GetRGB(pixels[(py * s->image->w) + px], screen->format, &r, &g, &b);
+            if (r != 255 && g != 0 && b != 255){
+                pixels[(py * s->image->w) + px] = SDL_MapRGB(screen->format, 255-r, 255-g, 255-b);
+            }
+        }
+    }
+    
+    SDL_BlitSurface(s->image, &src, screen, &dest);
+    
+    //revert the inversion
+    for (px = 0; px < s->image->w; px++){
+        for (py = 0; py < s->image->h; py++){
+            SDL_GetRGB(pixels[(py * s->image->w) + px], screen->format, &r, &g, &b);
+            if (r != 255 && g != 0 && b != 255){
+                pixels[(py * s->image->w) + px] = SDL_MapRGB(screen->format, 255-r, 255-g, 255-b);
+            }
+        }
+    }
 }
 
 void drawUnfilledRect(int x, int y, int w, int h, int r, int g, int b){

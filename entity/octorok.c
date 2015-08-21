@@ -114,21 +114,22 @@ static void updatePosition(Enemy *self, int delta){
 
 static void drawEntity(Entity *self, double shiftX, double shiftY){
     int frame;
+    int invert = (((Enemy *)self)->milliHitstun / HITSTUN_FLASH_MILLI) % 2;
     if (((Enemy *)self)->health > 0){
         if (self->isMoving){
             frame = ((self->milliPassed / self->milliPerFrame) + 1) % self->numFrames;
             switch (self->orientation){
                 case UP:
-                    drawAnimatedSprite(self->sprite, 4 + frame, self->x + 0.5 + shiftX, self->y + 0.5 + shiftY);
+                    drawInvertedAnimatedSprite(self->sprite, 4 + frame, self->x + 0.5 + shiftX, self->y + 0.5 + shiftY, invert);
                     break;
                 case DOWN:
-                    drawAnimatedSprite(self->sprite, 2 + frame, self->x + 0.5 + shiftX, self->y + 0.5 + shiftY);
+                    drawInvertedAnimatedSprite(self->sprite, 2 + frame, self->x + 0.5 + shiftX, self->y + 0.5 + shiftY, invert);
                     break;
                 case LEFT:
-                    drawAnimatedSprite(self->sprite, 0 + frame, self->x + 0.5 + shiftX, self->y + 0.5 + shiftY);
+                    drawInvertedAnimatedSprite(self->sprite, 0 + frame, self->x + 0.5 + shiftX, self->y + 0.5 + shiftY, invert);
                     break;
                 case RIGHT:
-                    drawAnimatedSprite(self->sprite, 6 + frame, self->x + 0.5 + shiftX, self->y + 0.5 + shiftY);
+                    drawInvertedAnimatedSprite(self->sprite, 6 + frame, self->x + 0.5 + shiftX, self->y + 0.5 + shiftY, invert);
                     break;
                 default:
                     break;
@@ -154,7 +155,7 @@ static void drawEntity(Entity *self, double shiftX, double shiftY){
     } else {
         frame = self->milliPassed / MILLI_PER_DEFAULT_DEATH_FRAME;
         if (frame < NUM_FRAMES_DEFAULT_DEATH){
-            drawAnimatedSprite(getDefaultDeathSprite(), 0 + frame, self->x + 0.5 + shiftX, self->y + 0.5 + shiftY);
+            drawInvertedAnimatedSprite(getDefaultDeathSprite(), 0 + frame, self->x + 0.5 + shiftX, self->y + 0.5 + shiftY, invert);
         } else {
             self->active = 0;
         }

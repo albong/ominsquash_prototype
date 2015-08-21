@@ -16,4 +16,6 @@
 #define ROOM_UP 2
 #define ROOM_DOWN 3
 
+#define HITSTUN_FLASH_MILLI 75
+
 #endif

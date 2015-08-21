@@ -30,6 +30,7 @@ void drawImage(SDL_Surface *image, int x, int y);
 void drawImageSrcDst(SDL_Surface *image, SDL_Rect src, SDL_Rect dst);
 void drawSprite(Sprite *s, int x, int y);
 void drawAnimatedSprite(Sprite *s, int frame, int x, int y);
+void drawInvertedAnimatedSprite(Sprite *s, int frame, int x, int y, int invert);
 void drawUnfilledRect(int x, int y, int w, int h, int r, int g, int b);
 
 // Screen Management
