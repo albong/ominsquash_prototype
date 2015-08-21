@@ -3,6 +3,7 @@
 #include <stdlib.h>
 
 static int totalDelta = 0;
+static const hitstunMilli = 1000;
 
 Enemy *createOctorok(Sprite *sprite){
     Enemy *enemy = malloc(sizeof(Enemy));
@@ -51,6 +52,7 @@ Enemy *createOctorok(Sprite *sprite){
     enemy->e.interactHitBox[0].rects[0].h = 11;
     
     enemy->health = 8;
+    enemy->milliHitstun = 0;
     enemy->takeDamage = &damageOctorok;
     
     return enemy;
@@ -78,6 +80,8 @@ static void doOctorok(Enemy *self, int delta){
     }
     updateFrame(self, delta);
     updatePosition(self, delta);
+    
+    self->milliHitstun = (self->milliHitstun - delta < 0) ? 0 : self->milliHitstun - delta;
 }
 
 static void updatePosition(Enemy *self, int delta){
@@ -149,9 +153,7 @@ static void drawEntity(Entity *self, double shiftX, double shiftY){
         }
     } else {
         frame = self->milliPassed / MILLI_PER_DEFAULT_DEATH_FRAME;
-        printf("yo, %d\n", frame);
         if (frame < NUM_FRAMES_DEFAULT_DEATH){
-            printf("splosion?\n");
             drawAnimatedSprite(getDefaultDeathSprite(), 0 + frame, self->x + 0.5 + shiftX, self->y + 0.5 + shiftY);
         } else {
             self->active = 0;
@@ -172,10 +174,23 @@ static void updateFrame(Enemy *self, int delta){
     }
 }
 
-static void damageOctorok(Enemy *self, int damage){
-    self->health -= damage;
-    if (self->health <= 0){
-//        self->e.active = 0;
-        self->e.milliPassed = 0;
+/*
+    Perhaps the best way to handle this would actually be to have default methods and some sort of generic initializer for enemies, and there would be some sort of id table with constants
+    I see it like this - on creation of an enemy, it checks if a static id number has been set (default value of -1).  If it hasn't then it registers itself to get an id number.
+    Using this id number it sets any constants it needs, which are stored in an array statically hidden in the enemy.c file.  The enemy struct now also must hold this id number - make it a
+    parameter to the function that instantiates an empty enemy?  When takeDamage, or whatever, is called, if the default version is being used, then we use the id number to find the correct
+    constants and do the function.
+    Another thing to add here is that this part is probably always going to run, so we might want to add a "constant" function pointer for anything special to call after this has been called
+ */
+static int damageOctorok(Enemy *self, int damage){
+    if (self->milliHitstun == 0){
+        self->health -= damage;
+        if (self->health <= 0){
+            self->e.milliPassed = 0;
+        }
+        self->milliHitstun = hitstunMilli;
+        return 1;
+    } else {
+        return 0;
     }
 }

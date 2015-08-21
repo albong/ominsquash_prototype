@@ -177,11 +177,11 @@ static void drawSword(Entity *self, double shiftX, double shiftY){
 
 static void collideWithSword(Weapon *self, void *o, int collCode, CollisionType t){
     if (t == ENEMY){
-        printf("Hit something\n");
         Enemy *enemy = (Enemy *)o;
-        enemy->takeDamage(enemy, DAMAGE);
-        addExternalMove(&enemy->e, enemy->e.x - self->e.x, enemy->e.y - self->e.y, 20, 1);
-        self->e.active = 0;
-        self->cancelled = 1;
+        if (enemy->takeDamage(enemy, DAMAGE)){
+            addExternalMove(&enemy->e, enemy->e.x - self->e.x, enemy->e.y - self->e.y, 20, 1);
+            self->e.active = 0;
+            self->cancelled = 1;
+        }
     }
 }
