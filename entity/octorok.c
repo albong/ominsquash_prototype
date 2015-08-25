@@ -4,6 +4,7 @@
 
 static int totalDelta = 0;
 static const hitstunMilli = 1000;
+static const DEFAULT_HEALTH = 8;
 
 Enemy *createOctorok(Sprite *sprite){
     Enemy *enemy = malloc(sizeof(Enemy));
@@ -54,7 +55,7 @@ Enemy *createOctorok(Sprite *sprite){
     enemy->e.interactHitBox[0].rects[0].w = 16;
     enemy->e.interactHitBox[0].rects[0].h = 11;
     
-    enemy->health = 8;
+    enemy->health = DEFAULT_HEALTH;
     enemy->milliHitstun = 0;
     enemy->takeDamage = &damageOctorok;
     

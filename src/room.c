@@ -77,3 +77,15 @@ void resetEnemyPositions(Room *room){
         room->enemies[i]->e.y = room->enemies[i]->e.startY;
     }
 }
+
+void clearAndResetEnemies(Room *room){
+    size_t i;
+    for (i = 0; i < room->numEnemies; i++){
+        if (room->enemies[i]->e.active && room->enemies[i]->health <= 0){
+            room->enemies[i]->e.active = 0;
+        }
+        /*
+            Something something reset my health to default here
+        */
+    }
+}

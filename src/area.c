@@ -113,6 +113,7 @@ void doRoom(int delta){
             room_transition.newRoom = _current_area.roomList[_current_area.currentRoom->connectingRooms[newRoom]];
             resetEntityPositions(room_transition.newRoom);
             resetEnemyPositions(room_transition.newRoom);
+            clearAndResetEnemies(room_transition.newRoom);
             setPlayerTransitioning(changingToRoom);
         }
     } else {
@@ -348,6 +349,7 @@ static Room *createSecondDemoRoom(){
     generateWallList(room, _current_area.tilesheet.tileWidth);
 
     room->numEntities = 0;
+    room->numEnemies = 0;
 
     return room;
 }
@@ -394,6 +396,7 @@ static Room *createThirdDemoRoom(){
     drawRoomBuffers(room);
     
     room->numEntities = 0;
+    room->numEnemies = 0;
     
     return room;
 }
