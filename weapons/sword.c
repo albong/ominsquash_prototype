@@ -13,7 +13,7 @@ static void loadSwordSprite(){
 
 Weapon *createSword(){
     loadSwordSprite();
-    Weapon *w = malloc(sizeof(Weapon));
+    Weapon *w = init_Weapon(malloc(sizeof(Weapon)));
         
     w->e.active = 1;
     
@@ -22,23 +22,23 @@ Weapon *createSword(){
     
     w->e.pixelsPerMilli = 50;
 //    double changeX, changeY;
-    w->e.x = 0;
-    w->e.y = 0;
-    w->e.changeX = 0;
-    w->e.changeY = 0;
+//    w->e.x = 0;
+//    w->e.y = 0;
+//    w->e.changeX = 0;
+//    w->e.changeY = 0;
 //	int w, h;
     w->e.isMoving = 1;
-    w->e.milliPassed = 0;
+//    w->e.milliPassed = 0;
     w->e.milliPerFrame = 30;
-    w->e.currFrame = 0;
+//    w->e.currFrame = 0;
     w->e.numFrames = 3;
 	w->e.orientation = DOWN;
     w->e.draw = &drawSword;
 //	void (*collide)(struct Entity*);
 	w->e.type = WEAPON;
 	
-	w->totalDelta = 0;
-	w->cancelled = 0;
+//	w->totalDelta = 0;
+//	w->cancelled = 0;
        
     createHitBoxes(w);
     w->collide = &collideWithSword;

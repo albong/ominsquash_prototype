@@ -4,6 +4,20 @@
 /////////////////////////////////////////////////
 // Loading
 /////////////////////////////////////////////////
+Weapon *init_Weapon(Weapon *self){
+    if (self == NULL){
+        return NULL;
+    }
+
+    init_Entity((Entity *)self);
+    self->owner = NULL;
+    self->totalDelta = 0;
+    self->cancelled = 0;
+    self->collide = NULL;
+    
+    return self;
+}
+
 void initWeaponLists(){
     _player_weapons.num = 0;
     _enemy_weapons.num = 0;

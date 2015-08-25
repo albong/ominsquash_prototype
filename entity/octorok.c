@@ -7,7 +7,7 @@ static const hitstunMilli = 1000;
 static const DEFAULT_HEALTH = 8;
 
 Enemy *createOctorok(Sprite *sprite){
-    Enemy *enemy = malloc(sizeof(Enemy));
+    Enemy *enemy = init_Enemy(malloc(sizeof(Enemy)));
     
     enemy->e.active = 1;
     
@@ -15,26 +15,14 @@ Enemy *createOctorok(Sprite *sprite){
     enemy->e.sprite = sprite;
     
     enemy->e.pixelsPerMilli = 50;
-//    double changeX, changeY;
-    enemy->e.x = 0;
-    enemy->e.y = 0;
-    enemy->e.changeX = 0;
-    enemy->e.changeY = 0;
-//	int w, h;
     enemy->e.isMoving = 1;
-    enemy->e.milliPassed = 0;
     enemy->e.milliPerFrame = 200;
     enemy->e.numFrames = 2;
 	enemy->e.orientation = DOWN;
     enemy->e.draw = &drawEntity;
-//	void (*collide)(struct Entity*);
-	enemy->e.type = ENEMY;
-	
-    enemy->e.numExternalMove = 0;
-    enemy->e.externalMove = NULL;
 
-    enemy->e.currHitBox = 0;
-    
+	enemy->e.type = ENEMY;
+
     enemy->e.hasMoveHitBox = 1;
     enemy->e.moveHitBox = malloc(sizeof(HitBox) * 1);
     enemy->e.moveHitBox[0].numCircle = 0;

@@ -16,6 +16,8 @@ typedef struct Enemy {
     void (*action)(struct Enemy *self, int delta);
 } Enemy;
 
+// Loading
+Enemy *init_Enemy(Enemy *self);
 Sprite *getDefaultDeathSprite();
 
 #endif

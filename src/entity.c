@@ -5,6 +5,46 @@
 #define square(x) (x*x)
 
 /////////////////////////////////////////////////
+// Loading
+/////////////////////////////////////////////////
+Entity *init_Entity(Entity *self){
+    if (self == NULL){
+        return NULL;
+    }
+    
+    self->active = 0;
+    self->pixelsPerMilli = 0;
+    self->x = 0;
+    self->y = 0;
+    self->startX = 0;
+    self->startY = 0;
+    self->changeX = 0;
+    self->changeY = 0;
+    self->numExternalMove = 0;
+    self->externalMove = NULL;
+	self->w = 0;
+    self->h = 0;
+	self->isMoving = 0;
+	self->milliPerFrame = 0;
+    self->milliPassed = 0;
+	self->currFrame = 0;
+	self->numFrames = 0;
+	self->sprite = NULL;
+	self->orientation = UP;
+	self->action = NULL;
+	self->draw = NULL;
+    self->type = NONE;
+	self->currHitBox = 0;
+	self->hasMoveHitBox = 0;
+	self->hasInteractHitBox = 0;
+	self->moveHitBox = NULL;
+	self->interactHitBox = NULL;
+    
+    return self;
+}
+
+
+/////////////////////////////////////////////////
 // Logic
 /////////////////////////////////////////////////
 void moveEntity(Entity *e){

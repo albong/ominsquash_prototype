@@ -34,6 +34,7 @@ WeaponList _player_weapons;
 WeaponList _enemy_weapons;
 
 // Loading
+Weapon *init_Weapon(Weapon *self);
 void initWeaponLists();
 
 // Access

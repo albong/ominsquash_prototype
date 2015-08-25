@@ -48,6 +48,9 @@ typedef struct Entity {
 	HitBox *interactHitBox;//array
 } Entity;
 
+// Loading
+Entity *init_Entity(Entity *self);
+
 // Logic
 void moveEntity(Entity *e);
 void collideWithWallX(CollRect wall, Entity *e, CollRect r, int collCode);

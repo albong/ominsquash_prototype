@@ -2,6 +2,38 @@
 #include "constants.h"
 
 /////////////////////////////////////////////////
+// Loading
+/////////////////////////////////////////////////
+Room *init_Room(Room *self){
+    if (self == NULL){
+        return NULL;
+    }
+    
+    self->flags = NULL;
+    self->tileIndices = NULL;
+    self->transitionTiles = NULL;
+    self->transitionToRoom = NULL;
+    self->buffer = NULL;
+    self->connectingRooms[0] = -1;
+    self->connectingRooms[1] = -1;
+    self->connectingRooms[2] = -1;
+    self->connectingRooms[3] = -1;
+    
+    self->walls.numRect = 0;
+    self->walls.numCircle = 0;
+    self->walls.rects = NULL;
+    self->walls.circles = NULL;
+    
+    self->entities = NULL;
+    self->numEntities = 0;
+    self->enemies = NULL;
+    self->numEnemies = 0;
+    
+    return self;
+}
+
+
+/////////////////////////////////////////////////
 // Access
 /////////////////////////////////////////////////
 int getFlag(Room *room, int index, int flagNum){

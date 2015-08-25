@@ -295,7 +295,7 @@ Enemy **getRoomEnemyList(){
 // Demo
 /////////////////////////////////////////////////
 static Room *createFirstDemoRoom(){
-    Room *firstRoom = malloc(sizeof(Room));
+    Room *firstRoom = init_Room(malloc(sizeof(Room)));
     firstRoom->tileIndices = (int *) malloc(sizeof(int) * ROOM_HEIGHT * ROOM_WIDTH);
     firstRoom->flags = (uint32_t *) malloc(sizeof(uint32_t) * ROOM_HEIGHT * ROOM_WIDTH);
     int i;
@@ -322,7 +322,7 @@ static Room *createFirstDemoRoom(){
 }
 
 static Room *createSecondDemoRoom(){
-    Room *room = malloc(sizeof(Room));
+    Room *room = init_Room(malloc(sizeof(Room)));
     room->tileIndices = (int *) malloc(sizeof(int) * ROOM_HEIGHT * ROOM_WIDTH);
     room->flags = (uint32_t *) malloc(sizeof(uint32_t) * ROOM_HEIGHT * ROOM_WIDTH);
     int i;
@@ -356,7 +356,7 @@ static Room *createSecondDemoRoom(){
 
 static Room *createThirdDemoRoom(){
     //61 & 63
-    Room *room = malloc(sizeof(Room));
+    Room *room = init_Room(malloc(sizeof(Room)));
     room->tileIndices = (int *) malloc(sizeof(int) * ROOM_HEIGHT * ROOM_WIDTH);
     room->flags = (uint32_t *) malloc(sizeof(uint32_t) * ROOM_HEIGHT * ROOM_WIDTH);
     int i;

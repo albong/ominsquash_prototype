@@ -15,19 +15,22 @@
 
 // Structs
 typedef struct Room {
-    uint32_t *flags;
+    uint32_t *flags;//array
     //Enemy enemies[];
-    int *tileIndices;
-    int *transitionTiles;
-    int *transitionToRoom;
+    int *tileIndices;//array
+    int *transitionTiles;//array
+    int *transitionToRoom; //UNUSED?
     SDL_Surface *buffer;
     int connectingRooms[4]; //left right up down
     HitBox walls;
-    Entity **entities;
+    Entity **entities;//array
     int numEntities;
-    Enemy **enemies;
+    Enemy **enemies;//array
     int numEnemies;
 } Room;
+
+// Loading
+Room *init_Room(Room *self);
 
 // Access
 int getFlag(Room *room, int index, int flagNum);
