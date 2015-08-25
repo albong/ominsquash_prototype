@@ -28,6 +28,9 @@ Enemy *createOctorok(Sprite *sprite){
     enemy->e.draw = &drawEntity;
 //	void (*collide)(struct Entity*);
 	enemy->e.type = ENEMY;
+	
+    enemy->e.numExternalMove = 0;
+    enemy->e.externalMove = NULL;
 
     enemy->e.currHitBox = 0;
     

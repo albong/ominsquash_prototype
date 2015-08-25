@@ -48,6 +48,7 @@ Weapon *createSword(){
 
 static void createHitBoxes(Weapon *w){
     w->e.currHitBox = 0;
+    w->e.hasMoveHitBox = 0;
 	w->e.hasInteractHitBox = 1;
 	w->e.interactHitBox = malloc(sizeof(HitBox) * 12);
 	
