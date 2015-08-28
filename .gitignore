@@ -2,3 +2,10 @@
 *.o
 stderr.txt
 stdout.txt
+*.dll
+old_src/*
+omnisquash.dev
+omnisquash.layout
+gfx/*
+sound/*
+font/*
