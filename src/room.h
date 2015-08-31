@@ -25,8 +25,11 @@ typedef struct Room {
     HitBox walls;
     Entity **entities;//array
     int numEntities;
-    Enemy **enemies;//array
-    int numEnemies;
+    size_t numEnemies;
+    Enemy **enemies;
+    size_t *enemyIds; //array
+    double *enemyInitialX; //array
+    double *enemyInitialY; //array
 } Room;
 
 // Loading

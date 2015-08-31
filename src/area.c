@@ -8,7 +8,8 @@
 #include "entity.h"
 #include "enemy.h"
 
-#include "../entity/octorok.h"
+//#include "../enemies/octorok.h"
+#include "../enemies/enemyloader.h"
 
 #include "stdint.h"
 #include "SDL/SDL.h"
@@ -26,6 +27,9 @@ typedef struct Transition{
 
 Transition room_transition;
 
+static void loadAreaEnemySprites(Area *self);
+static void createAreaEnemies(Area *self);
+
 /////////////////////////////////////////////////
 // Loading
 /////////////////////////////////////////////////
@@ -37,12 +41,13 @@ void loadArea(){
     _current_area.tilesheet.tileHeight = 16;
         
     //load the enemy sprites - do before rooms because rooms store enemies
-    _current_area.numEntitySprites = 1;
-    _current_area.entitySpriteNames = malloc(sizeof(char *) * 1);
-    _current_area.entitySpriteNames[0] = malloc(sizeof(char) * (strlen("gfx/octoroksprite.png"))+1);
-    strcpy(_current_area.entitySpriteNames[0], "gfx/octoroksprite.png");
-    _current_area.entitySpriteWidths = malloc(sizeof(int) * 1);
-    _current_area.entitySpriteWidths[0] = 18;
+    _current_area.numEntitySprites = 0;
+//    _current_area.numEntitySprites = 1;
+//    _current_area.entitySpriteNames = malloc(sizeof(char *) * 1);
+//    _current_area.entitySpriteNames[0] = malloc(sizeof(char) * (strlen("gfx/octoroksprite.png"))+1);
+//    strcpy(_current_area.entitySpriteNames[0], "gfx/octoroksprite.png");
+//    _current_area.entitySpriteWidths = malloc(sizeof(int) * 1);
+//    _current_area.entitySpriteWidths[0] = 18;
     loadEntitySprites();
     
     //load the rooms
@@ -52,13 +57,64 @@ void loadArea(){
     _current_area.roomList[1] = createSecondDemoRoom();
     _current_area.roomList[2] = createThirdDemoRoom();
     _current_area.currentRoom = _current_area.roomList[0];
+    
+    //load the enemies for all of the rooms, set their positions
+    loadAreaEnemySprites(&_current_area);
+    createAreaEnemies(&_current_area);
+    size_t i;
+    for (i = 0; i < _current_area.numRooms; i++){
+        resetEnemyPositions(_current_area.roomList[i]);
+    }
 }
 
 static void loadEntitySprites(){
     _current_area.sprites = malloc(sizeof(Sprite *) * _current_area.numEntitySprites);
-    int i;
+    size_t i;
     for (i = 0; i < _current_area.numEntitySprites; i++){
         _current_area.sprites[i] = loadAnimatedSprite(_current_area.entitySpriteNames[i], _current_area.entitySpriteWidths[i]);
+    }
+}
+
+void loadAreaEnemySprites(Area *self){
+    /*
+    
+    When we move to loading in files, I would want the area file to have the list of unique ids already in the file
+    
+    */
+    size_t count = 0;
+    size_t *ids = NULL;
+    int matched = 0;
+    size_t i, j, k;
+    for (i = 0; i < self->numRooms; i++){
+        for (j = 0; j < self->roomList[i]->numEnemies; j++){
+            for (k = 0; k < count; k++){
+                if (self->roomList[i]->enemyIds[j] == ids[k]){
+                    matched = 1;
+                    break;
+                }
+            }
+            if (matched != 1){
+                count++;
+                ids = realloc(ids, sizeof(size_t) * count);
+                ids[count-1] = self->roomList[i]->enemyIds[j];
+            }
+            matched = 0;
+        }
+    }
+    
+    loadEnemySprites(ids, count);
+    free(ids);
+}
+
+void createAreaEnemies(Area *self){
+    size_t i, j;
+    Room *currRoom;
+    for (i = 0; i < self->numRooms; i++){
+        currRoom = self->roomList[i];
+        currRoom->enemies = malloc(sizeof(Enemy *) * currRoom->numEnemies);
+        for (j = 0; j < currRoom->numEnemies; j++){
+            currRoom->enemies[j] = createEnemyById(currRoom->enemyIds[j]);
+        }
     }
 }
 
@@ -313,10 +369,20 @@ static Room *createFirstDemoRoom(){
     
     firstRoom->numEntities = 0;
     firstRoom->numEnemies = 1;
-    firstRoom->enemies = malloc(sizeof(Enemy) * firstRoom->numEnemies);
-    firstRoom->enemies[0] = createOctorok(_current_area.sprites[0]);
+//    firstRoom->enemies = malloc(sizeof(Enemy) * firstRoom->numEnemies);
+    firstRoom->enemyIds = malloc(sizeof(size_t) * firstRoom->numEnemies);
+    firstRoom->enemyInitialX = malloc(sizeof(double) * firstRoom->numEnemies);
+    firstRoom->enemyInitialY = malloc(sizeof(double) * firstRoom->numEnemies);
+
+//    firstRoom->enemies[0] = createOctorok(_current_area.sprites[0]);
+//    firstRoom->enemies[0] = createOctorok();
+    firstRoom->enemyIds[0] = 0;
+    firstRoom->enemyInitialX[0] = 1;
+    firstRoom->enemyInitialY[0] = 1;
+    
+
     setEntityInitalPositions(firstRoom);
-    setEnemyInitalPositions(firstRoom);
+//    setEnemyInitalPositions(firstRoom);
     
     return firstRoom;
 }

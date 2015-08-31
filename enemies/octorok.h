@@ -1,8 +1,9 @@
 #ifndef OCTOROK_H
 #define OCTOROK_H
 
-#include "../src/Entity.h"
-#include "../src/Enemy.h"
+#include "../src/entity.h"
+#include "../src/enemy.h"
+#include "../src/graphics.h"
 
 Enemy *createOctorok(Sprite *sprite);
 static void doOctorok(Enemy *self, int delta);

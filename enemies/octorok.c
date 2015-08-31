@@ -1,5 +1,6 @@
 #include "octorok.h"
 #include "../src/constants.h"
+#include "../src/graphics.h"
 #include <stdlib.h>
 
 static int totalDelta = 0;

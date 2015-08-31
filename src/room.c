@@ -26,8 +26,12 @@ Room *init_Room(Room *self){
     
     self->entities = NULL;
     self->numEntities = 0;
-    self->enemies = NULL;
+    
     self->numEnemies = 0;
+    self->enemies = NULL;
+    self->enemyIds = NULL; //array
+    self->enemyInitialX = NULL; //array
+    self->enemyInitialY = NULL; //array
     
     return self;
 }
@@ -85,10 +89,10 @@ void setEntityInitalPositions(Room *room){
 }
 
 void setEnemyInitalPositions(Room *room){
-    int i;
+    size_t i;
     for (i = 0; i < room->numEnemies; i++){
-        room->enemies[i]->e.startX = room->enemies[i]->e.x;
-        room->enemies[i]->e.startY = room->enemies[i]->e.y;
+        room->enemies[i]->e.startX = room->enemyInitialX[i];
+        room->enemies[i]->e.startY = room->enemyInitialY[i];
     }
 }
 

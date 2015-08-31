@@ -15,7 +15,7 @@ typedef struct Tilesheet {
 typedef struct Area {
     char *tilesetName;
     Tilesheet tilesheet;
-    int numRooms;
+    size_t numRooms;
 	Room *currentRoom;
     Room **roomList;
     char **entitySpriteNames;
