@@ -5,6 +5,11 @@
 static Sprite *swordSprite;
 static const int DAMAGE = 4;
 
+static void loadSwordSprite();
+static void createHitBoxes(Weapon *w);
+static void doSword(void *self, int delta);
+static void collideWithSword(Weapon *self, void *o, int collCode, CollisionType t);
+
 static void loadSwordSprite(){
     if (swordSprite == NULL){
         swordSprite = loadAnimatedSprite("gfx/swordsprite.png", 31);
@@ -33,7 +38,6 @@ Weapon *createSword(){
 //    w->e.currFrame = 0;
     w->e.numFrames = 3;
 	w->e.orientation = DOWN;
-    w->e.draw = &drawSword;
 //	void (*collide)(struct Entity*);
 	w->e.type = WEAPON;
 	
@@ -170,10 +174,6 @@ static void doSword(void *w, int delta){
         self->e.y -= self->owner->h;
     }
     self->e.currHitBox = self->e.currFrame;
-}
-
-static void drawSword(Entity *self, double shiftX, double shiftY){
-    drawAnimatedSprite(self->sprite, self->currFrame, self->x + 0.5 + shiftX, self->y + 0.5 + shiftY);
 }
 
 static void collideWithSword(Weapon *self, void *o, int collCode, CollisionType t){

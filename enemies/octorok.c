@@ -7,6 +7,11 @@ static int totalDelta = 0;
 static const hitstunMilli = 1000;
 static const DEFAULT_HEALTH = 8;
 
+static void doOctorok(Enemy *self, int delta);
+static void updatePosition(Enemy *self, int delta);
+static void updateFrame(Enemy *self, int delta);
+static int damageOctorok(Enemy *self, int damage);
+
 Enemy *createOctorok(Sprite *sprite){
     Enemy *enemy = init_Enemy(malloc(sizeof(Enemy)));
     
@@ -14,13 +19,13 @@ Enemy *createOctorok(Sprite *sprite){
     
     enemy->action = &doOctorok;
     enemy->e.sprite = sprite;
+    enemy->enemySprite = sprite;
     
     enemy->e.pixelsPerMilli = 50;
     enemy->e.isMoving = 1;
     enemy->e.milliPerFrame = 200;
     enemy->e.numFrames = 2;
 	enemy->e.orientation = DOWN;
-    enemy->e.draw = &drawEntity;
 
 	enemy->e.type = ENEMY;
 
@@ -105,57 +110,10 @@ static void updatePosition(Enemy *self, int delta){
 	}
 }
 
-static void drawEntity(Entity *self, double shiftX, double shiftY){
-    int frame;
-    int invert = (((Enemy *)self)->milliHitstun / HITSTUN_FLASH_MILLI) % 2;
-    if (((Enemy *)self)->health > 0){
-        if (self->isMoving){
-            frame = ((self->milliPassed / self->milliPerFrame) + 1) % self->numFrames;
-            switch (self->orientation){
-                case UP:
-                    drawInvertedAnimatedSprite(self->sprite, 4 + frame, self->x + 0.5 + shiftX, self->y + 0.5 + shiftY, invert);
-                    break;
-                case DOWN:
-                    drawInvertedAnimatedSprite(self->sprite, 2 + frame, self->x + 0.5 + shiftX, self->y + 0.5 + shiftY, invert);
-                    break;
-                case LEFT:
-                    drawInvertedAnimatedSprite(self->sprite, 0 + frame, self->x + 0.5 + shiftX, self->y + 0.5 + shiftY, invert);
-                    break;
-                case RIGHT:
-                    drawInvertedAnimatedSprite(self->sprite, 6 + frame, self->x + 0.5 + shiftX, self->y + 0.5 + shiftY, invert);
-                    break;
-                default:
-                    break;
-            }
-        } else {
-    //        switch (self->orientation){
-    //            case UP:
-    //                drawAnimatedSprite(self->sprite, 4, self->x + 0.5, self->y + 0.5);
-    //                break;
-    //            case DOWN:
-    //                drawAnimatedSprite(self->sprite, 2, self->x + 0.5, self->y + 0.5);
-    //                break;
-    //            case LEFT:
-    //                drawAnimatedSprite(self->sprite, 0, self->x + 0.5, self->y + 0.5);
-    //                break;
-    //            case RIGHT:
-    //                drawAnimatedSprite(self->sprite, 6, self->x + 0.5, self->y + 0.5);
-    //                break;
-    //            default:
-    //                break;
-    //        }
-        }
-    } else {
-        frame = self->milliPassed / MILLI_PER_DEFAULT_DEATH_FRAME;
-        if (frame < NUM_FRAMES_DEFAULT_DEATH){
-            drawInvertedAnimatedSprite(getDefaultDeathSprite(), 0 + frame, self->x + 0.5 + shiftX, self->y + 0.5 + shiftY, invert);
-        } else {
-            self->active = 0;
-        }
-    }
-}
-
 static void updateFrame(Enemy *self, int delta){
+    int frame;
+    int invert = (self->milliHitstun / HITSTUN_FLASH_MILLI) % 2;
+    
     if (self->health > 0){
         if (self->e.isMoving){
             self->e.milliPassed += delta;
@@ -163,8 +121,38 @@ static void updateFrame(Enemy *self, int delta){
         } else {
             self->e.milliPassed = 0;
         }
+        
+        frame = ((self->e.milliPassed / self->e.milliPerFrame) + 1) % self->e.numFrames;
+        switch (self->e.orientation){
+            case UP:
+                self->e.currFrame = 4 + frame;
+                self->e.invertSprite = invert;
+                break;
+            case DOWN:
+                self->e.currFrame = 2 + frame;
+                self->e.invertSprite = invert;
+                break;
+            case LEFT:
+                self->e.currFrame = 0 + frame;
+                self->e.invertSprite = invert;
+                break;
+            case RIGHT:
+                self->e.currFrame = 6 + frame;
+                self->e.invertSprite = invert;
+                break;
+            default:
+                break;
+        }
     } else {
         self->e.milliPassed += delta;
+        frame = self->e.milliPassed / MILLI_PER_DEFAULT_DEATH_FRAME;
+        self->e.invertSprite = 0;
+        
+        if (frame < NUM_FRAMES_DEFAULT_DEATH){
+            self->e.currFrame = 0 + frame;
+        } else {
+            self->e.active = 0;
+        }
     }
 }
 

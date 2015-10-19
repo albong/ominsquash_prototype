@@ -4,8 +4,8 @@
 CPP      = g++.exe -D__DEBUG__
 CC       = gcc.exe -D__DEBUG__
 WINDRES  = windres.exe
-OBJ      = src/main.o src/input.o src/entity.o src/graphics.o src/player.o src/collisions.o src/area.o src/room.o src/weapon.o debug/hitbox_drawer.o weapons/sword.o src/enemy.o enemies/octorok.o enemies/enemyloader.o enemies/enemyconstants.o
-LINKOBJ  = src/main.o src/input.o src/entity.o src/graphics.o src/player.o src/collisions.o src/area.o src/room.o src/weapon.o debug/hitbox_drawer.o weapons/sword.o src/enemy.o enemies/octorok.o enemies/enemyloader.o enemies/enemyconstants.o
+OBJ      = src/main.o src/input.o src/entity.o src/graphics.o src/player.o src/collisions.o src/area.o src/room.o src/weapon.o debug/hitbox_drawer.o weapons/sword.o src/enemy.o enemies/octorok.o enemies/enemyloader.o enemies/enemyconstants.o src/door.o
+LINKOBJ  = src/main.o src/input.o src/entity.o src/graphics.o src/player.o src/collisions.o src/area.o src/room.o src/weapon.o debug/hitbox_drawer.o weapons/sword.o src/enemy.o enemies/octorok.o enemies/enemyloader.o enemies/enemyconstants.o src/door.o
 LIBS     = -L"C:/Program Files/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib32" -L"D:/SDL-1.2.15/lib" -static-libgcc -lmingw32 -lSDLmain -lSDL -lSDL_image -lSDL_mixer -lSDL_ttf -m32 -g3
 INCS     = -I"C:/Program Files/Dev-Cpp/MinGW64/include" -I"C:/Program Files/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include" -I"D:/SDL-1.2.15/include"
 CXXINCS  = -I"C:/Program Files/Dev-Cpp/MinGW64/include" -I"C:/Program Files/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include" -I"C:/Program Files/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include/c++"
@@ -68,3 +68,6 @@ enemies/enemyloader.o: enemies/enemyloader.c
 
 enemies/enemyconstants.o: enemies/enemyconstants.c
 	$(CC) -c enemies/enemyconstants.c -o enemies/enemyconstants.o $(CFLAGS)
+
+src/door.o: src/door.c
+	$(CC) -c src/door.c -o src/door.o $(CFLAGS)

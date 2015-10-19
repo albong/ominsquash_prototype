@@ -4,6 +4,8 @@
 
 #define square(x) (x*x)
 
+static void drawEntity(Entity *self, double shiftX, double shiftY);
+
 /////////////////////////////////////////////////
 // Loading
 /////////////////////////////////////////////////
@@ -29,10 +31,11 @@ Entity *init_Entity(Entity *self){
     self->milliPassed = 0;
 	self->currFrame = 0;
 	self->numFrames = 0;
+	self->invertSprite = 0;
 	self->sprite = NULL;
 	self->orientation = UP;
 	self->action = NULL;
-	self->draw = NULL;
+	self->draw = &drawEntity;
     self->type = NONE;
 	self->currHitBox = 0;
 	self->hasMoveHitBox = 0;
@@ -123,3 +126,12 @@ void applyExternalMoves(Entity *self, int delta){
     }
 }
 
+
+/////////////////////////////////////////////////
+// Drawing
+/////////////////////////////////////////////////
+static void drawEntity(Entity *self, double shiftX, double shiftY){
+    if (self->sprite != NULL){
+        drawAnimatedSprite(self->sprite, self->currFrame, self->x + 0.5 + shiftX, self->y + 0.5 + shiftY);
+    }
+}

@@ -35,10 +35,11 @@ typedef struct Entity {
 	int milliPerFrame, milliPassed;
 	int currFrame;
 	int numFrames;
+	int invertSprite;
 	Sprite *sprite;
 	Orientation orientation;
 	void (*action)(void *, int);
-	void (*draw)(struct Entity *, double, double);
+	void (*draw)(struct Entity *, double shiftX, double shiftY);
 //	void (*collide)(void *);
 	CollisionType type;
 	int currHitBox;
@@ -57,5 +58,8 @@ void collideWithWallX(CollRect wall, Entity *e, CollRect r, int collCode);
 void collideWithWallY(CollRect wall, Entity *e, CollRect r, int collCode);
 void addExternalMove(Entity *self, double x, double y, double magnitude, double velocity);
 void applyExternalMoves(Entity *self, int delta);
+
+// Drawing
+//static void drawEntity
 
 #endif

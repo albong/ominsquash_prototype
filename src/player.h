@@ -28,7 +28,7 @@ static void updatePlayerOrientation();
 static void updatePlayerPosition(int delta);
 
 // Drawing
-void drawPlayer();
+void drawPlayer(); //we most likely don't really need this?  Maybe?  The player is prolly a special drawing case
 
 #endif
 
