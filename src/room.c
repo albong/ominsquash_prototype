@@ -33,6 +33,9 @@ Room *init_Room(Room *self){
     self->enemyInitialX = NULL; //array
     self->enemyInitialY = NULL; //array
     
+    self->numDoors = 0;
+    self->doors = NULL;
+    
     return self;
 }
 

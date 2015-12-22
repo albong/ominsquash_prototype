@@ -43,15 +43,18 @@ static void doRoomEnemies();
 
 // Drawing
 void drawCurrentRoom();
+static void drawRoomDoors(Room *room, double shiftX, double shiftY);
 static void drawRoomEntities(Room *room, double shiftX, double shiftY);
 static void drawRoomEnemies(Room *room, double shiftX, double shiftY);
 
 // Access
 HitBox getCurrentWalls();
 int getNumRoomEntities();
-int getNumRoomEnemies();
 Entity **getRoomEntityList();
+int getNumRoomEnemies();
 Enemy **getRoomEnemyList();
+size_t getNumRoomDoors();
+Door **getRoomDoorList();
 
 // Demo
 static Room *createFirstDemoRoom();

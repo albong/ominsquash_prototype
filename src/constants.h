@@ -10,6 +10,7 @@
 
 #define ROOM_WIDTH 25
 #define ROOM_HEIGHT 20
+#define TILE_SIZE 16
 
 #define ROOM_LEFT 0
 #define ROOM_RIGHT 1

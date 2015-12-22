@@ -5,8 +5,10 @@
 #include "stdint.h"
 #include "entity.h"
 #include "enemy.h"
+#include "door.h"
 #include "SDL/SDL.h"
 
+//ROOMF_IMPASSABLE is for walls, maybe rename?
 #define ROOMF_IMPASSABLE 0
 #define ROOMF_UL_ANGLED 1
 #define ROOMF_UR_ANGLED 2
@@ -23,13 +25,18 @@ typedef struct Room {
     SDL_Surface *buffer;
     int connectingRooms[4]; //left right up down
     HitBox walls;
+    
     Entity **entities;//array
     int numEntities;
+    
     size_t numEnemies;
     Enemy **enemies;
     size_t *enemyIds; //array
     double *enemyInitialX; //array
     double *enemyInitialY; //array
+    
+    size_t numDoors;
+    Door **doors;
 } Room;
 
 // Loading

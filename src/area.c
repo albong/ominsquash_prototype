@@ -37,8 +37,8 @@ void loadArea(){
     //load the tilesheet
     _current_area.tilesetName = "gfx/area1tiles.png";
     _current_area.tilesheet.sheet = loadImage(_current_area.tilesetName);
-    _current_area.tilesheet.tileWidth = 16;
-    _current_area.tilesheet.tileHeight = 16;
+    _current_area.tilesheet.tileWidth = TILE_SIZE;
+    _current_area.tilesheet.tileHeight = TILE_SIZE;
         
     //load the enemy sprites - do before rooms because rooms store enemies
     _current_area.numEntitySprites = 0;
@@ -56,7 +56,7 @@ void loadArea(){
     _current_area.roomList[0] = createFirstDemoRoom();
     _current_area.roomList[1] = createSecondDemoRoom();
     _current_area.roomList[2] = createThirdDemoRoom();
-    _current_area.currentRoom = _current_area.roomList[0];
+    _current_area.currentRoom = _current_area.roomList[2];
     
     //load the enemies for all of the rooms, set their positions
     loadAreaEnemySprites(&_current_area);
@@ -288,17 +288,28 @@ static void doRoomEnemies(int delta){
 void drawCurrentRoom(){
     if (!changingRooms){
         drawImage(_current_area.currentRoom->buffer, 0, 0);
+        drawRoomDoors(_current_area.currentRoom, 0, 0);
         drawRoomEntities(_current_area.currentRoom, 0, 0);
         drawRoomEnemies(_current_area.currentRoom, 0, 0);
     } else {
         drawImage(_current_area.currentRoom->buffer, room_transition.oldX, room_transition.oldY);
         drawImage(room_transition.newRoom->buffer, room_transition.newX, room_transition.newY);
         
+        drawRoomDoors(_current_area.currentRoom, room_transition.oldX, room_transition.oldY);
+        drawRoomDoors(room_transition.newRoom, room_transition.newX, room_transition.newY);
+        
         drawRoomEntities(_current_area.currentRoom, room_transition.oldX, room_transition.oldY);
         drawRoomEntities(room_transition.newRoom, room_transition.newX, room_transition.newY);
         
         drawRoomEnemies(_current_area.currentRoom, room_transition.oldX, room_transition.oldY);
         drawRoomEnemies(room_transition.newRoom, room_transition.newX, room_transition.newY);
+    }
+}
+
+static void drawRoomDoors(Room *room, double shiftX, double shiftY){
+    size_t i;
+    for (i = 0; i < room->numDoors; i++){
+        room->doors[i]->e.draw((Entity *)room->doors[i], shiftX, shiftY);
     }
 }
 
@@ -334,16 +345,24 @@ int getNumRoomEntities(){
     return _current_area.currentRoom->numEntities;
 }
 
-int getNumRoomEnemies(){
-    return _current_area.currentRoom->numEnemies;
-}
-
 Entity **getRoomEntityList(){
     return _current_area.currentRoom->entities;
 }
 
+int getNumRoomEnemies(){
+    return _current_area.currentRoom->numEnemies;
+}
+
 Enemy **getRoomEnemyList(){
     return _current_area.currentRoom->enemies;
+}
+
+size_t getNumRoomDoors(){
+    return _current_area.currentRoom->numDoors;
+}
+
+Door **getRoomDoorList(){
+    return _current_area.currentRoom->doors;
 }
 
 
@@ -452,17 +471,25 @@ static Room *createThirdDemoRoom(){
     
     room->tileIndices[ROOM_WIDTH/2] = 20;
     clearFlag(room, ROOM_WIDTH/2, ROOMF_IMPASSABLE);
+    room->tileIndices[(ROOM_WIDTH/2) + ROOM_WIDTH * (ROOM_HEIGHT-1)] = 20;
+    clearFlag(room, (ROOM_WIDTH/2) + ROOM_WIDTH * (ROOM_HEIGHT-1), ROOMF_IMPASSABLE);
 
-    room->connectingRooms[0] = -1;
-    room->connectingRooms[1] = -1;
-    room->connectingRooms[2] = -1;
-    room->connectingRooms[3] = -1;
+    room->connectingRooms[0] = 2;
+    room->connectingRooms[1] = 2;
+    room->connectingRooms[2] = 2;
+    room->connectingRooms[3] = 2;
     room->buffer = getEmptySurface(_current_area.tilesheet.tileWidth * ROOM_WIDTH, _current_area.tilesheet.tileHeight * ROOM_HEIGHT);
     generateWallList(room, _current_area.tilesheet.tileWidth);
     drawRoomBuffers(room);
     
     room->numEntities = 0;
     room->numEnemies = 0;
+    
+    Sprite *doorSprite = loadAnimatedSprite("gfx/door1.png", TILE_SIZE);
+    room->numDoors = 2;
+    room->doors = malloc(sizeof(Door *) * room->numDoors);
+    room->doors[0] = createDoor(doorSprite, UP, (ROOM_WIDTH/2) * TILE_SIZE, 0);
+    room->doors[1] = createDoor(doorSprite, DOWN, (ROOM_WIDTH/2) * TILE_SIZE, (ROOM_HEIGHT-1) * TILE_SIZE);
     
     return room;
 }

@@ -13,6 +13,7 @@
 /////////////////////////////////////////////////
 void doCollisions(){
     doWallCollisions();
+    doDoorCollisions();
     doEnemyCollisions();
     doWeaponCollisions();
     
@@ -31,7 +32,7 @@ void doCollisions(){
     which we check everything against.  Then we need to add a enum type to all entites, so
     that when we detect a collision we pass a pointer to both entities into a method
     collide(Entity *e1, Entity *e2), which uses their type (None, Player, Enemy, Wall, etc)
-    to determine what method to pass to perform the collision logic.
+    to determine method to pass to perform the collision logic.
     */
     /*
     Divide the room into blocks of a given size.  Loop over all entities and bucket
@@ -110,6 +111,41 @@ static void doWallCollisions(){
     }
 }
 
+static void doDoorCollisions(){
+    size_t numDoors = getNumRoomDoors();
+    Door **doorList = getRoomDoorList();
+    CollRect temp, playerTemp;
+    int i, j, k, collCode;
+    
+    //player first
+    for (i = 0; i < numDoors; i++){
+        for (j = 0; j < doorList[i]->e.interactHitBox->numRect; j++){
+            temp.x = doorList[i]->e.x + /*doorList[i]->e.changeX +*/ doorList[i]->e.interactHitBox->rects[j].x;
+            temp.y = doorList[i]->e.y + /*doorList[i]->e.changeY +*/ doorList[i]->e.interactHitBox->rects[j].y;
+            temp.w = doorList[i]->e.interactHitBox->rects[j].w;
+            temp.h = doorList[i]->e.interactHitBox->rects[j].h;
+                
+            for (k = 0; k < _player.e.interactHitBox->numRect; k++){
+                playerTemp.x = _player.e.x + _player.e.changeX + _player.e.interactHitBox[0].rects[k].x;
+                playerTemp.y = _player.e.y + _player.e.changeY + _player.e.interactHitBox[0].rects[k].y;
+                playerTemp.w = _player.e.interactHitBox->rects[k].w;
+                playerTemp.h = _player.e.interactHitBox->rects[k].h;
+                
+                collCode = rectangleCollide(playerTemp, temp);
+                if (collCode && !doorList[i]->isLocked && !doorList[i]->isOpen){
+                    //set door as open
+                    printf("open ze dor!\n");
+                    break;
+                }
+            }
+        }
+        
+        //now gotta check movement hitboxes
+    }
+    
+    //check if other stuff collides, or just player?
+}
+
 static void doEnemyCollisions(){
     int numEntities = getNumRoomEntities();
     Entity **entityList = getRoomEntityList();
@@ -129,7 +165,7 @@ static void doEnemyCollisions(){
         }
         for (j = 0; j < entityList[i]->interactHitBox->numRect; j++){
             temp.x = entityList[i]->x + entityList[i]->changeX + entityList[i]->interactHitBox->rects[j].x;
-            temp.y = entityList[i]->y + entityList[i]->interactHitBox->rects[j].y;
+            temp.y = entityList[i]->y + entityList[i]->changeY + entityList[i]->interactHitBox->rects[j].y;
             temp.w = entityList[i]->interactHitBox->rects[j].w;
             temp.h = entityList[i]->interactHitBox->rects[j].h;
                 

@@ -131,7 +131,7 @@ void applyExternalMoves(Entity *self, int delta){
 // Drawing
 /////////////////////////////////////////////////
 static void drawEntity(Entity *self, double shiftX, double shiftY){
-    if (self->sprite != NULL){
+    if (self->sprite != NULL && self->currFrame >= 0){
         drawAnimatedSprite(self->sprite, self->currFrame, self->x + 0.5 + shiftX, self->y + 0.5 + shiftY);
     }
 }
