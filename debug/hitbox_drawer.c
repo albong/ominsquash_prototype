@@ -1,8 +1,14 @@
 #include "hitbox_drawer.h"
 #include "../src/graphics.h"
+#include "../src/entity.h"
 #include "../src/player.h"
 #include "../src/area.h"
 #include "../src/weapon.h"
+#include "../src/enemy.h"
+#include "../src/door.h"
+
+static void drawMoveHitBoxes();
+static void drawInteractHitBoxes();
 
 void drawHitBoxes(int drawMove, int drawInteract){
     if (drawMove){
@@ -74,6 +80,42 @@ void drawMoveHitBoxes(){
             drawUnfilledRect(x, y, w, h, 255, 0, 0);
         }
     }
+    
+    //draw the room's enemies
+    Enemy **enemyList = getRoomEnemyList();
+    for (j = 0; j < getNumRoomEnemies(); j++){
+        if (!enemyList[j]->e.active || !enemyList[j]->e.hasMoveHitBox){
+            continue;
+        }
+        
+        temp = (Entity *)enemyList[j];
+        hitFrame = temp->currHitBox;
+        for (i = 0; i < temp->moveHitBox[hitFrame].numRect; i++){
+            x = temp->x + temp->moveHitBox[temp->currHitBox].rects[i].x;
+            y = temp->y + temp->moveHitBox[temp->currHitBox].rects[i].y;
+            w = temp->moveHitBox[temp->currHitBox].rects[i].w;
+            h = temp->moveHitBox[temp->currHitBox].rects[i].h;
+            drawUnfilledRect(x, y, w, h, 255, 0, 0);
+        }
+    }
+    
+    //draw the room's doors
+    Door **doorList = getRoomDoorList();
+    for (j = 0; j < getNumRoomDoors(); j++){
+        if (!doorList[j]->e.active || !doorList[j]->e.hasMoveHitBox){
+            continue;
+        }
+        
+        temp = (Entity *)doorList[j];
+        hitFrame = temp->currHitBox;
+        for (i = 0; i < temp->moveHitBox[hitFrame].numRect; i++){
+            x = temp->x + temp->moveHitBox[temp->currHitBox].rects[i].x;
+            y = temp->y + temp->moveHitBox[temp->currHitBox].rects[i].y;
+            w = temp->moveHitBox[temp->currHitBox].rects[i].w;
+            h = temp->moveHitBox[temp->currHitBox].rects[i].h;
+            drawUnfilledRect(x, y, w, h, 255, 0, 0);
+        }
+    }
 }
 
 void drawInteractHitBoxes(){
@@ -124,6 +166,42 @@ void drawInteractHitBoxes(){
             w = temp->interactHitBox[temp->currHitBox].rects[i].w;
             h = temp->interactHitBox[temp->currHitBox].rects[i].h;
             drawUnfilledRect(x, y, w, h, 0, 0, 255);
+        }
+    }
+    
+    //draw the room's enemies
+    Enemy **enemyList = getRoomEnemyList();
+    for (j = 0; j < getNumRoomEnemies(); j++){
+        if (!enemyList[j]->e.active || !enemyList[j]->e.hasInteractHitBox){
+            continue;
+        }
+        
+        temp = (Entity *)enemyList[j];
+        hitFrame = temp->currHitBox;
+        for (i = 0; i < temp->interactHitBox[hitFrame].numRect; i++){
+            x = temp->x + temp->interactHitBox[temp->currHitBox].rects[i].x;
+            y = temp->y + temp->interactHitBox[temp->currHitBox].rects[i].y;
+            w = temp->interactHitBox[temp->currHitBox].rects[i].w;
+            h = temp->interactHitBox[temp->currHitBox].rects[i].h;
+            drawUnfilledRect(x, y, w, h, 0, 0, 255);
+        }
+    }
+    
+    //draw the room's doors
+    Door **doorList = getRoomDoorList();
+    for (j = 0; j < getNumRoomDoors(); j++){
+        if (!doorList[j]->e.active || !doorList[j]->e.hasInteractHitBox){
+            continue;
+        }
+        
+        temp = (Entity *)doorList[j];
+        hitFrame = temp->currHitBox;
+        for (i = 0; i < temp->interactHitBox[hitFrame].numRect; i++){
+            x = temp->x + temp->interactHitBox[temp->currHitBox].rects[i].x;
+            y = temp->y + temp->interactHitBox[temp->currHitBox].rects[i].y;
+            w = temp->interactHitBox[temp->currHitBox].rects[i].w;
+            h = temp->interactHitBox[temp->currHitBox].rects[i].h;
+            drawUnfilledRect(x, y, w, h, 255, 0, 0);
         }
     }
 }

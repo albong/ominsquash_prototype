@@ -2,7 +2,5 @@
 #define HITBOX_DRAWER_H
 
 void drawHitBoxes(int drawMovement, int drawInteract);
-void drawMoveHitBoxes();
-void drawInteractHitBoxes();
 
 #endif

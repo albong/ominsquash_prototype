@@ -37,7 +37,7 @@ Enemy *createOctorok(Sprite *sprite){
     enemy->e.moveHitBox[0].rects[0].x = 1;
     enemy->e.moveHitBox[0].rects[0].y = 5;
     enemy->e.moveHitBox[0].rects[0].w = 16;
-    enemy->e.moveHitBox[0].rects[0].h = 8;
+    enemy->e.moveHitBox[0].rects[0].h = 11;
 
     enemy->e.hasInteractHitBox = 1;
     enemy->e.interactHitBox = malloc(sizeof(HitBox) * 1);
@@ -47,7 +47,7 @@ Enemy *createOctorok(Sprite *sprite){
     enemy->e.interactHitBox[0].rects[0].x = 1;
     enemy->e.interactHitBox[0].rects[0].y = 2;
     enemy->e.interactHitBox[0].rects[0].w = 16;
-    enemy->e.interactHitBox[0].rects[0].h = 11;
+    enemy->e.interactHitBox[0].rects[0].h = 14;
     
     enemy->health = DEFAULT_HEALTH;
     enemy->milliHitstun = 0;
