@@ -5,6 +5,7 @@
 #include "player.h"
 #include "weapon.h"
 #include "enemy.h"
+#include "door.h"
 
 #define square(x) (x*x)
 
@@ -130,11 +131,11 @@ static void doDoorCollisions(){
                 playerTemp.y = _player.e.y + _player.e.changeY + _player.e.interactHitBox[0].rects[k].y;
                 playerTemp.w = _player.e.interactHitBox->rects[k].w;
                 playerTemp.h = _player.e.interactHitBox->rects[k].h;
-                
+
                 collCode = rectangleCollide(playerTemp, temp);
                 if (collCode && !doorList[i]->isLocked && !doorList[i]->isOpen){
                     //set door as open
-                    printf("open ze dor!\n");
+                    setDoorOpen(doorList[i], 1);
                     break;
                 }
             }

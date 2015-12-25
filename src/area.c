@@ -157,6 +157,7 @@ void doRoom(int delta){
     totalDelta += delta;
     int newRoom;
     if (!changingRooms){
+        doRoomDoors(delta);
         doRoomEntities(delta);
         doRoomEnemies(delta);
         
@@ -252,6 +253,18 @@ static int checkForRoomChange(){
         return ROOM_DOWN;
     } else {
         return -1;
+    }
+}
+
+void doRoomDoors(int delta){
+    size_t i;
+    Door *self;
+    
+    for (i = 0; i < _current_area.currentRoom->numDoors; i++){
+        self = _current_area.currentRoom->doors[i];
+        if (self->e.active == 1 && self->e.action){
+            self->e.action(self, delta);
+        }
     }
 }
 

@@ -38,7 +38,7 @@ typedef struct Entity {
 	int invertSprite;
 	Sprite *sprite;
 	Orientation orientation;
-	void (*action)(void *, int);
+	void (*action)(void *, int); //probs should be Entity *, but whatevs?
 	void (*draw)(struct Entity *, double shiftX, double shiftY);
 //	void (*collide)(void *);
 	CollisionType type;

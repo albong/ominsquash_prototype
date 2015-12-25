@@ -2,23 +2,31 @@
 #include "hitbox.h"
 
 static Door *init_Door(Door *self);
+static void doDoor(void *self, int delta);
 static void drawDoor(Entity *self, double shiftX, double shiftY);
 
 Door *createDoor(Sprite *sprite, Orientation direction, double x, double y){
     Door *result = init_Door(malloc(sizeof(Door)));
+    
+    result->e.active = 1;
     
     result->e.orientation = direction;
     result->e.x = x;
     result->e.y = y;
     
     result->e.hasInteractHitBox = 1;
-    result->e.interactHitBox = malloc(sizeof(HitBox));
-    result->e.interactHitBox->numCircle = 0;
-    result->e.interactHitBox->numRect = 1;
-    result->e.interactHitBox->rects = malloc(sizeof(CollRect));
+    result->e.interactHitBox = malloc(sizeof(HitBox) * 1);
+    result->e.interactHitBox[0].numCircle = 0;
+    result->e.interactHitBox[0].numRect = 1;
+    result->e.interactHitBox[0].rects = malloc(sizeof(CollRect) * 1);
+    result->e.interactHitBox[0].rects[0].x = -1 * sprite->width;
+    result->e.interactHitBox[0].rects[0].y = -1 * sprite->width;
+    result->e.interactHitBox[0].rects[0].w = sprite->width * 3;
+    result->e.interactHitBox[0].rects[0].h = sprite->width * 3;
     
     result->e.sprite = sprite;
     result->e.numFrames = 3;
+    result->e.milliPerFrame = 500;
     if (direction == UP){
         result->e.currFrame = 0;
     } else if (direction == DOWN){
@@ -28,6 +36,8 @@ Door *createDoor(Sprite *sprite, Orientation direction, double x, double y){
     } else {//if (direction == RIGHT){
         result->e.currFrame = 9;
     }
+    
+    result->e.action = &doDoor;
     
     return result;
 }
@@ -46,12 +56,48 @@ Door *init_Door(Door *self){
     return self;
 }
 
+void doDoor(void *self, int delta){
+    Door *selfp = (Door *)self;
+    if (!selfp->e.active || !selfp->changingState){
+        return;
+    }
+    
+    //this trick works because there are the same number of frames for each door orientation
+    int direction;
+    if (selfp->e.orientation == UP){
+        direction = 0;
+    } else if (selfp->e.orientation == DOWN){
+        direction = 1;
+    } else if (selfp->e.orientation == LEFT){
+        direction = 2;
+    } else {//if (selfp->e.orientation == RIGHT){
+        direction = 3;
+    }
+    
+    //increment the frame up or down
+    selfp->e.milliPassed += delta;
+    int frame = selfp->e.milliPassed / selfp->e.milliPerFrame;
+    if (selfp->isOpen){
+        selfp->e.currFrame = (direction * selfp->e.numFrames) + (selfp->e.numFrames - frame);
+    } else {
+        selfp->e.currFrame = (direction * selfp->e.numFrames) + frame;
+    }
+    
+    //if we've run out of frames then stop, and set state as changed
+    if (frame >= selfp->e.numFrames - 1){
+        selfp->changingState = 0;
+        selfp->isOpen = !selfp->isOpen;
+    }
+}
+
 void setDoorOpen(Door *self, int open){
     if (self == NULL){
         return;
     }
     
-    self->isOpen = open;
+    if (!((self->isOpen && open) || (!self->isOpen && !open))){
+        self->changingState = 1;
+    }
 }
 
 void setDoorLocked(Door *self, int locked){

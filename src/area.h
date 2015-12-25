@@ -38,8 +38,9 @@ void changeRoom(int roomIndex, int direction, int delta);
 void moveRoomEntities();
 void moveRoomEnemies();
 static int checkForRoomChange();
-static void doRoomEntities();
-static void doRoomEnemies();
+static void doRoomDoors(int delta);
+static void doRoomEntities(int delta);
+static void doRoomEnemies(int delta);
 
 // Drawing
 void drawCurrentRoom();
