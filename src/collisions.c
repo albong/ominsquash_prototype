@@ -137,6 +137,10 @@ static void doDoorCollisions(){
                     //set door as open
                     setDoorOpen(doorList[i], 1);
                     break;
+                } else if (!collCode && doorList[i]->isOpen){
+                    //set door as closed
+                    setDoorOpen(doorList[i], 0);
+                    break;
                 }
             }
         }

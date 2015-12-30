@@ -26,7 +26,7 @@ Door *createDoor(Sprite *sprite, Orientation direction, double x, double y){
     
     result->e.sprite = sprite;
     result->e.numFrames = 3;
-    result->e.milliPerFrame = 500;
+    result->e.milliPerFrame = 100;
     if (direction == UP){
         result->e.currFrame = 0;
     } else if (direction == DOWN){
@@ -78,7 +78,7 @@ void doDoor(void *self, int delta){
     selfp->e.milliPassed += delta;
     int frame = selfp->e.milliPassed / selfp->e.milliPerFrame;
     if (selfp->isOpen){
-        selfp->e.currFrame = (direction * selfp->e.numFrames) + (selfp->e.numFrames - frame);
+        selfp->e.currFrame = (direction * selfp->e.numFrames) + (selfp->e.numFrames - frame - 1);
     } else {
         selfp->e.currFrame = (direction * selfp->e.numFrames) + frame;
     }
@@ -87,6 +87,7 @@ void doDoor(void *self, int delta){
     if (frame >= selfp->e.numFrames - 1){
         selfp->changingState = 0;
         selfp->isOpen = !selfp->isOpen;
+        selfp->e.milliPassed = 0;
     }
 }
 

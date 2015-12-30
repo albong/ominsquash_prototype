@@ -56,7 +56,7 @@ void loadArea(){
     _current_area.roomList[0] = createFirstDemoRoom();
     _current_area.roomList[1] = createSecondDemoRoom();
     _current_area.roomList[2] = createThirdDemoRoom();
-    _current_area.currentRoom = _current_area.roomList[0];
+    _current_area.currentRoom = _current_area.roomList[2];
     
     //load the enemies for all of the rooms, set their positions
     loadAreaEnemySprites(&_current_area);
