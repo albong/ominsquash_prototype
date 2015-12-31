@@ -64,13 +64,13 @@ static void doOctorok(Enemy *self, int delta){
             totalDelta = 0;
             int orientation = rand() % 4;
 //            if (orientation == 0){
-//                self->orientation = UP;
+//                self->e.orientation = UP;
 //            } else if (orientation == 1){
-//                self->orientation = DOWN;
+//                self->e.orientation = DOWN;
 //            } else if (orientation == 2){
-//                self->orientation = LEFT;
+//                self->e.orientation = LEFT;
 //            } else if (orientation == 3){
-//                self->orientation = RIGHT;
+//                self->e.orientation = RIGHT;
 //            }
         } else {
             totalDelta -= 750;
