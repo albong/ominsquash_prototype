@@ -2,6 +2,7 @@
 #define PLAYER_H
 
 #include "entity.h"
+#include "enemy.h"
 
 // Structs
 typedef struct Player {
@@ -9,6 +10,7 @@ typedef struct Player {
     int equippedAInd;
     int equippedBInd;
     int health;
+    int milliHitstun;
 } Player;
 
 //Globals
@@ -22,7 +24,7 @@ void doPlayer(int delta);
 void setPlayerTransitioning(int direction);
 void stopPlayerTransitioning();
 void movePlayer();
-void playerCollideWithEnemy(Entity *enemy, int collCode);
+int playerCollideWithEnemy(Enemy *enemy, int collCode);
 static void updatePlayerFrame(int delta);
 static void updatePlayerOrientation();
 static void updatePlayerPosition(int delta);

@@ -16,6 +16,7 @@ Enemy *init_Enemy(Enemy *self){
     self->milliHitstun = 0;
     self->enemySprite = NULL;
     self->deathSprite = getDefaultDeathSprite();
+    self->touchDamage = 0;
     self->takeDamage = NULL;
     self->collide = NULL;
     self->action = NULL;

@@ -156,10 +156,11 @@ static void doDoorCollisions(){
 }
 
 static void doEnemyCollisions(){
-    int numEntities = getNumRoomEntities();
-    Entity **entityList = getRoomEntityList();
+    size_t numEnemies = getNumRoomEnemies();
+    Enemy **enemyList = getRoomEnemyList();
     CollRect temp, playerTemp;
-    int i, j, k, collCode;
+    size_t i, j, k; 
+    int collCode;
 
     /*
     We need to check all the enemies against the player and against all other entities - even walls?
@@ -168,15 +169,16 @@ static void doEnemyCollisions(){
     */
     
     //player first
-    for (i = 0; i < numEntities; i++){
-        if (!entityList[i]->active || !(entityList[i]->type == ENEMY || entityList[i]->type == ENEMY_COLL)){
+    for (i = 0; i < numEnemies; i++){
+        if (!enemyList[i]->e.active){
             continue;
         }
-        for (j = 0; j < entityList[i]->interactHitBox->numRect; j++){
-            temp.x = entityList[i]->x + entityList[i]->changeX + entityList[i]->interactHitBox->rects[j].x;
-            temp.y = entityList[i]->y + entityList[i]->changeY + entityList[i]->interactHitBox->rects[j].y;
-            temp.w = entityList[i]->interactHitBox->rects[j].w;
-            temp.h = entityList[i]->interactHitBox->rects[j].h;
+        
+        for (j = 0; j < enemyList[i]->e.interactHitBox->numRect; j++){
+            temp.x = enemyList[i]->e.x + enemyList[i]->e.changeX + enemyList[i]->e.interactHitBox->rects[j].x;
+            temp.y = enemyList[i]->e.y + enemyList[i]->e.changeY + enemyList[i]->e.interactHitBox->rects[j].y;
+            temp.w = enemyList[i]->e.interactHitBox->rects[j].w;
+            temp.h = enemyList[i]->e.interactHitBox->rects[j].h;
                 
             for (k = 0; k < _player.e.interactHitBox->numRect; k++){
                 playerTemp.x = _player.e.x + _player.e.changeX + _player.e.interactHitBox[0].rects[k].x;
@@ -186,7 +188,7 @@ static void doEnemyCollisions(){
                 
                 collCode = rectangleCollide(playerTemp, temp);
                 if (collCode){
-                    playerCollideWithEnemy(entityList[i], collCode);
+                    playerCollideWithEnemy(enemyList[i], collCode);
                 }
             }
         }

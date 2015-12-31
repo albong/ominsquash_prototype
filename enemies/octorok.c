@@ -51,6 +51,7 @@ Enemy *createOctorok(Sprite *sprite){
     
     enemy->health = DEFAULT_HEALTH;
     enemy->milliHitstun = 0;
+    enemy->touchDamage = 2;
     enemy->takeDamage = &damageOctorok;
     
     return enemy;

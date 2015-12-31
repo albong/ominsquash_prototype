@@ -10,6 +10,7 @@
 static int roomTransition = 0;
 static int transitionDirection = -1;
 static unsigned totalDelta = 0;
+static const hitstunMilli = 1000;
 
 /////////////////////////////////////////////////
 // Loading
@@ -58,6 +59,7 @@ void initPlayer(){
     _player.e.interactHitBox[0].rects[0].h = 16;
         
     _player.health = 12;
+    _player.milliHitstun = 0;
     
     //weapon
     Weapon *sword = createSword();
@@ -102,6 +104,10 @@ void doPlayer(int delta){
     		    _player_weapons.weapons[_player.equippedBInd]->cancelled = 0;
     		}
         }
+        
+        //hitstun decrement
+        _player.milliHitstun = (_player.milliHitstun - delta < 0) ? 0 : _player.milliHitstun - delta;
+        _player.e.invertSprite = (_player.milliHitstun / HITSTUN_FLASH_MILLI) % 2;
         
         //move player and etc
         updatePlayerPosition(delta);
@@ -157,10 +163,20 @@ void stopPlayerTransitioning(){
     totalDelta = 0;
 }
 
-void playerCollideWithEnemy(Entity *enemy, int collCode){
-    //check if in hitstun first
-    
-    printf("WE HIT\n");
+int playerCollideWithEnemy(Enemy *enemy, int collCode){
+    if (_player.milliHitstun == 0){
+    printf("we hit\n");
+        _player.health -= enemy->touchDamage;
+        if (_player.health <= 0){
+            printf("Game over I guess?\n");
+        }
+        _player.milliHitstun = hitstunMilli;
+        addExternalMove(&_player.e, enemy->e.x, enemy->e.y, 20, 1);
+        
+        return 1;
+    } else {
+        return 0;
+    }
 }
 
 void movePlayer(){
@@ -222,6 +238,8 @@ static void updatePlayerPosition(int delta){
 	} else if (_input.right == 1){
 		_player.e.changeX = _player.e.pixelsPerMilli * delta/1000.0;
 	}
+	
+	applyExternalMoves(&_player.e, delta);
 }
 
 
@@ -229,41 +247,26 @@ static void updatePlayerPosition(int delta){
 // Drawing
 /////////////////////////////////////////////////
 void drawPlayer(){
-    if (_player.e.isMoving || roomTransition){
-        int frame = ((_player.e.milliPassed / _player.e.milliPerFrame) + 1) % _player.e.numFrames;
-        switch (_player.e.orientation){
-            case UP:
-                drawAnimatedSprite(_player.e.sprite, 4 + frame, _player.e.x + 0.5, _player.e.y + 0.5);
-                break;
-            case DOWN:
-                drawAnimatedSprite(_player.e.sprite, 2 + frame, _player.e.x + 0.5, _player.e.y + 0.5);
-                break;
-            case LEFT:
-                drawAnimatedSprite(_player.e.sprite, 0 + frame, _player.e.x + 0.5, _player.e.y + 0.5);
-                break;
-            case RIGHT:
-                drawAnimatedSprite(_player.e.sprite, 6 + frame, _player.e.x + 0.5, _player.e.y + 0.5);
-                break;
-            default:
-                break;
-        }
-    } else {
-        switch (_player.e.orientation){
-            case UP:
-                drawAnimatedSprite(_player.e.sprite, 4, _player.e.x + 0.5, _player.e.y + 0.5);
-                break;
-            case DOWN:
-                drawAnimatedSprite(_player.e.sprite, 2, _player.e.x + 0.5, _player.e.y + 0.5);
-                break;
-            case LEFT:
-                drawAnimatedSprite(_player.e.sprite, 0, _player.e.x + 0.5, _player.e.y + 0.5);
-                break;
-            case RIGHT:
-                drawAnimatedSprite(_player.e.sprite, 6, _player.e.x + 0.5, _player.e.y + 0.5);
-                break;
-            default:
-                break;
-        }
+    //determine the frame to be drawn and whether or not to invert
+    int frame = ((_player.e.milliPassed / _player.e.milliPerFrame) + 1) % _player.e.numFrames;
+    frame = (_player.e.isMoving || roomTransition) ? frame : 0;    
+    int invert = (!roomTransition) ? _player.e.invertSprite : 0;
+
+    switch (_player.e.orientation){
+        case UP:
+            drawInvertedAnimatedSprite(_player.e.sprite, 4 + frame, _player.e.x + 0.5, _player.e.y + 0.5, invert);
+            break;
+        case DOWN:
+            drawInvertedAnimatedSprite(_player.e.sprite, 2 + frame, _player.e.x + 0.5, _player.e.y + 0.5, invert);
+            break;
+        case LEFT:
+            drawInvertedAnimatedSprite(_player.e.sprite, 0 + frame, _player.e.x + 0.5, _player.e.y + 0.5, invert);
+            break;
+        case RIGHT:
+            drawInvertedAnimatedSprite(_player.e.sprite, 6 + frame, _player.e.x + 0.5, _player.e.y + 0.5, invert);
+            break;
+        default:
+            break;
     }
     
     //draw my weapons

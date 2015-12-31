@@ -13,6 +13,7 @@ typedef struct Enemy {
     int milliHitstun;
     Sprite *enemySprite;
     Sprite *deathSprite;
+    int touchDamage;
     int (*takeDamage)(struct Enemy *self, int amount);
     void (*collide)(struct Enemy *self, void *o, int collCode, CollisionType type);
     void (*action)(struct Enemy *self, int delta);
