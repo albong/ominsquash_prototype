@@ -201,7 +201,7 @@ void drawInteractHitBoxes(){
             y = temp->y + temp->interactHitBox[temp->currHitBox].rects[i].y;
             w = temp->interactHitBox[temp->currHitBox].rects[i].w;
             h = temp->interactHitBox[temp->currHitBox].rects[i].h;
-            drawUnfilledRect(x, y, w, h, 255, 0, 0);
+            drawUnfilledRect(x, y, w, h, 0, 0, 255);
         }
     }
 }
