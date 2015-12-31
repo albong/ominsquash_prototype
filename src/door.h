@@ -12,6 +12,7 @@ typedef struct Door {
 } Door;
 
 Door *createDoor(Sprite *sprite, Orientation direction, double x, double y); //replace id with sprite - have areas have list of door sprites
+void setDoorOpening(Door *self, int open);
 void setDoorOpen(Door *self, int open);
 void setDoorLocked(Door *self, int locked);
 

@@ -78,6 +78,7 @@ Sprite *loadAnimatedSprite(char *name, int frameWidth){
     Sprite *result = (Sprite *) malloc(sizeof(Sprite));
     result->image = loadImage(name);
     result->width = frameWidth;
+    result->height = result->image->h;
     return result;
 }
 

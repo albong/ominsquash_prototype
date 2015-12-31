@@ -10,6 +10,7 @@
 typedef struct Sprite{
     SDL_Surface *image;
     int width;
+    int height;
 } Sprite;
 
 // Globals

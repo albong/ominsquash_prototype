@@ -14,6 +14,16 @@ Door *createDoor(Sprite *sprite, Orientation direction, double x, double y){
     result->e.x = x;
     result->e.y = y;
     
+    result->e.hasMoveHitBox = 1;
+    result->e.moveHitBox = malloc(sizeof(HitBox) * 1);
+    result->e.moveHitBox[0].numCircle = 0;
+    result->e.moveHitBox[0].numRect = 1;
+    result->e.moveHitBox[0].rects = malloc(sizeof(CollRect) * 1);
+    result->e.moveHitBox[0].rects[0].x = 0;
+    result->e.moveHitBox[0].rects[0].y = 0;
+    result->e.moveHitBox[0].rects[0].w = sprite->width;
+    result->e.moveHitBox[0].rects[0].h = sprite->height;
+    
     result->e.hasInteractHitBox = 1;
     result->e.interactHitBox = malloc(sizeof(HitBox) * 1);
     result->e.interactHitBox[0].numCircle = 0;
@@ -24,9 +34,11 @@ Door *createDoor(Sprite *sprite, Orientation direction, double x, double y){
     result->e.interactHitBox[0].rects[0].w = sprite->width * 3;
     result->e.interactHitBox[0].rects[0].h = sprite->width * 3;
     
+    result->e.currHitBox = 0;
+    
     result->e.sprite = sprite;
     result->e.numFrames = 3;
-    result->e.milliPerFrame = 100;
+    result->e.milliPerFrame = 75;
     if (direction == UP){
         result->e.currFrame = 0;
     } else if (direction == DOWN){
@@ -91,13 +103,38 @@ void doDoor(void *self, int delta){
     }
 }
 
-void setDoorOpen(Door *self, int open){
+void setDoorOpening(Door *self, int open){
     if (self == NULL){
         return;
     }
     
     if (!((self->isOpen && open) || (!self->isOpen && !open))){
         self->changingState = 1;
+    }
+}
+
+void setDoorOpen(Door *self, int open){
+    if (self == NULL){
+        return;
+    }
+    
+    //this trick works because there are the same number of frames for each door orientation
+    int direction;
+    if (self->e.orientation == UP){
+        direction = 0;
+    } else if (self->e.orientation == DOWN){
+        direction = 1;
+    } else if (self->e.orientation == LEFT){
+        direction = 2;
+    } else {//if (self->e.orientation == RIGHT){
+        direction = 3;
+    }
+    
+    self->isOpen = open;
+    self->changingState = 0;
+    self->e.currFrame = (direction * self->e.numFrames);
+    if (open){
+        self->e.currFrame += (self->e.numFrames - 1);
     }
 }
 

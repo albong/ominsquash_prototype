@@ -53,6 +53,7 @@ void setEnemyInitalPositions(Room *room);
 void resetEntityPositions(Room *room);
 void resetEnemyPositions(Room *room);
 void clearAndResetEnemies(Room *room);
+void setDoorStates(Room *room, int direction);
 
 /*
 we need some sort of way to associate a tileset with a room - might make sense to

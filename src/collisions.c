@@ -135,11 +135,11 @@ static void doDoorCollisions(){
                 collCode = rectangleCollide(playerTemp, temp);
                 if (collCode && !doorList[i]->isLocked && !doorList[i]->isOpen){
                     //set door as open
-                    setDoorOpen(doorList[i], 1);
+                    setDoorOpening(doorList[i], 1);
                     break;
                 } else if (!collCode && doorList[i]->isOpen){
                     //set door as closed
-                    setDoorOpen(doorList[i], 0);
+                    setDoorOpening(doorList[i], 0);
                     break;
                 }
             }

@@ -166,12 +166,13 @@ void doRoom(int delta){
             totalDelta = 0;
             changingRooms = 1;
             changingToRoom = newRoom;
-            changeRoom(_current_area.currentRoom->connectingRooms[changingToRoom], changingToRoom, delta);
             room_transition.newRoom = _current_area.roomList[_current_area.currentRoom->connectingRooms[newRoom]];
             resetEntityPositions(room_transition.newRoom);
             resetEnemyPositions(room_transition.newRoom);
             clearAndResetEnemies(room_transition.newRoom);
+            setDoorStates(room_transition.newRoom, changingToRoom);
             setPlayerTransitioning(changingToRoom);
+            changeRoom(_current_area.currentRoom->connectingRooms[changingToRoom], changingToRoom, delta);
         }
     } else {
         changeRoom(_current_area.currentRoom->connectingRooms[changingToRoom], changingToRoom, delta);
