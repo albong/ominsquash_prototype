@@ -65,6 +65,8 @@ void loadArea(){
     for (i = 0; i < _current_area.numRooms; i++){
         resetEnemyPositions(_current_area.roomList[i]);
     }
+    
+    _current_area.changingRooms;
 }
 
 static void loadEntitySprites(){
@@ -165,6 +167,7 @@ void doRoom(int delta){
         if (newRoom >= 0 && _current_area.currentRoom->connectingRooms[newRoom] != -1){
             totalDelta = 0;
             changingRooms = 1;
+            _current_area.changingRooms = 1;
             changingToRoom = newRoom;
             room_transition.newRoom = _current_area.roomList[_current_area.currentRoom->connectingRooms[newRoom]];
             resetEntityPositions(room_transition.newRoom);
@@ -213,6 +216,7 @@ void changeRoom(int roomIndex, int direction, int delta){
     
     if (transPercent >= 1){
         changingRooms = 0;
+        _current_area.changingRooms = 0;
         _current_area.currentRoom = _current_area.roomList[_current_area.currentRoom->connectingRooms[direction]];
         stopPlayerTransitioning();
     }

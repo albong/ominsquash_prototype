@@ -49,6 +49,9 @@ int main(int argc, char *argv[]){
         doRoom(delta);
         
         //do any collisions
+        /*
+            Do we need to skip if changing rooms?
+        */
         doCollisions();
 
         //update positions

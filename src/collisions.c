@@ -113,6 +113,10 @@ static void doWallCollisions(){
 }
 
 static void doDoorCollisions(){
+    if (_current_area.changingRooms){
+        return;
+    }
+    
     size_t numDoors = getNumRoomDoors();
     Door **doorList = getRoomDoorList();
     CollRect temp, playerTemp;

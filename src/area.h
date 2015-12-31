@@ -22,6 +22,7 @@ typedef struct Area {
     int *entitySpriteWidths;
     Sprite **sprites;
     int numEntitySprites;
+    int changingRooms;
 } Area;
 
 // Globals

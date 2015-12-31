@@ -152,10 +152,10 @@ void setDoorStates(Room *self, int direction){
             dy2 = dy1 + self->doors[i]->e.moveHitBox[self->doors[i]->e.currHitBox].rects[0].h;
             
             // r1.x+r1.w <= r2.x || r2.x+r2.w <= r1.x || r1.y+r1.h <= r2.y || r2.y+r2.h <= r1.y
-            if ((((direction == ROOM_UP || direction == ROOM_DOWN) && (orientation == DOWN || orientation == UP)) && 
+            if ((((direction == ROOM_UP && orientation == DOWN) || (direction == ROOM_DOWN && orientation == UP)) && 
                     ((x1 <= dx1 && dx1 <= x2) || (dx1 <= x2 && x2 <= dx2))) 
                     ||
-                    (((direction == ROOM_LEFT || direction == ROOM_RIGHT) && (orientation == LEFT || orientation == RIGHT)) && 
+                    (((direction == ROOM_RIGHT && orientation == LEFT) || (direction == ROOM_LEFT && orientation == RIGHT)) && 
                     ((y1 <= dy1 && dy1 <= y2) || (dy1 <= y2 && y2 <= dy2)))
                     ){
                 setDoorOpen(self->doors[i], 1);
