@@ -171,7 +171,7 @@ int playerCollideWithEnemy(Enemy *enemy, int collCode){
             printf("Game over I guess?\n");
         }
         _player.milliHitstun = hitstunMilli;
-        addExternalMove(&_player.e, enemy->e.x, enemy->e.y, 20, 1);
+        addImpactMove(&_player.e, enemy->e.x, enemy->e.y, 15, 1);
         
         return 1;
     } else {

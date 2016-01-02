@@ -102,6 +102,10 @@ void addExternalMove(Entity *self, double x, double y, double magnitude, double 
     self->externalMove[self->numExternalMove-1].velocity = velocity;
 }
 
+void addImpactMove(Entity *self, double xFrom, double yFrom, double magnitude, double velocity){
+    addExternalMove(self, self->x - xFrom, self->y - yFrom, magnitude, velocity);
+}
+
 void applyExternalMoves(Entity *self, int delta){
     size_t i;
     double delX, delY, distance, scale;

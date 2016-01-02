@@ -57,6 +57,7 @@ void moveEntity(Entity *e);
 void collideWithWallX(CollRect wall, Entity *e, CollRect r, int collCode);
 void collideWithWallY(CollRect wall, Entity *e, CollRect r, int collCode);
 void addExternalMove(Entity *self, double x, double y, double magnitude, double velocity);
+void addImpactMove(Entity *self, double xFrom, double yFrom, double magnitude, double velocity);
 void applyExternalMoves(Entity *self, int delta);
 
 // Drawing
