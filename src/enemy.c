@@ -1,8 +1,9 @@
 #include "enemy.h"
+#include "player.h"
 
 static Sprite *defaultDeathSprite = NULL;
-static void drawEnemy(Entity *self, double shiftX, double shiftY);
-
+static void defaultDrawEnemy(Entity *self, double shiftX, double shiftY);
+static void defaultCollidePlayer(Enemy *self, int collCode);
 /////////////////////////////////////////////////
 // Loading
 /////////////////////////////////////////////////
@@ -18,10 +19,10 @@ Enemy *init_Enemy(Enemy *self){
     self->deathSprite = getDefaultDeathSprite();
     self->touchDamage = 0;
     self->takeDamage = NULL;
-    self->collide = NULL;
+    self->collidePlayer = &defaultCollidePlayer;
     self->action = NULL;
     
-    self->e.draw = &drawEnemy;
+    self->e.draw = &defaultDrawEnemy;
 
     return self;
 }
@@ -33,7 +34,7 @@ Sprite *getDefaultDeathSprite(){
     return defaultDeathSprite;
 }
 
-static void drawEnemy(Entity *self, double shiftX, double shiftY){
+void defaultDrawEnemy(Entity *self, double shiftX, double shiftY){
     if (((Enemy *)self)->health > 0 && self->sprite != NULL){
         switch (self->orientation){
             case UP:
@@ -60,3 +61,8 @@ static void drawEnemy(Entity *self, double shiftX, double shiftY){
     }
 }
 
+void defaultCollidePlayer(Enemy *self, int collCode){
+    if (playerTakeDamage(self->touchDamage)){
+        addImpactMove(&_player.e, self->e.x, self->e.y, 15, 1);
+    }
+}

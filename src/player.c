@@ -163,16 +163,14 @@ void stopPlayerTransitioning(){
     totalDelta = 0;
 }
 
-int playerCollideWithEnemy(Enemy *enemy, int collCode){
+int playerTakeDamage(int amount){
     if (_player.milliHitstun == 0){
-    printf("we hit\n");
-        _player.health -= enemy->touchDamage;
+        printf("we hit\n");
+        _player.health -= amount;
         if (_player.health <= 0){
             printf("Game over I guess?\n");
         }
         _player.milliHitstun = hitstunMilli;
-        addImpactMove(&_player.e, enemy->e.x, enemy->e.y, 15, 1);
-        
         return 1;
     } else {
         return 0;

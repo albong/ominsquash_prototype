@@ -15,7 +15,7 @@ typedef struct Enemy {
     Sprite *deathSprite;
     int touchDamage;
     int (*takeDamage)(struct Enemy *self, int amount);
-    void (*collide)(struct Enemy *self, void *o, int collCode, CollisionType type);
+    void (*collidePlayer)(struct Enemy *self, int collCode);
     void (*action)(struct Enemy *self, int delta);
 } Enemy;
 

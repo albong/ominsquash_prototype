@@ -24,7 +24,7 @@ void doPlayer(int delta);
 void setPlayerTransitioning(int direction);
 void stopPlayerTransitioning();
 void movePlayer();
-int playerCollideWithEnemy(Enemy *enemy, int collCode);
+int playerTakeDamage(int amount);
 static void updatePlayerFrame(int delta);
 static void updatePlayerOrientation();
 static void updatePlayerPosition(int delta);

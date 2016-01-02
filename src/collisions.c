@@ -187,8 +187,8 @@ static void doEnemyCollisions(){
                 playerTemp.h = _player.e.interactHitBox->rects[k].h;
                 
                 collCode = rectangleCollide(playerTemp, temp);
-                if (collCode){
-                    playerCollideWithEnemy(enemyList[i], collCode);
+                if (collCode && enemyList[i]->collidePlayer != NULL){
+                    enemyList[i]->collidePlayer(enemyList[i], collCode);
                 }
             }
         }
