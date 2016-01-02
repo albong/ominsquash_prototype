@@ -166,7 +166,7 @@ static void updateFrame(Enemy *self, int delta){
     Another thing to add here is that this part is probably always going to run, so we might want to add a "constant" function pointer for anything special to call after this has been called
  */
 static int damageOctorok(Enemy *self, int damage){
-    if (self->milliHitstun == 0){
+    if (self->milliHitstun == 0 && self->health > 0){
         self->health -= damage;
         if (self->health <= 0){
             self->e.milliPassed = 0;
