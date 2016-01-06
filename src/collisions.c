@@ -170,7 +170,7 @@ static void doEnemyCollisions(){
     
     //player first
     for (i = 0; i < numEnemies; i++){
-        if (!enemyList[i]->e.active){
+        if (!enemyList[i]->e.active || enemyList[i]->health <= 0){
             continue;
         }
         
