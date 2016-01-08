@@ -1,6 +1,8 @@
 #include "octorok.h"
 #include "../src/constants.h"
+#include "../src/entity.h"
 #include "../src/graphics.h"
+#include "../src/hitbox.h"
 #include <stdlib.h>
 
 static int totalDelta = 0;

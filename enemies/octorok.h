@@ -1,7 +1,7 @@
-#ifndef OCTOROK_H
-#define OCTOROK_H
+#ifndef ENEMY_OCTOROK_H
+#define ENEMY_OCTOROK_H
 
-#include "../src/entity.h"
+//#include "../src/entity.h"
 #include "../src/enemy.h"
 #include "../src/graphics.h"
 
