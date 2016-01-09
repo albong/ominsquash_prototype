@@ -122,6 +122,17 @@ void drawInteractHitBoxes(){
     int i, j, k;
     int x, y, w, h;
     
+    //draw the player's interact box
+    if (_player.e.hasInteractHitBox){
+        for (i = 0; i < _player.e.interactHitBox[_player.e.currHitBox].numRect; i++){
+            x = _player.e.x + _player.e.interactHitBox[_player.e.currHitBox].rects[i].x;
+            y = _player.e.y + _player.e.interactHitBox[_player.e.currHitBox].rects[i].y;
+            w = _player.e.interactHitBox[_player.e.currHitBox].rects[i].w;
+            h =_player.e.interactHitBox[_player.e.currHitBox].rects[i].h;
+            drawUnfilledRect(x, y, w, h, 0, 0, 255);
+        }
+    }
+    
     //draw the player's weapons
     Weapon *wep;
     if (_player.equippedAInd != -1){
