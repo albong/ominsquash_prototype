@@ -275,3 +275,11 @@ void drawPlayer(){
         _player_weapons.weapons[_player.equippedAInd]->e.draw(&_player_weapons.weapons[_player.equippedBInd]->e, 0, 0);
     }
 }
+
+
+/////////////////////////////////////////////////
+// Access
+/////////////////////////////////////////////////
+int isPlayerInteracting(){
+    return _input.x;
+}

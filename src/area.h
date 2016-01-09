@@ -18,10 +18,10 @@ typedef struct Area {
     size_t numRooms;
 	Room *currentRoom;
     Room **roomList;
-    char **entitySpriteNames;
-    int *entitySpriteWidths;
-    Sprite **sprites;
-    int numEntitySprites;
+//    char **entitySpriteNames;
+//    int *entitySpriteWidths;
+//    Sprite **sprites;
+//    int numEntitySprites;
     int changingRooms;
 } Area;
 
@@ -30,7 +30,7 @@ Area _current_area;
 
 // Loading
 void loadArea();
-static void loadEntitySprites();
+//static void loadEntitySprites();
 static void drawRoomBuffers(Room *room);
 
 // Logic

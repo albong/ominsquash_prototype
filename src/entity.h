@@ -47,6 +47,8 @@ typedef struct Entity {
 	int hasInteractHitBox;
 	HitBox *moveHitBox;//array
 	HitBox *interactHitBox;//array
+	int interactable; //when we move to single hitboxes and collision groups, this will be replaced by hasInteractHitbox
+	void (*interact)(struct Entity *self);
 } Entity;
 
 // Loading

@@ -25,8 +25,11 @@ Room *init_Room(Room *self){
     self->walls.rects = NULL;
     self->walls.circles = NULL;
     
-    self->entities = NULL;
     self->numEntities = 0;
+    self->entities = NULL;
+    self->entityIds = NULL; //array
+    self->entityInitialX = NULL; //array
+    self->entityInitialY = NULL; //array
     
     self->numEnemies = 0;
     self->enemies = NULL;
@@ -84,15 +87,15 @@ void generateWallList(Room *room, int tileSize){
     }
 }
 
-void setEntityInitalPositions(Room *room){
-    int i;
+void setEntityInitialPositions(Room *room){
+    size_t i;
     for (i = 0; i < room->numEntities; i++){
-        room->entities[i]->startX = room->entities[i]->x;
-        room->entities[i]->startY = room->entities[i]->y;
+        room->entities[i]->startX = room->entityInitialX[i];
+        room->entities[i]->startY = room->entityInitialX[i];
     }
 }
 
-void setEnemyInitalPositions(Room *room){
+void setEnemyInitialPositions(Room *room){
     size_t i;
     for (i = 0; i < room->numEnemies; i++){
         room->enemies[i]->e.startX = room->enemyInitialX[i];

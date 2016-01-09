@@ -42,7 +42,8 @@ Entity *init_Entity(Entity *self){
 	self->hasInteractHitBox = 0;
 	self->moveHitBox = NULL;
 	self->interactHitBox = NULL;
-    
+    self->interactable = 0;
+	self->interact = NULL;
     return self;
 }
 

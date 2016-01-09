@@ -26,8 +26,11 @@ typedef struct Room {
     int connectingRooms[4]; //left right up down
     HitBox walls;
     
+    size_t numEntities;
     Entity **entities;//array
-    int numEntities;
+    size_t *entityIds; //array
+    double *entityInitialX; //array
+    double *entityInitialY; //array
     
     size_t numEnemies;
     Enemy **enemies;
@@ -48,8 +51,8 @@ void setFlag(Room *room, int index, int flagNum);
 void clearFlag(Room *room, int index, int flagNum);
 void toggleFlag(Room *room, int index, int flagNum);
 void generateWallList(Room *room, int tileSize);
-void setEntityInitalPositions(Room *room);
-void setEnemyInitalPositions(Room *room);
+void setEntityInitialPositions(Room *room);
+void setEnemyInitialPositions(Room *room);
 void resetEntityPositions(Room *room);
 void resetEnemyPositions(Room *room);
 void clearAndResetEnemies(Room *room);
