@@ -6,11 +6,6 @@
 
 // Logic
 void doCollisions();
-static void doWallCollisions();
-static void doDoorCollisions();
-static void doEnemyCollisions();
-static void doWeaponCollisions();
-static void enemiesCollideWithWeapon(Weapon *w);
 
 // Collisions
 static int rectangleCollide(CollRect r1, CollRect r2);

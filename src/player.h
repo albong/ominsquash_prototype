@@ -33,7 +33,7 @@ static void updatePlayerPosition(int delta);
 void drawPlayer(); //we most likely don't really need this?  Maybe?  The player is prolly a special drawing case
 
 // Access
-int isPlayerInteracting();
+int isPlayerInteractable();
 
 #endif
 

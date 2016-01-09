@@ -89,6 +89,14 @@ void getInput(){
 						_input.b = 0;
 						break;
 					
+					case SDLK_w:
+						_input.x = 0;
+						break;
+						
+					case SDLK_e:
+						_input.y = 0;
+						break;
+					
 					case SDLK_x:
 						_input.select = 0;
 						break;

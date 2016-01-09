@@ -53,10 +53,10 @@ void initPlayer(){
     _player.e.interactHitBox[0].numCircle = 0;
     _player.e.interactHitBox[0].numRect = 1;
     _player.e.interactHitBox[0].rects = malloc(sizeof(CollRect) * 1);
-    _player.e.interactHitBox[0].rects[0].x = 1;
-    _player.e.interactHitBox[0].rects[0].y = 1;
-    _player.e.interactHitBox[0].rects[0].w = 14;
-    _player.e.interactHitBox[0].rects[0].h = 16;
+    _player.e.interactHitBox[0].rects[0].x = -3;
+    _player.e.interactHitBox[0].rects[0].y = -3;
+    _player.e.interactHitBox[0].rects[0].w = 22;
+    _player.e.interactHitBox[0].rects[0].h = 24;
         
     _player.health = 12;
     _player.milliHitstun = 0;
@@ -280,6 +280,6 @@ void drawPlayer(){
 /////////////////////////////////////////////////
 // Access
 /////////////////////////////////////////////////
-int isPlayerInteracting(){
+int isPlayerInteractable(){
     return _input.x;
 }
