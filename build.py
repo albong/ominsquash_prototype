@@ -81,16 +81,38 @@ def configure():
     INCS = "-I\"C:/Program Files/Dev-Cpp/MinGW64/include\" -I\"C:/Program\ Files/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include\" -I\"C:/Program Files/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include\" -I\"D:/SDL-1.2.15/include\""
     CFLAGS = INCS + " -m32 -g3"
 
-def findFiles():
+def findIgnore():
+    """read the file build.ignore if present and use the list to exclude files
+    from the build"""
+    toIgnore = []
+    try:
+        with open("build.ignore", "r") as fin:
+            for line in fin:
+                line = line.strip()
+                if len(line) > 0 and line[0] != "#":
+                    line.replace("/", os.sep)
+                    toIgnore.append(BUILD_DIR + line)
+    except IOError:
+        pass
+                
+    return toIgnore
+    
+def findFiles(toIgnore):
     """locate c files"""
     global PLATFORM
     cFiles = []
     oFiles = []
     for (dirpath, dirnames, filenames) in os.walk(BUILD_DIR):
+        if dirpath in toIgnore:
+            continue
+            
         for name in filenames:
             if len(name) > 2 and name[-2:] == ".c":
-                cf = os.path.join(dirpath, name) 
+                cf = os.path.join(dirpath, name)
                 of = os.path.join(dirpath, name[:-2] + ".o")
+                
+                if cf in toIgnore:
+                    continue
                 
                 cFiles.append(cf)
                 oFiles.append(of)
@@ -117,8 +139,11 @@ os.chdir(BUILD_DIR)
 #set compilation variables
 configure()
 
+#load files and directories to be ignored
+toIgnore = findIgnore()
+
 #locate files
-cFiles, oFiles = findFiles()
+cFiles, oFiles = findFiles(toIgnore)
 
 #remove object files for c files
 clean(oFiles)
