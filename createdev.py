@@ -35,7 +35,7 @@ def clean():
     except OSError:
         pass
 
-def writeHeader(oFile, folders):
+def writeHeader(oFile, folders, numUnits):
     """write the header for the project file"""
     oFile.write(
     "[Project]\n" +
@@ -69,7 +69,7 @@ def writeHeader(oFile, folders):
     "SupportXPThemes=0\n" +
     "CompilerSet=4\n" +
     "CompilerSettings=0000000100000000001000000\n" +
-    "UnitCount=44\n" +
+    "UnitCount=" + str(numUnits) + "\n" +
     "\n" + 
     "[VersionInfo]\n" +
     "Major=1\n" +
@@ -126,5 +126,5 @@ folders.sort()
 
 #write out the file
 with open(DEV_FILE, "w+") as oFile:
-    writeHeader(oFile, folders)
+    writeHeader(oFile, folders, len(files))
     writeUnits(oFile, files)
