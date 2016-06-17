@@ -14,7 +14,7 @@ typedef struct Sprite{
 } Sprite;
 
 // Globals
-static SDL_Surface *screen;
+// static SDL_Surface *screen;
 static TTF_Font *font;
 
 // SDL 
