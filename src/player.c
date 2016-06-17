@@ -58,8 +58,6 @@ void initPlayer(){
     _player.e.interactHitBox[0].rects[0].w = 22;
     _player.e.interactHitBox[0].rects[0].h = 24;
         
-    _player.hasInteracted = 0;
-        
     _player.health = 12;
     _player.milliHitstun = 0;
     
@@ -110,12 +108,7 @@ void doPlayer(int delta){
         //hitstun decrement
         _player.milliHitstun = (_player.milliHitstun - delta < 0) ? 0 : _player.milliHitstun - delta;
         _player.e.invertSprite = (_player.milliHitstun / HITSTUN_FLASH_MILLI) % 2;
- 
-        //set interactability
-        if (_player.hasInteracted && !_input.x){
-            _player.hasInteracted = 0;
-        }
- 
+
         //move player and etc
         updatePlayerPosition(delta);
 		updatePlayerOrientation();
@@ -288,10 +281,5 @@ void drawPlayer(){
 // Access
 /////////////////////////////////////////////////
 int isPlayerInteractable(){
-    return _input.x && !_player.hasInteracted;
+    return _input.x;
 }
-
-void setPlayerInteracted(){
-    _player.hasInteracted = 1;
-}
-

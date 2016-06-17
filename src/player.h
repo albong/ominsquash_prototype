@@ -11,7 +11,6 @@ typedef struct Player {
     int equippedBInd;
     int health;
     int milliHitstun;
-    int hasInteracted;
 } Player;
 
 //Globals
@@ -35,7 +34,6 @@ void drawPlayer(); //we most likely don't really need this?  Maybe?  The player 
 
 // Access
 int isPlayerInteractable();
-void setPlayerInteracted();
 
 #endif
 

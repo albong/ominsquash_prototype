@@ -212,9 +212,6 @@ void doEntityCollisions(){
     }
     
     //other entites?
-    
-    //if we made it this far, the player pushed the interact button, and we shouldn't check interaction again
-    setPlayerInteracted();
 }
 
 void doWeaponCollisions(){
