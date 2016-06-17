@@ -111,8 +111,10 @@ void doPlayer(int delta){
         _player.milliHitstun = (_player.milliHitstun - delta < 0) ? 0 : _player.milliHitstun - delta;
         _player.e.invertSprite = (_player.milliHitstun / HITSTUN_FLASH_MILLI) % 2;
  
-        //if we made it this far, the player pushed the interact button, and we shouldn't check interaction again
-        setPlayerInteracted();
+        //set interactability
+        if (_player.hasInteracted && !_input.x){
+            _player.hasInteracted = 0;
+        }
  
         //move player and etc
         updatePlayerPosition(delta);
