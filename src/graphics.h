@@ -23,6 +23,7 @@ void stopSDL();
 
 // Loading
 SDL_Surface *loadImage(char *name);
+Sprite *loadSprite(char *name);
 Sprite *loadAnimatedSprite(char *name, int frameWidth);
 SDL_Surface* getEmptySurface(int width, int height);
 

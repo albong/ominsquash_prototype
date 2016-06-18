@@ -25,17 +25,12 @@ int main(int argc, char *argv[]){
     //when the program exits, clean everything up
     atexit(stopSDL);
     
+    //initialization stuff
     initWeaponLists(); //before the area and player
-    
-    loadArea();
-    
-    //loadAllSounds();
-    
-    //loadAllAnimations();
-    
-    //set the font
-    
+    loadArea(); // eventually this will be gone since the areas will be loaded from files
     initPlayer();
+    initMenu();
+    initInput();
 
     initFrames();
     int newFrame;
@@ -43,8 +38,6 @@ int main(int argc, char *argv[]){
     int numFrames = 1;
     Frame *frames[5];
     frames[0] = _currentFrame;
-
-    initInput();
     
     //dat main loop doe
     while (go){
@@ -86,9 +79,11 @@ int main(int argc, char *argv[]){
             numFrames--;
             currFrame--;
         } else {
+            clearScreen();
             for (i = 0; i < numFrames; i++){
                 frames[i]->draw();
             }
+            bufferToScreen();
         }
         
         //sleep?  I don't recall why

@@ -7,6 +7,7 @@
 #include "weapon.h"
 #include "constants.h"
 #include "../debug/hitbox_drawer.h"
+#include "menu.h"
 
 //Variables
 static Frame *gameFrame;
@@ -62,15 +63,14 @@ int gameFrameLogic(unsigned delta){
 }
 
 void gameFrameDraw(){
-    clearScreen();
     drawCurrentRoom();
     drawPlayer();
     drawHitBoxes(DRAW_MOVE_HITBOX, DRAW_INTERACT_HITBOX);
-    bufferToScreen();
 }
 
 int menuFrameLogic(unsigned delta){
     if (_input.start && !_inputRead.start){
+        setInputAllRead();
         return -1;
     }
         
@@ -78,5 +78,5 @@ int menuFrameLogic(unsigned delta){
 }
 
 void menuFrameDraw(){
-    return;
+    drawMenu();
 }

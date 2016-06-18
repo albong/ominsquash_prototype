@@ -80,6 +80,15 @@ SDL_Surface *loadImage(char *name){
     return optimizedImage;
 }
 
+Sprite *loadSprite(char *name){
+    int i;
+    Sprite *result = (Sprite *) malloc(sizeof(Sprite));
+    result->image = loadImage(name);
+    result->width = result->image->w;
+    result->height = result->image->h;
+    return result;
+}
+
 Sprite *loadAnimatedSprite(char *name, int frameWidth){
     int i;
     Sprite *result = (Sprite *) malloc(sizeof(Sprite));
