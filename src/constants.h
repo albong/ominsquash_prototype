@@ -19,4 +19,7 @@
 
 #define HITSTUN_FLASH_MILLI 75
 
+#define DRAW_MOVE_HITBOX 1
+#define DRAW_INTERACT_HITBOX 1
+
 #endif

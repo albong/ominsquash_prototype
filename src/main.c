@@ -1,10 +1,11 @@
-#include "main.h"
 #include "SDL/SDL.h"
 #include "input.h"
 #include "player.h"
-#include "collisions.h"
+// #include "collisions.h"
 #include "area.h"
 #include "weapon.h"
+#include "frames.h"
+// #include "constants.h"
 
 #include "../debug/hitbox_drawer.h"
 
@@ -14,6 +15,7 @@ int main(int argc, char *argv[]){
     unsigned prevMilliseconds = 0;
     int delta;
     int go = 1;
+    int i;
     
     //start the reactor
     initSDL();
@@ -22,8 +24,6 @@ int main(int argc, char *argv[]){
     
     //when the program exits, clean everything up
     atexit(stopSDL);
-    
-    loadAnimatedSprite("gfx/linksprite.png", 15);
     
     initWeaponLists(); //before the area and player
     
@@ -36,6 +36,15 @@ int main(int argc, char *argv[]){
     //set the font
     
     initPlayer();
+
+    initFrames();
+    int currFrame = 0;
+    int numFrames = 1;
+    Frame *frames[5];
+    frames[0] = _gameFrame;
+    Frame *newFrame;
+
+    //dat main loop doe
     while (go){
         //calculate the time delta
         prevMilliseconds = currMilliseconds;
@@ -44,27 +53,39 @@ int main(int argc, char *argv[]){
         
         getInput();
 
-        //do logic, calculate next positions
-        doPlayer(delta);
-        doRoom(delta);
+        // //do logic, calculate next positions
+        // doPlayer(delta);
+        // doRoom(delta);
         
-        //do any collisions
-        /*
-            Do we need to skip if changing rooms?
-        */
-        doCollisions();
+        // //do any collisions
+        // /*
+            // Do we need to skip if changing rooms?
+        // */
+        // doCollisions();
 
-        //update positions
-        movePlayer();
-        moveRoomEntities();
-        moveRoomEnemies();
+        // //update positions
+        // movePlayer();
+        // moveRoomEntities();
+        // moveRoomEnemies();
         
         //draw
-        clearScreen();
-        drawCurrentRoom();
-        drawPlayer();
-        drawHitBoxes(DRAW_MOVE_HITBOX, DRAW_INTERACT_HITBOX);
-        bufferToScreen();
+        // clearScreen();
+        // drawCurrentRoom();
+        // drawPlayer();
+        // drawHitBoxes(DRAW_MOVE_HITBOX, DRAW_INTERACT_HITBOX);
+        // bufferToScreen();
+        
+        newFrame = frames[currFrame]->logic(delta);
+        if (newFrame != 0 ){
+            numFrames++;
+            currFrame++;
+            frames[currFrame] = newFrame;
+            continue;
+        }
+        
+        for (i = 0; i < numFrames; i++){
+            frames[i]->draw();
+        }
         
         //sleep?  I don't recall why
         SDL_Delay(16);
