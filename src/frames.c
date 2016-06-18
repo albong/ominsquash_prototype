@@ -32,8 +32,9 @@ void initFrames(){
 }
 
 int gameFrameLogic(unsigned delta){
-    if (_input.start){
+    if (_input.start && !_inputRead.start){
         _currentFrame = menuFrame;
+        setInputAllRead();
         return 1;
     }
     
@@ -64,7 +65,7 @@ void gameFrameDraw(){
 }
 
 int menuFrameLogic(unsigned delta){
-    if (_input.start){
+    if (_input.start && !_inputRead.start){
         return -1;
     }
         

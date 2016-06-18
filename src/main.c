@@ -38,12 +38,14 @@ int main(int argc, char *argv[]){
     initPlayer();
 
     initFrames();
+    int newFrame;
     int currFrame = 0;
     int numFrames = 1;
     Frame *frames[5];
-    frames[0] = _gameFrame;
-    Frame *newFrame;
+    frames[0] = _currentFrame;
 
+    initInput();
+    
     //dat main loop doe
     while (go){
         //calculate the time delta
@@ -76,15 +78,17 @@ int main(int argc, char *argv[]){
         // bufferToScreen();
         
         newFrame = frames[currFrame]->logic(delta);
-        if (newFrame != 0 ){
+        if (newFrame == 1){
             numFrames++;
             currFrame++;
-            frames[currFrame] = newFrame;
-            continue;
-        }
-        
-        for (i = 0; i < numFrames; i++){
-            frames[i]->draw();
+            frames[currFrame] = _currentFrame;
+        } else if (newFrame == -1){
+            numFrames--;
+            currFrame--;
+        } else {
+            for (i = 0; i < numFrames; i++){
+                frames[i]->draw();
+            }
         }
         
         //sleep?  I don't recall why
