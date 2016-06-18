@@ -281,5 +281,5 @@ void drawPlayer(){
 // Access
 /////////////////////////////////////////////////
 int isPlayerInteractable(){
-    return _input.x;
+    return _input.x && !_inputRead.x;
 }

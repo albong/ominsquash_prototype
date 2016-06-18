@@ -53,6 +53,11 @@ int gameFrameLogic(unsigned delta){
     moveRoomEntities();
     moveRoomEnemies();
     
+    //interact button only gets one press here
+    if (_input.x){
+        _inputRead.x = 1;
+    }
+    
     return 0;
 }
 
