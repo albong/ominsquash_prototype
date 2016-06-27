@@ -135,6 +135,22 @@ void drawSprite(Sprite *s, int x, int y){
     drawImage(s->image, x, y);
 }
 
+void drawSpriteSrcDst(Sprite *s, int srcX, int srcY, int w, int h, int dstX, int dstY){
+    SDL_Rect src, dest;
+    
+    src.x = srcX;
+    src.y = srcY;
+    src.w = w;
+    src.h = h;
+    
+    dest.x = dstX;
+    dest.y = dstY;
+    dest.w = w;
+    dest.h = h;
+    
+    drawImageSrcDst(s->image, src, dest);
+}
+
 void drawAnimatedSprite(Sprite *s, int frame, int x, int y){
     SDL_Rect src, dest;
     

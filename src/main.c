@@ -6,6 +6,7 @@
 #include "weapon.h"
 #include "frames.h"
 // #include "constants.h"
+#include "textbox.h"
 
 #include "../debug/hitbox_drawer.h"
 
@@ -31,6 +32,7 @@ int main(int argc, char *argv[]){
     initPlayer();
     initMenu();
     initInput();
+    initTextbox();
 
     initFrames();
     int newFrame;

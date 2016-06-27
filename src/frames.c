@@ -8,17 +8,21 @@
 #include "constants.h"
 #include "../debug/hitbox_drawer.h"
 #include "menu.h"
+#include "textbox.h"
 
 //Variables
 static Frame *gameFrame;
 static Frame *menuFrame;
+static Frame *textboxFrame;
 
 //methods
 static int gameFrameLogic(unsigned delta);
 static void gameFrameDraw();
-
 static int menuFrameLogic(unsigned delta);
 static void menuFrameDraw();
+static int textboxFrameLogic(unsigned delta);
+static void textboxFrameDraw();
+
 
 void initFrames(){
     gameFrame = malloc(sizeof(Frame));
@@ -29,12 +33,22 @@ void initFrames(){
     menuFrame->logic = &menuFrameLogic;
     menuFrame->draw = &menuFrameDraw;
     
+    textboxFrame = malloc(sizeof(Frame));
+    textboxFrame->logic = &textboxFrameLogic;
+    textboxFrame->draw = &textboxFrameDraw;
+    
     _currentFrame = gameFrame;
 }
 
 int gameFrameLogic(unsigned delta){
     if (_input.start && !_inputRead.start){
         _currentFrame = menuFrame;
+        setInputAllRead();
+        return 1;
+    } else if (_input.y && !_inputRead.y){
+        addTextToTextbox("If the measure of a space is finite, then convergence\n in measure implies convergence\n almost anywhere implies...\n");
+        // testTextbox();
+        _currentFrame = textboxFrame;
         setInputAllRead();
         return 1;
     }
@@ -72,11 +86,26 @@ int menuFrameLogic(unsigned delta){
     if (_input.start && !_inputRead.start){
         setInputAllRead();
         return -1;
+    } else {
+        return 0;
     }
-        
-    return 0;
 }
 
 void menuFrameDraw(){
     drawMenu();
 }
+
+int textboxFrameLogic(unsigned delta){
+    //if true, text is done being read
+    if (doTextbox(delta)){
+        setInputAllRead();
+        return -1;
+    } else {    
+        return 0;
+    }
+}
+
+void textboxFrameDraw(){
+    drawTextbox();
+}
+
