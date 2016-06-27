@@ -87,7 +87,7 @@ void addTextToTextbox(const char *text){
     int charNum = 0;
     int length = strlen(text);
     
-    numLines = 0;
+    numLines = 1;
     charNum = 0;
     for (i = 0; i < length; i++){
         if (text[i] == '\n'){
@@ -106,6 +106,9 @@ void addTextToTextbox(const char *text){
             }
         }
     }
+    // printf("%d\n", numLines);
+    // numLines = 0;
+    // return;
     
     //allocate
     lines = malloc(sizeof(char *) * numLines);
@@ -115,6 +118,7 @@ void addTextToTextbox(const char *text){
     }
     
     //copy over the string - we're not sure about overrunning char limit so this is easiest
+    charNum = 0;
     for (i = 0; i < length; i++){
         if (text[i] == '\n'){
             lines[lineNum][charNum] = '\0';
@@ -134,6 +138,9 @@ void addTextToTextbox(const char *text){
                 charNum++;
             }
         }
+    }
+    if (charNum + 1 != NUM_CHAR_LINE && lineNum < numLines){
+        lines[lineNum][charNum] = '\0';
     }
 }
 

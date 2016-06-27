@@ -46,7 +46,7 @@ int gameFrameLogic(unsigned delta){
         setInputAllRead();
         return 1;
     } else if (_input.y && !_inputRead.y){
-        addTextToTextbox("If the measure of a space is finite, then convergence\n in measure implies convergence\n almost anywhere implies...\n");
+        addTextToTextbox("If the measure of a space is finite, then convergence\n in measure implies convergence\n almost anywhere implies...");
         // testTextbox();
         _currentFrame = textboxFrame;
         setInputAllRead();
