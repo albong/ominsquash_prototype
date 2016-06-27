@@ -9,3 +9,4 @@ omnisquash.layout
 gfx/*
 sound/*
 font/*
+Makefile.win

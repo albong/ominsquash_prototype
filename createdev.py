@@ -12,29 +12,62 @@
 #################################################
 
 import os
+import argparse
 
 BUILD_DIR = os.path.dirname(os.path.realpath(__file__))
 DEV_FILE = "omnisquash.dev"
 
-def findFiles():
+def findFiles(toIgnore):
     """locate c and h files"""
     global PLATFORM
     files = []
     for (dirpath, dirnames, filenames) in os.walk(BUILD_DIR):
+        if dirpath in toIgnore:
+            continue
+    
         for name in filenames:
             if len(name) > 2 and (name[-2:] == ".c" or name[-2:] == ".h"):
+                if os.path.join(dirpath, name) in toIgnore:
+                    continue
+            
                 folder = dirpath.replace(BUILD_DIR + "/","")
                 files.append((folder.replace("/", "\\") + "\\" + name, folder))
     return files
 
+def findIgnore():
+    """read the file build.ignore if present and use the list to exclude files
+    from the build"""
+    toIgnore = []
+    try:
+        with open("build.ignore", "r") as fin:
+            for line in fin:
+                line = line.strip()
+                if len(line) > 0 and line[0] != "#":
+                    line.replace("/", os.sep)
+                    toIgnore.append(BUILD_DIR + line)
+    except IOError:
+        pass
+                
+    return toIgnore
+    
 def clean():
     """remove existing Dev-C++ files"""
     try:
         os.remove("Makefile.win")
-        os.remove("omnisquash.layout")
     except OSError:
         pass
 
+    try:
+        os.remove("omnisquash.layout")
+    except OSError:
+        pass
+        
+    try:
+        os.remove("omnisquash.dev")
+    except OSError:
+        pass
+        
+        
 def writeHeader(oFile, folders, numUnits):
     """write the header for the project file"""
     oFile.write(
@@ -116,8 +149,18 @@ os.chdir(BUILD_DIR)
 #remove existing Dev-C++ files
 clean()
 
+parser = argparse.ArgumentParser(description=("Creates the project files needed by Dev-C++,"
+    "based on the current folder structure.  Uses the build.ignore file.  Can also be used to clean old Dev-C++ files."))
+parser.add_argument("-c", "--clean", help="clean Dev-C++ files and exit", action="store_true")
+args = parser.parse_args()
+if args.clean:
+    exit(0)
+
+#load files and directories to be ignored
+toIgnore = findIgnore()
+
 #locate c and h files
-files = findFiles()
+files = findFiles(toIgnore)
 folders = []
 for fn,fo in files:
     if fo not in folders:
