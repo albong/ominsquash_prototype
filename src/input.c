@@ -167,14 +167,14 @@ void getInput(){
 }
 
 void setInputAllRead(){
-    _inputRead.up = 1;
-    _inputRead.down = 1;
-    _inputRead.left = 1;
-    _inputRead.right = 1;
-    _inputRead.a = 1;
-    _inputRead.b = 1;
-    _inputRead.x = 1;
-    _inputRead.y = 1; 
-    _inputRead.start = 1; 
-    _inputRead.select = 1;
+    _inputRead.up = (_input.up) ? 1 : 0;
+    _inputRead.down = (_input.down) ? 1 : 0;
+    _inputRead.left = (_input.left) ? 1 : 0;
+    _inputRead.right = (_input.right) ? 1 : 0;
+    _inputRead.a = (_input.a) ? 1 : 0;
+    _inputRead.b = (_input.b) ? 1 : 0;
+    _inputRead.x = (_input.x) ? 1 : 0;
+    _inputRead.y = (_input.y) ? 1 : 0;
+    _inputRead.start = (_input.start) ? 1 : 0; 
+    _inputRead.select = (_input.select) ? 1 : 0;
 }
