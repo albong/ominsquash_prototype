@@ -12,7 +12,7 @@
 #include "../entities/entityloader.h"
 
 #include "stdint.h"
-#include "SDL/SDL.h"
+#include "SDL2/SDL.h"
  
 static int changingRooms = 0;
 static int changingToRoom = -1;
@@ -39,6 +39,7 @@ void loadArea(){
     //load the tilesheet
     _current_area.tilesetName = "gfx/area1tiles.png";
     _current_area.tilesheet.sheet = loadImage(_current_area.tilesetName);
+    _current_area.tilesheet.sheetT = convertToTexture(_current_area.tilesheet.sheet);
     _current_area.tilesheet.tileWidth = TILE_SIZE;
     _current_area.tilesheet.tileHeight = TILE_SIZE;
         
@@ -200,6 +201,7 @@ static void drawRoomBuffers(Room *room){
 //        drawImageSrcDst(_current_area.tilesheet.sheet, src, dst);
         SDL_BlitSurface(_current_area.tilesheet.sheet, &src, room->buffer, &dst);
     }
+    finalizeBuffer(room);
 }
 
 
@@ -356,13 +358,16 @@ static void doRoomEnemies(int delta){
 /////////////////////////////////////////////////
 void drawCurrentRoom(){
     if (!changingRooms){
-        drawImage(_current_area.currentRoom->buffer, 0, 0);
+//        drawImage(_current_area.currentRoom->buffer, 0, 0);
+        drawImageT(_current_area.currentRoom->bufferT, 0, 0);
         drawRoomDoors(_current_area.currentRoom, 0, 0);
         drawRoomEntities(_current_area.currentRoom, 0, 0);
         drawRoomEnemies(_current_area.currentRoom, 0, 0);
     } else {
-        drawImage(_current_area.currentRoom->buffer, room_transition.oldX, room_transition.oldY);
-        drawImage(room_transition.newRoom->buffer, room_transition.newX, room_transition.newY);
+//        drawImage(_current_area.currentRoom->buffer, room_transition.oldX, room_transition.oldY);
+//        drawImage(room_transition.newRoom->buffer, room_transition.newX, room_transition.newY);
+        drawImageT(_current_area.currentRoom->bufferT, room_transition.oldX, room_transition.oldY);
+        drawImageT(room_transition.newRoom->bufferT, room_transition.newX, room_transition.newY);
         
         drawRoomDoors(_current_area.currentRoom, room_transition.oldX, room_transition.oldY);
         drawRoomDoors(room_transition.newRoom, room_transition.newX, room_transition.newY);

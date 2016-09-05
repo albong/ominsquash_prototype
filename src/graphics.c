@@ -1,15 +1,18 @@
 #include "graphics.h"
 #include "constants.h"
-#include "SDL/SDL.h"
-#include "SDL/SDL_image.h"
+#include "SDL2/SDL.h"
+#include "SDL2/SDL_image.h"
 #include <stdint.h>
+#include <stdio.h>
 
 
 /////////////////////////////////////////////////
 // Variables
 /////////////////////////////////////////////////
+//static SDL_Surface *screen;
+static SDL_Window *window;
+static SDL_Renderer *renderer;
 static SDL_Surface *screen;
-
 
 /////////////////////////////////////////////////
 // SDL
@@ -28,12 +31,22 @@ void initSDL(){
 	}
 	
 	//Open a screen
-	screen = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 0, SDL_HWPALETTE|SDL_DOUBLEBUF);
-	if (screen == NULL){
+//	screen = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 0, SDL_HWPALETTE|SDL_DOUBLEBUF);
+	window = SDL_CreateWindow("omnisquash", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_OPENGL);
+	if (window == NULL){
 		printf("Couldn't set screen mode to %d x %d: %s\n", SCREEN_WIDTH, SCREEN_HEIGHT, SDL_GetError());
 		exit(1);
 	}
 	
+    //PIZZA hacks, get rid of
+    screen = SDL_GetWindowSurface(window);
+
+    renderer = SDL_CreateRenderer(window, -1, 0);
+    if (renderer == NULL){
+        printf("Couldn't create a renderer!\n");
+        exit(1);
+    }
+
 	//Set the audio rate to 22050, 16 bit stereo, 2 channels and a 4096 byte buffer
 //	if (Mix_OpenAudio(22050, AUDIO_S16SYS, 2, 4096) != 0){
 //		printf("Could not open audio: %s\n", Mix_GetError());
@@ -41,7 +54,14 @@ void initSDL(){
 //	}
 	
 	//Set the screen title 
-	SDL_WM_SetCaption("omnisquash", NULL);
+//	SDL_WM_SetCaption("omnisquash", NULL);
+
+    //Initialize SDL_image
+    int imageInitResult = IMG_Init( IMG_INIT_PNG );
+    if (!(imageInitResult & IMG_INIT_PNG)){
+        printf("Couldn't initialize SDL_image!\n");
+        exit(1);
+    }
 }
 
 void stopSDL(){
@@ -62,7 +82,8 @@ SDL_Surface *loadImage(char *name){
     //If the image loaded
     if( loadedImage != NULL ){
         //Create an optimized image
-        optimizedImage = SDL_DisplayFormat( loadedImage );
+//        optimizedImage = SDL_DisplayFormat( loadedImage );
+        optimizedImage = SDL_ConvertSurface(loadedImage, screen->format, 0);
         
         //Free the old image
         SDL_FreeSurface( loadedImage );
@@ -73,17 +94,27 @@ SDL_Surface *loadImage(char *name){
             Uint32 colorkey = SDL_MapRGB(optimizedImage->format, 0xFF, 0, 0xFF); //magic pink
             
             //Set all pixels of color R 0, G 0xFF, B 0xFF to be transparent
-            SDL_SetColorKey(optimizedImage, SDL_SRCCOLORKEY, colorkey);
+            SDL_SetColorKey(optimizedImage, SDL_TRUE, colorkey);
         }
     }
 
     return optimizedImage;
 }
 
+SDL_Texture *loadTexture(char *name){
+    SDL_Surface *surface = loadImage(name);
+    return convertToTexture(surface);
+}
+
+SDL_Texture *convertToTexture(SDL_Surface *surface){
+    return SDL_CreateTextureFromSurface(renderer, surface);
+}
+
 Sprite *loadSprite(char *name){
     int i;
     Sprite *result = (Sprite *) malloc(sizeof(Sprite));
     result->image = loadImage(name);
+    result->texture = convertToTexture(result->image);
     result->width = result->image->w;
     result->height = result->image->h;
     return result;
@@ -93,6 +124,7 @@ Sprite *loadAnimatedSprite(char *name, int frameWidth){
     int i;
     Sprite *result = (Sprite *) malloc(sizeof(Sprite));
     result->image = loadImage(name);
+    result->texture = convertToTexture(result->image);
     result->width = frameWidth;
     result->height = result->image->h;
     return result;
@@ -100,7 +132,7 @@ Sprite *loadAnimatedSprite(char *name, int frameWidth){
 
 SDL_Surface *getEmptySurface(int width, int height){
     SDL_PixelFormat *fmt = screen->format;
-    return SDL_CreateRGBSurface(SDL_HWSURFACE,
+    return SDL_CreateRGBSurface(0,
         width,
         height,
         fmt->BitsPerPixel,
@@ -127,12 +159,31 @@ void drawImage(SDL_Surface *image, int x, int y){
     SDL_BlitSurface(image, NULL, screen, &dest);
 }
 
+void drawImageT(SDL_Texture *image, int x, int y){
+    SDL_Rect dest;
+    
+    //set the blitting rectangle to the size of the src image
+    dest.x = x;
+    dest.y = y;
+//    dest.w = image->w;
+//    dest.h = image->h;
+    SDL_QueryTexture(image, NULL, NULL, &dest.w, &dest.h);
+    
+    //blit the entire image onto the screen
+    SDL_RenderCopy(renderer, image, NULL, &dest);
+}
+
 void drawImageSrcDst(SDL_Surface *image, SDL_Rect src, SDL_Rect dst){
     SDL_BlitSurface(image, &src, screen, &dst);
 }
 
+void drawImageSrcDstT(SDL_Texture *image, SDL_Rect src, SDL_Rect dst){
+    SDL_RenderCopy(renderer, image, &src, &dst);
+}
+
 void drawSprite(Sprite *s, int x, int y){
-    drawImage(s->image, x, y);
+//    drawImage(s->image, x, y);
+    drawImageT(s->texture, x, y);    
 }
 
 void drawSpriteSrcDst(Sprite *s, int srcX, int srcY, int w, int h, int dstX, int dstY){
@@ -148,7 +199,8 @@ void drawSpriteSrcDst(Sprite *s, int srcX, int srcY, int w, int h, int dstX, int
     dest.w = w;
     dest.h = h;
     
-    drawImageSrcDst(s->image, src, dest);
+//    drawImageSrcDst(s->image, src, dest);
+    drawImageSrcDstT(s->texture, src, dest);
 }
 
 void drawAnimatedSprite(Sprite *s, int frame, int x, int y){
@@ -157,14 +209,17 @@ void drawAnimatedSprite(Sprite *s, int frame, int x, int y){
     src.x = frame * s->width;
     src.y = 0;
     src.w = s->width;
-    src.h = s->image->h;
+//    src.h = s->image->h;
+    SDL_QueryTexture(s->texture, NULL, NULL, NULL, &src.h);
     
     dest.x = x;
     dest.y = y;
     dest.w = s->width;
-    dest.h = s->image->h;
+//    dest.h = s->image->h;
+    SDL_QueryTexture(s->texture, NULL, NULL, NULL, &dest.h);
     
-    SDL_BlitSurface(s->image, &src, screen, &dest);
+//    SDL_BlitSurface(s->image, &src, screen, &dest);
+    drawImageSrcDstT(s->texture, src, dest);
 }
 
 /*
@@ -176,6 +231,7 @@ void drawInvertedAnimatedSprite(Sprite *s, int frame, int x, int y, int invert){
         return;
     }
     
+    return;
     SDL_Rect src, dest;
     
     src.x = frame * s->width;
@@ -226,14 +282,33 @@ void drawUnfilledRect(int x, int y, int w, int h, int r, int g, int b){
     SDL_FillRect(screen, &temp, color);
 }
 
+void drawUnfilledRectT(int x, int y, int w, int h, int r, int g, int b){
+    SDL_Rect temp;
+    SDL_SetRenderDrawColor(renderer, r, g, b, SDL_ALPHA_OPAQUE);
+//    Uint32 color = SDL_MapRGB(screen->format, r, g, b);
+//    temp = (SDL_Rect){ x, y, 1, h };
+//    SDL_FillRect(screen, &temp, color);
+//    temp = (SDL_Rect){ x+w-1, y, 1, h };
+//    SDL_FillRect(screen, &temp, color);
+//    temp = (SDL_Rect){ x, y, w, 1 };
+//    SDL_FillRect(screen, &temp, color);
+//    temp = (SDL_Rect){ x, y+h-1, w, 1 };
+//    SDL_FillRect(screen, &temp, color);
+    temp = (SDL_Rect){ x, y, w, h };
+    SDL_RenderDrawRect(renderer, &temp);
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
+}
+
 
 /////////////////////////////////////////////////
 // Screen Management
 /////////////////////////////////////////////////
 void clearScreen(){
-    SDL_FillRect(screen, NULL, 0);
+//    SDL_FillRect(screen, NULL, 0);
+    SDL_RenderClear(renderer);
 }
 
 void bufferToScreen(){
-    SDL_Flip(screen);
+//    SDL_Flip(screen);
+    SDL_RenderPresent(renderer);
 }

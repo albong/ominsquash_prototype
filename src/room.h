@@ -6,7 +6,7 @@
 #include "entity.h"
 #include "enemy.h"
 #include "door.h"
-#include "SDL/SDL.h"
+#include "SDL2/SDL.h"
 
 //ROOMF_IMPASSABLE is for walls, maybe rename?
 #define ROOMF_IMPASSABLE 0
@@ -23,6 +23,7 @@ typedef struct Room {
     int *transitionTiles;//array
     int *transitionToRoom; //UNUSED?
     SDL_Surface *buffer;
+    SDL_Texture *bufferT;
     int connectingRooms[4]; //left right up down
     HitBox walls;
     
@@ -44,6 +45,7 @@ typedef struct Room {
 
 // Loading
 Room *init_Room(Room *self);
+void finalizeBuffer(Room *self);
 
 // Access
 int getFlag(Room *room, int index, int flagNum);

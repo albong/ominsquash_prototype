@@ -1,4 +1,4 @@
-#include "SDL/SDL.h"
+#include "SDL2/SDL.h"
 #include "input.h"
 #include "player.h"
 // #include "collisions.h"
@@ -20,8 +20,8 @@ int main(int argc, char *argv[]){
     
     //start the reactor
     initSDL();
-	freopen( "CON", "w", stdout );
-    freopen( "CON", "w", stderr );
+//	freopen( "CON", "w", stdout );
+//    freopen( "CON", "w", stderr );
     
     //when the program exits, clean everything up
     atexit(stopSDL);
