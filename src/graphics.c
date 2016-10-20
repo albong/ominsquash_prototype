@@ -32,7 +32,7 @@ void initSDL(){
 	
 	//Open a screen
 //	screen = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 0, SDL_HWPALETTE|SDL_DOUBLEBUF);
-	window = SDL_CreateWindow("omnisquash", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_OPENGL);
+	window = SDL_CreateWindow("omnisquash", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_OPENGL);
 	if (window == NULL){
 		printf("Couldn't set screen mode to %d x %d: %s\n", SCREEN_WIDTH, SCREEN_HEIGHT, SDL_GetError());
 		exit(1);
@@ -46,7 +46,9 @@ void initSDL(){
         printf("Couldn't create a renderer!\n");
         exit(1);
     }
-
+    
+    SDL_RenderSetLogicalSize(renderer, SCREEN_WIDTH, SCREEN_HEIGHT);
+    
 	//Set the audio rate to 22050, 16 bit stereo, 2 channels and a 4096 byte buffer
 //	if (Mix_OpenAudio(22050, AUDIO_S16SYS, 2, 4096) != 0){
 //		printf("Could not open audio: %s\n", Mix_GetError());
