@@ -30,7 +30,7 @@ void drawMoveHitBoxes(){
             y = _player.e.y + _player.e.moveHitBox[_player.e.currHitBox].rects[i].y;
             w = _player.e.moveHitBox[_player.e.currHitBox].rects[i].w;
             h =_player.e.moveHitBox[_player.e.currHitBox].rects[i].h;
-            drawUnfilledRectT(x, y, w, h, 255, 0, 0);
+            drawUnfilledRect_T(x, y, w, h, 255, 0, 0);
         }
     }
     
@@ -44,7 +44,7 @@ void drawMoveHitBoxes(){
                 y = wep->e.y + wep->e.moveHitBox[wep->e.currHitBox].rects[i].y;
                 w = wep->e.moveHitBox[wep->e.currHitBox].rects[i].w;
                 h = wep->e.moveHitBox[wep->e.currHitBox].rects[i].h;
-                drawUnfilledRectT(x, y, w, h, 255, 0, 0);
+                drawUnfilledRect_T(x, y, w, h, 255, 0, 0);
             }
         }
     }
@@ -56,7 +56,7 @@ void drawMoveHitBoxes(){
                 y = wep->e.y + wep->e.moveHitBox[wep->e.currHitBox].rects[i].y;
                 w = wep->e.moveHitBox[wep->e.currHitBox].rects[i].w;
                 h = wep->e.moveHitBox[wep->e.currHitBox].rects[i].h;
-                drawUnfilledRectT(x, y, w, h, 255, 0, 0);
+                drawUnfilledRect_T(x, y, w, h, 255, 0, 0);
             }
         }
     }
@@ -77,7 +77,7 @@ void drawMoveHitBoxes(){
             y = temp->y + temp->moveHitBox[temp->currHitBox].rects[i].y;
             w = temp->moveHitBox[temp->currHitBox].rects[i].w;
             h = temp->moveHitBox[temp->currHitBox].rects[i].h;
-            drawUnfilledRectT(x, y, w, h, 255, 0, 0);
+            drawUnfilledRect_T(x, y, w, h, 255, 0, 0);
         }
     }
     
@@ -95,7 +95,7 @@ void drawMoveHitBoxes(){
             y = temp->y + temp->moveHitBox[temp->currHitBox].rects[i].y;
             w = temp->moveHitBox[temp->currHitBox].rects[i].w;
             h = temp->moveHitBox[temp->currHitBox].rects[i].h;
-            drawUnfilledRectT(x, y, w, h, 255, 0, 0);
+            drawUnfilledRect_T(x, y, w, h, 255, 0, 0);
         }
     }
     
@@ -113,7 +113,7 @@ void drawMoveHitBoxes(){
             y = temp->y + temp->moveHitBox[temp->currHitBox].rects[i].y;
             w = temp->moveHitBox[temp->currHitBox].rects[i].w;
             h = temp->moveHitBox[temp->currHitBox].rects[i].h;
-            drawUnfilledRectT(x, y, w, h, 255, 0, 0);
+            drawUnfilledRect_T(x, y, w, h, 255, 0, 0);
         }
     }
 }
@@ -129,7 +129,7 @@ void drawInteractHitBoxes(){
             y = _player.e.y + _player.e.interactHitBox[_player.e.currHitBox].rects[i].y;
             w = _player.e.interactHitBox[_player.e.currHitBox].rects[i].w;
             h =_player.e.interactHitBox[_player.e.currHitBox].rects[i].h;
-            drawUnfilledRectT(x, y, w, h, 0, 0, 255);
+            drawUnfilledRect_T(x, y, w, h, 0, 0, 255);
         }
     }
     
@@ -143,7 +143,7 @@ void drawInteractHitBoxes(){
                 y = wep->e.y + wep->e.interactHitBox[wep->e.currHitBox].rects[i].y;
                 w = wep->e.interactHitBox[wep->e.currHitBox].rects[i].w;
                 h = wep->e.interactHitBox[wep->e.currHitBox].rects[i].h;
-                drawUnfilledRectT(x, y, w, h, 0, 0, 255);
+                drawUnfilledRect_T(x, y, w, h, 0, 0, 255);
             }
         }
     }
@@ -155,7 +155,7 @@ void drawInteractHitBoxes(){
                 y = wep->e.y + wep->e.interactHitBox[wep->e.currHitBox].rects[i].y;
                 w = wep->e.interactHitBox[wep->e.currHitBox].rects[i].w;
                 h = wep->e.interactHitBox[wep->e.currHitBox].rects[i].h;
-                drawUnfilledRectT(x, y, w, h, 0, 0, 255);
+                drawUnfilledRect_T(x, y, w, h, 0, 0, 255);
             }
         }
     }
@@ -176,7 +176,7 @@ void drawInteractHitBoxes(){
             y = temp->y + temp->interactHitBox[temp->currHitBox].rects[i].y;
             w = temp->interactHitBox[temp->currHitBox].rects[i].w;
             h = temp->interactHitBox[temp->currHitBox].rects[i].h;
-            drawUnfilledRectT(x, y, w, h, 0, 0, 255);
+            drawUnfilledRect_T(x, y, w, h, 0, 0, 255);
         }
     }
     
@@ -194,7 +194,7 @@ void drawInteractHitBoxes(){
             y = temp->y + temp->interactHitBox[temp->currHitBox].rects[i].y;
             w = temp->interactHitBox[temp->currHitBox].rects[i].w;
             h = temp->interactHitBox[temp->currHitBox].rects[i].h;
-            drawUnfilledRectT(x, y, w, h, 0, 0, 255);
+            drawUnfilledRect_T(x, y, w, h, 0, 0, 255);
         }
     }
     
@@ -212,7 +212,7 @@ void drawInteractHitBoxes(){
             y = temp->y + temp->interactHitBox[temp->currHitBox].rects[i].y;
             w = temp->interactHitBox[temp->currHitBox].rects[i].w;
             h = temp->interactHitBox[temp->currHitBox].rects[i].h;
-            drawUnfilledRectT(x, y, w, h, 0, 0, 255);
+            drawUnfilledRect_T(x, y, w, h, 0, 0, 255);
         }
     }
 }

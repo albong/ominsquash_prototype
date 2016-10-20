@@ -1,0 +1,15 @@
+If characters are 18x20, then with 14px offsets from the sides, top, and bottom,
+and 6px space between each line, then we ought to be able to fit 19 characters 
+on a line, with 3 lines.
+
+This of course does not account for the scroll icon.  But if we're doing terminal
+style font then it can just flicker over the last letter of the line.
+
+The alphabet sheet has 10 rows of 10 characters each.  For now we'll just use
+ASCII, but we need to come up with some way to encode and translate text later.
+Also, we fully expect all text to be prepared so that it doesn't overrun the line.
+Probably whatever script/utility we come up with for encoding later should take
+all text, pad lines with spaces, and remove new lines, then we just read from 
+the buffer no sweat.
+
+Probs should've made the font width's odd numbers?

@@ -31,16 +31,16 @@ Sprite *loadAnimatedSprite(char *name, int frameWidth);
 SDL_Surface* getEmptySurface(int width, int height);
 
 // Draw
-void drawImage(SDL_Surface *image, int x, int y);
-void drawImageT(SDL_Texture *image, int x, int y);
-void drawImageSrcDst(SDL_Surface *image, SDL_Rect src, SDL_Rect dst);
-void drawImageSrcDstT(SDL_Texture *image, SDL_Rect src, SDL_Rect dst);
+void drawImage_S(SDL_Surface *image, int x, int y);
+void drawImage_T(SDL_Texture *image, int x, int y);
+void drawImageSrcDst_S(SDL_Surface *image, SDL_Rect src, SDL_Rect dst);
+void drawImageSrcDst_T(SDL_Texture *image, SDL_Rect src, SDL_Rect dst);
 void drawSprite(Sprite *s, int x, int y);
 void drawSpriteSrcDst(Sprite *s, int srcX, int srcY, int w, int h, int dstX, int dstY);
 void drawAnimatedSprite(Sprite *s, int frame, int x, int y);
 void drawInvertedAnimatedSprite(Sprite *s, int frame, int x, int y, int invert);
-void drawUnfilledRect(int x, int y, int w, int h, int r, int g, int b);
-void drawUnfilledRectT(int x, int y, int w, int h, int r, int g, int b);
+void drawUnfilledRect_S(int x, int y, int w, int h, int r, int g, int b);
+void drawUnfilledRect_T(int x, int y, int w, int h, int r, int g, int b);
 
 // Screen Management
 void clearScreen();

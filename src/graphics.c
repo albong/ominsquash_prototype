@@ -146,7 +146,7 @@ SDL_Surface *getEmptySurface(int width, int height){
 /////////////////////////////////////////////////
 // Drawing
 /////////////////////////////////////////////////
-void drawImage(SDL_Surface *image, int x, int y){
+void drawImage_S(SDL_Surface *image, int x, int y){
     SDL_Rect dest;
     
     //set the blitting rectangle to the size of the src image
@@ -159,31 +159,28 @@ void drawImage(SDL_Surface *image, int x, int y){
     SDL_BlitSurface(image, NULL, screen, &dest);
 }
 
-void drawImageT(SDL_Texture *image, int x, int y){
+void drawImage_T(SDL_Texture *image, int x, int y){
     SDL_Rect dest;
     
     //set the blitting rectangle to the size of the src image
     dest.x = x;
     dest.y = y;
-//    dest.w = image->w;
-//    dest.h = image->h;
     SDL_QueryTexture(image, NULL, NULL, &dest.w, &dest.h);
     
     //blit the entire image onto the screen
     SDL_RenderCopy(renderer, image, NULL, &dest);
 }
 
-void drawImageSrcDst(SDL_Surface *image, SDL_Rect src, SDL_Rect dst){
+void drawImageSrcDst_S(SDL_Surface *image, SDL_Rect src, SDL_Rect dst){
     SDL_BlitSurface(image, &src, screen, &dst);
 }
 
-void drawImageSrcDstT(SDL_Texture *image, SDL_Rect src, SDL_Rect dst){
+void drawImageSrcDst_T(SDL_Texture *image, SDL_Rect src, SDL_Rect dst){
     SDL_RenderCopy(renderer, image, &src, &dst);
 }
 
 void drawSprite(Sprite *s, int x, int y){
-//    drawImage(s->image, x, y);
-    drawImageT(s->texture, x, y);    
+    drawImage_T(s->texture, x, y);    
 }
 
 void drawSpriteSrcDst(Sprite *s, int srcX, int srcY, int w, int h, int dstX, int dstY){
@@ -199,8 +196,7 @@ void drawSpriteSrcDst(Sprite *s, int srcX, int srcY, int w, int h, int dstX, int
     dest.w = w;
     dest.h = h;
     
-//    drawImageSrcDst(s->image, src, dest);
-    drawImageSrcDstT(s->texture, src, dest);
+    drawImageSrcDst_T(s->texture, src, dest);
 }
 
 void drawAnimatedSprite(Sprite *s, int frame, int x, int y){
@@ -209,17 +205,14 @@ void drawAnimatedSprite(Sprite *s, int frame, int x, int y){
     src.x = frame * s->width;
     src.y = 0;
     src.w = s->width;
-//    src.h = s->image->h;
     SDL_QueryTexture(s->texture, NULL, NULL, NULL, &src.h);
     
     dest.x = x;
     dest.y = y;
     dest.w = s->width;
-//    dest.h = s->image->h;
     SDL_QueryTexture(s->texture, NULL, NULL, NULL, &dest.h);
     
-//    SDL_BlitSurface(s->image, &src, screen, &dest);
-    drawImageSrcDstT(s->texture, src, dest);
+    drawImageSrcDst_T(s->texture, src, dest);
 }
 
 /*
@@ -269,7 +262,7 @@ void drawInvertedAnimatedSprite(Sprite *s, int frame, int x, int y, int invert){
     }
 }
 
-void drawUnfilledRect(int x, int y, int w, int h, int r, int g, int b){
+void drawUnfilledRect_S(int x, int y, int w, int h, int r, int g, int b){
     SDL_Rect temp;
     Uint32 color = SDL_MapRGB(screen->format, r, g, b);
     temp = (SDL_Rect){ x, y, 1, h };
@@ -282,7 +275,7 @@ void drawUnfilledRect(int x, int y, int w, int h, int r, int g, int b){
     SDL_FillRect(screen, &temp, color);
 }
 
-void drawUnfilledRectT(int x, int y, int w, int h, int r, int g, int b){
+void drawUnfilledRect_T(int x, int y, int w, int h, int r, int g, int b){
     SDL_Rect temp;
     SDL_SetRenderDrawColor(renderer, r, g, b, SDL_ALPHA_OPAQUE);
 //    Uint32 color = SDL_MapRGB(screen->format, r, g, b);
@@ -304,11 +297,9 @@ void drawUnfilledRectT(int x, int y, int w, int h, int r, int g, int b){
 // Screen Management
 /////////////////////////////////////////////////
 void clearScreen(){
-//    SDL_FillRect(screen, NULL, 0);
     SDL_RenderClear(renderer);
 }
 
 void bufferToScreen(){
-//    SDL_Flip(screen);
     SDL_RenderPresent(renderer);
 }
