@@ -35,38 +35,59 @@ static void createAreaEntities(Area *self);
 /////////////////////////////////////////////////
 // Loading
 /////////////////////////////////////////////////
+Area *init_Area(Area *self){
+    if (self == NULL){
+        return NULL;
+    }
+
+    self->tilesetName = NULL;
+
+    self->tilesheet.sheet = NULL;
+    self->tilesheet.sheetT;
+    self->tilesheet.tileWidth = 0; 
+    self->tilesheet.tileHeight = 0;
+
+    self->numRooms = 0;
+	self->currentRoom = NULL;
+    self->roomList = NULL;
+    self->changingRooms = 0;
+    
+    return self;
+}
+
 void loadArea(){
+    size_t i;
+
+    //remove the janky pointer bidness later so we can cache areas
+    loadAreaFromFile("data/areas/0.area", &_current_area);
+    
     //load the tilesheet
-    _current_area.tilesetName = "gfx/area1tiles.png";
+    // _current_area.tilesetName = "gfx/area1tiles.png";
     _current_area.tilesheet.sheet = loadImage(_current_area.tilesetName);
     _current_area.tilesheet.sheetT = convertToTexture(_current_area.tilesheet.sheet);
     _current_area.tilesheet.tileWidth = TILE_SIZE;
     _current_area.tilesheet.tileHeight = TILE_SIZE;
-        
-    //load the enemy sprites - do before rooms because rooms store enemies
-//    _current_area.numEntitySprites = 0;
-//    _current_area.numEntitySprites = 1;
-//    _current_area.entitySpriteNames = malloc(sizeof(char *) * 1);
-//    _current_area.entitySpriteNames[0] = malloc(sizeof(char) * (strlen("gfx/octoroksprite.png"))+1);
-//    strcpy(_current_area.entitySpriteNames[0], "gfx/octoroksprite.png");
-//    _current_area.entitySpriteWidths = malloc(sizeof(int) * 1);
-//    _current_area.entitySpriteWidths[0] = 18;
-//    loadEntitySprites();
     
+    //draw the buffers
+    for (i = 0; i < _current_area.numRooms; i++){
+        _current_area.roomList[i]->buffer = getEmptySurface(TILE_SIZE * ROOM_WIDTH, TILE_SIZE * ROOM_HEIGHT);
+        drawRoomBuffers(_current_area.roomList[i]);
+    }
+        
     //load the rooms
-    _current_area.numRooms = 3;
-    _current_area.roomList = (Room**) malloc(sizeof(Room *) * _current_area.numRooms);
-    _current_area.roomList[0] = createFirstDemoRoom();
-    _current_area.roomList[1] = createSecondDemoRoom();
-    _current_area.roomList[2] = createThirdDemoRoom();
-    _current_area.currentRoom = _current_area.roomList[2];
+    // _current_area.numRooms = 3;
+    // _current_area.roomList = (Room**) malloc(sizeof(Room *) * _current_area.numRooms);
+    // _current_area.roomList[0] = createFirstDemoRoom();
+    // _current_area.roomList[1] = createSecondDemoRoom();
+    // _current_area.roomList[2] = createThirdDemoRoom();
+    // _current_area.currentRoom = _current_area.roomList[2];
     
     //load the enemies for all of the rooms, set their positions
     loadAreaEnemySprites(&_current_area);
     loadAreaEntitySprites(&_current_area);
     createAreaEnemies(&_current_area);
     createAreaEntities(&_current_area);
-    size_t i;
+
     for (i = 0; i < _current_area.numRooms; i++){
         resetEnemyPositions(_current_area.roomList[i]);
         resetEntityPositions(_current_area.roomList[i]);
@@ -543,7 +564,7 @@ static Room *createThirdDemoRoom(){
     room->numEntities = 1;
     room->numEnemies = 0;
     
-    room->entityIds = malloc(sizeof(size_t) * room->numEnemies);
+    room->entityIds = malloc(sizeof(size_t) * room->numEntities);
     room->entityInitialX = malloc(sizeof(double) * room->numEntities);
     room->entityInitialY = malloc(sizeof(double) * room->numEntities);
     room->entityIds[0] = 0;

@@ -1,5 +1,6 @@
 *.exe
 *.o
+*.zip
 stderr.txt
 stdout.txt
 *.dll
@@ -10,3 +11,4 @@ gfx/*
 sound/*
 font/*
 Makefile.win
+.build.changed

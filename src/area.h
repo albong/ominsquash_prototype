@@ -30,6 +30,7 @@ typedef struct Area {
 Area _current_area;
 
 // Loading
+Area *init_Area(Area *self);
 void loadArea();
 //static void loadEntitySprites();
 static void drawRoomBuffers(Room *room);
