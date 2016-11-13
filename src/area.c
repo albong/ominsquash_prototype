@@ -73,14 +73,6 @@ void loadArea(){
         _current_area.roomList[i]->buffer = getEmptySurface(TILE_SIZE * ROOM_WIDTH, TILE_SIZE * ROOM_HEIGHT);
         drawRoomBuffers(_current_area.roomList[i]);
     }
-        
-    //load the rooms
-    // _current_area.numRooms = 3;
-    // _current_area.roomList = (Room**) malloc(sizeof(Room *) * _current_area.numRooms);
-    // _current_area.roomList[0] = createFirstDemoRoom();
-    // _current_area.roomList[1] = createSecondDemoRoom();
-    // _current_area.roomList[2] = createThirdDemoRoom();
-    // _current_area.currentRoom = _current_area.roomList[2];
     
     //load the enemies for all of the rooms, set their positions
     loadAreaEnemySprites(&_current_area);
@@ -88,12 +80,22 @@ void loadArea(){
     createAreaEnemies(&_current_area);
     createAreaEntities(&_current_area);
 
+    //PIZZA remove this later
+    Room *TEMP_ROOM = _current_area.roomList[0];
+    Sprite *doorSprite = loadAnimatedSprite("gfx/door1.png", TILE_SIZE);
+    TEMP_ROOM->numDoors = 2;
+    TEMP_ROOM->doors = malloc(sizeof(Door *) * TEMP_ROOM->numDoors);
+    TEMP_ROOM->doors[0] = createDoor(doorSprite, UP, (ROOM_WIDTH/2) * TILE_SIZE, 0);
+    TEMP_ROOM->doors[1] = createDoor(doorSprite, DOWN, (ROOM_WIDTH/2) * TILE_SIZE, (ROOM_HEIGHT-1) * TILE_SIZE);
+
+    
+    //reset enemy and entity placement
     for (i = 0; i < _current_area.numRooms; i++){
         resetEnemyPositions(_current_area.roomList[i]);
         resetEntityPositions(_current_area.roomList[i]);
     }
     
-    _current_area.changingRooms;
+    _current_area.changingRooms = 0;
 }
 
 void loadAreaEnemySprites(Area *self){

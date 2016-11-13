@@ -84,7 +84,7 @@ def writeHeader(oFile, folders, numUnits):
     "MakeIncludes=\n" +
     "Compiler=\n" +
     "CppCompiler=\n" +
-    "Linker=-lmingw32_@@_-lSDLmain_@@_-lSDL_@@_-lSDL_image_@@_-lSDL_mixer_@@_-lSDL_ttf_@@_\n" +
+    "Linker=-lmingw32_@@_-lSDL2main_@@_-lSDL2_@@_-lSDL2_image_@@_-lSDL2_ttf_@@_\n" +
     "IsCpp=0\n" +
     "Icon=\n" +
     "ExeOutput=\n" +

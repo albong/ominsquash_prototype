@@ -56,19 +56,20 @@ Area *loadAreaFromFile(char *filename, Area *result){
     result->tilesetName = strdup(cJSON_GetObjectItem(root, "tilesheet")->valuestring);
     // result->numRooms = cJSON_GetObjectItem(root, "number of rooms")->valueint;
     
-    //load up the rooms
+    //allocate for room array
     cJSON *roomList = cJSON_GetObjectItem(root, "rooms");
     result->numRooms = cJSON_GetArraySize(roomList);
     result->roomList = malloc(sizeof(Room *) * result->numRooms);
     
+    //init and fill in rooms
     Room *currRoom;
-    cJSON *arrY, *arrX, *jsonRoom;
-    size_t i;
-    int j, k;
-    for (i = 0; i < result->numRooms; i++){
-        result->roomList[i] = init_Room(malloc(sizeof(Room)));
-        currRoom = result->roomList[i];
-        jsonRoom = cJSON_GetArrayItem(roomList, i);
+    cJSON *arrY, *arrX, *jsonRoom, *jsonTemp;
+    size_t k;
+    int i, j;
+    for (k = 0; k < result->numRooms; k++){
+        result->roomList[k] = init_Room(malloc(sizeof(Room)));
+        currRoom = result->roomList[k];
+        jsonRoom = cJSON_GetArrayItem(roomList, k);
         
         //allocate for the arrays of tiles and flags
         currRoom->tileIndices = (int *) malloc(sizeof(int) * ROOM_HEIGHT * ROOM_WIDTH);
@@ -100,9 +101,32 @@ Area *loadAreaFromFile(char *filename, Area *result){
             }
         }
         generateWallList(currRoom, TILE_SIZE);
+
+        //allocate and load the entity lists
+        arrX = cJSON_GetObjectItem(jsonRoom, "entity positions");
+        currRoom->numEntities = (size_t)cJSON_GetArraySize(arrX);
+        currRoom->entityIds = malloc(sizeof(size_t) * currRoom->numEntities);
+        currRoom->entityInitialX = malloc(sizeof(double) * currRoom->numEntities);
+        currRoom->entityInitialY = malloc(sizeof(double) * currRoom->numEntities);
+        for (i = 0; i < cJSON_GetArraySize(arrX); i++){
+            jsonTemp = cJSON_GetArrayItem(arrX, i);
+            currRoom->entityIds[i] = cJSON_GetObjectItem(jsonTemp, "ID")->valueint;
+            currRoom->entityInitialX[i] = cJSON_GetObjectItem(jsonTemp, "x")->valueint;
+            currRoom->entityInitialY[i] = cJSON_GetObjectItem(jsonTemp, "y")->valueint;
+        }
         
-        currRoom->numEntities = 0;
-        currRoom->numEnemies = 0;
+        //allocate and load enemy lists
+        arrX = cJSON_GetObjectItem(jsonRoom, "enemy positions");
+        currRoom->numEnemies = (size_t)cJSON_GetArraySize(arrX);
+        currRoom->enemyIds = malloc(sizeof(size_t) * currRoom->numEnemies);
+        currRoom->enemyInitialX = malloc(sizeof(double) * currRoom->numEnemies);
+        currRoom->enemyInitialY = malloc(sizeof(double) * currRoom->numEnemies);
+        for (i = 0; i < cJSON_GetArraySize(arrX); i++){
+            jsonTemp = cJSON_GetArrayItem(arrX, i);
+            currRoom->enemyIds[i] = cJSON_GetObjectItem(jsonTemp, "ID")->valueint;
+            currRoom->enemyInitialX[i] = cJSON_GetObjectItem(jsonTemp, "x")->valueint;
+            currRoom->enemyInitialY[i] = cJSON_GetObjectItem(jsonTemp, "y")->valueint;
+        }
     }
     result->currentRoom = result->roomList[0];
     
