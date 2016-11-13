@@ -10,6 +10,9 @@
 
 #include "../debug/hitbox_drawer.h"
 
+
+//Refer to http://gamedev.stackexchange.com/a/132835 for changes
+
 int main(int argc, char *argv[]){
 //    unsigned int frameLimit = SDL_GetTicks() + 16;
     unsigned currMilliseconds = 0;
