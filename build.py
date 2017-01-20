@@ -57,6 +57,7 @@ def configure():
                 "-I\"D:/SDL2-2.0.4/include/\""
         BIN = "omnisquash.exe"
     elif "windows" in platform.system().lower() or "win32" in platform.system().lower():
+        print "Windows detected"
         PLATFORM = "WINDOWS"
         CC = "c:\\Program Files\\Dev-Cpp\\MinGW64\\bin\\gcc.exe"
         LIBS = "-L\"C:/Program Files/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib32\" "\

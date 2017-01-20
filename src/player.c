@@ -3,6 +3,7 @@
 #include "constants.h"
 #include "input.h"
 #include "weapon.h"
+#include "inventory.h"
 
 //needed for demo, not fully
 #include "../weapons/sword.h"
@@ -65,6 +66,7 @@ void initPlayer(){
     Weapon *sword = createSword();
     sword->owner = &_player.e;
     addPlayerWeapon(sword);
+    addWeaponToInventory(sword);
     _player.equippedAInd = 0;
     _player.equippedBInd = -1; //may want to have a none be at index 0
 }
