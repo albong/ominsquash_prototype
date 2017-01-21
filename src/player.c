@@ -8,6 +8,8 @@
 //needed for demo, not fully
 #include "../weapons/sword.h"
 
+#include <stdio.h>
+
 static int roomTransition = 0;
 static int transitionDirection = -1;
 static unsigned totalDelta = 0;
