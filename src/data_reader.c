@@ -1,19 +1,22 @@
-#include "area_reader.h"
+#include "data_reader.h"
 #include "area.h"
 #include "room.h"
 #include "constants.h"
+#include "entity.h"
+#include "hitbox.h"
+#include "graphics.h"
 
 #include "../lib/cJSON/cJSON.h"
 #include <stdio.h>
 #include <string.h>
 
-static cJSON *readFile(char *filename);
+static char *readFileToCharStar(char *filename);
 
 //read in a JSON file to a cJSON object
-cJSON *readFileToJson(char *filename){
+char *readFileToCharStar(char *filename){
     //More or less copied and pasted from the cJSON examples
     
-    cJSON *result;
+    // cJSON *result;
     FILE *f;
     long len;
     char *data;
@@ -31,13 +34,13 @@ cJSON *readFileToJson(char *filename){
     data[len] = '\0';
     fclose(f);
 
-    result = cJSON_Parse(data);
-    //Should this be freed after parsing the json?
-    free(data);
-    return result;
+    // result = cJSON_Parse(data);
+    //PIZZA - Should this be freed after parsing the json?  Dr Memory indicates yes?
+    // free(data);
+    return data;
 }
 
-Area *loadAreaFromFile(char *filename, Area *result){
+Area *readAreaFromFile(char *filename, Area *result){
     //init the area
     if (result == NULL){
         result = malloc(sizeof(Area));
@@ -45,10 +48,12 @@ Area *loadAreaFromFile(char *filename, Area *result){
     init_Area(result);
     
     //read in the given file to a cJSON object
-    cJSON *root = readFileToJson(filename);
+    char *fileContents = readFileToCharStar(filename);
+    cJSON *root = cJSON_Parse(fileContents);
     if (!root){
         printf("Error before: [%s]\n", cJSON_GetErrorPtr());
         free(result);
+        free(fileContents);
         return NULL;
     }
     
@@ -132,5 +137,84 @@ Area *loadAreaFromFile(char *filename, Area *result){
     
     //free and return
     cJSON_Delete(root);
+    free(fileContents);
+    return result;
+}
+
+Entity *readEntityFromFile(char *filename, Entity *result){
+    //init the area
+    if (result == NULL){
+        result = malloc(sizeof(Entity));
+    }
+    init_Entity(result);
+    
+    //read in the given file to a cJSON object
+    char *fileContents = readFileToCharStar(filename);
+    cJSON *root = cJSON_Parse(fileContents);
+    if (!root){
+        printf("Error before: [%s]\n", cJSON_GetErrorPtr());
+        free(result);
+        free(fileContents);
+        return NULL;
+    }
+    
+    //some entities may be disabled by default?
+    if (cJSON_HasObjectItem(root, "active")){
+        if (cJSON_GetObjectItem(root, "active")->type != cJSON_True){
+            result->active = 0;
+        }
+    }
+    
+    //read in the various pieces of data
+    result->pixelsPerMilli = cJSON_GetObjectItem(root, "speed in pixelsPerMillisecond")->valuedouble;
+	result->w = cJSON_GetObjectItem(root, "width")->valueint;
+    result->h = cJSON_GetObjectItem(root, "height")->valueint;
+	result->milliPerFrame = cJSON_GetObjectItem(root, "milliseconds per frame")->valueint;
+	result->numFrames = cJSON_GetObjectItem(root, "number of frames")->valueint;
+    // result->type = <switch statement to choose correct enum based on string>;
+	result->hasMoveHitBox = (cJSON_GetObjectItem(root, "has movement hitbox")->type == cJSON_True);
+	result->hasInteractHitBox = (cJSON_GetObjectItem(root, "has interact hitbox")->type == cJSON_True);
+    result->interactable = (cJSON_GetObjectItem(root, "interactable")->type == cJSON_True);
+	
+    
+    //if there is a particular kind of hitbox, read it in
+    cJSON *hitboxArr, *shapeArr, *hitboxJson, *shapeJson;
+    size_t numHitboxes, numShapes;
+    size_t i, j;
+    if (result->hasMoveHitBox){
+        //result->moveHitBox = NULL;
+    }
+    
+    if (result->hasInteractHitBox){
+        hitboxArr = cJSON_GetObjectItem(root, "interact hitboxes");
+        numHitboxes = cJSON_GetArraySize(hitboxArr);
+        result->interactHitBox = malloc(sizeof(HitBox) * numHitboxes);
+        for (i = 0; i < numHitboxes; i++){
+            hitboxJson = cJSON_GetArrayItem(hitboxArr, i);
+            result->interactHitBox[i].numCircle = 0;
+            result->interactHitBox[i].circles = NULL;
+            
+            shapeArr = cJSON_GetObjectItem(hitboxJson, "rectangles");
+            numShapes = cJSON_GetArraySize(shapeArr);
+            result->interactHitBox[i].numRect = numShapes;
+            result->interactHitBox[i].rects = malloc(sizeof(CollRect) * numShapes);
+            for (j = 0; j < numShapes; j++){
+                shapeJson = cJSON_GetArrayItem(shapeArr, j);
+                result->interactHitBox[i].rects[j].x = cJSON_GetObjectItem(shapeJson, "x")->valueint;
+                result->interactHitBox[i].rects[j].y = cJSON_GetObjectItem(shapeJson, "y")->valueint;
+                result->interactHitBox[i].rects[j].w = cJSON_GetObjectItem(shapeJson, "width")->valueint;
+                result->interactHitBox[i].rects[j].h = cJSON_GetObjectItem(shapeJson, "height")->valueint;
+            }
+        }
+    }
+    
+    //load the sprite
+    //PIZZA - ultimately we will load sprite data from JSON files too, so this will be different
+	result->sprite = loadAnimatedSprite(cJSON_GetObjectItem(root, "sprite")->valuestring, cJSON_GetObjectItem(root, "sprite width")->valueint);
+    // result->tilesetName = strdup(cJSON_GetObjectItem(root, "tilesheet")->valuestring);
+    
+    //free and return
+    cJSON_Delete(root);
+    free(fileContents);
     return result;
 }

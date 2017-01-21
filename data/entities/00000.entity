@@ -1,0 +1,30 @@
+{
+    "active" : true,
+    "speed in pixelsPerMillisecond" : 0.0,
+    "width" : 0,
+    "height" : 0,
+    "milliseconds per frame" : 0,
+    "number of frames" : 0,
+    
+    "sprite" : "gfx/skull.png",
+    "sprite width" : 16,
+    
+    "collision type" : "NONE",
+    "has movement hitbox" : false,
+    "has interact hitbox" : true,
+    "interactable" : true,
+    
+    "interact hitboxes" : [
+        {
+            "circles" : [],
+            "rectangles" : [
+                {
+                    "x" : 1,
+                    "y" : 1,
+                    "width" : 14,
+                    "height" : 14
+                }
+            ]
+        }
+    ]
+}

@@ -8,6 +8,7 @@
 // #include "constants.h"
 #include "textbox.h"
 #include "inventory.h"
+#include "entity_creator.h"
 
 #include "../debug/hitbox_drawer.h"
 
@@ -31,6 +32,7 @@ int main(int argc, char *argv[]){
     atexit(stopSDL);
     
     //initialization stuff
+    initEntityCreateTable();
     initWeaponLists(); //before the area and player
     loadArea(); // eventually this will be gone since the areas will be loaded from files
     initInventory(); //should be done before player
