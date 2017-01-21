@@ -10,6 +10,8 @@
 #include <stdio.h>
 #include <string.h>
 
+//PIZZA - Needs to check for existence of all fields being read!
+
 static char *readFileToCharStar(char *filename);
 
 //read in a JSON file to a cJSON object
