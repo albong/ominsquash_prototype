@@ -164,8 +164,8 @@ Entity *readEntityFromFile(char *filename, Entity *result){
     
     //some entities may be disabled by default?
     if (cJSON_HasObjectItem(root, "active")){
-        if (cJSON_GetObjectItem(root, "active")->type != cJSON_True){
-            result->active = 0;
+        if (cJSON_GetObjectItem(root, "active")->type == cJSON_True){
+            result->active = 1;
         }
     }
     
@@ -179,7 +179,6 @@ Entity *readEntityFromFile(char *filename, Entity *result){
 	result->hasMoveHitBox = (cJSON_GetObjectItem(root, "has movement hitbox")->type == cJSON_True);
 	result->hasInteractHitBox = (cJSON_GetObjectItem(root, "has interact hitbox")->type == cJSON_True);
     result->interactable = (cJSON_GetObjectItem(root, "interactable")->type == cJSON_True);
-	
     
     //if there is a particular kind of hitbox, read it in
     cJSON *hitboxArr, *shapeArr, *hitboxJson, *shapeJson;

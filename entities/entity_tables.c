@@ -12,8 +12,8 @@ void fillEntityTables(entity_action_ptr_t **actionTable, entity_draw_ptr_t **dra
     // *drawTable = malloc(sizeof(entity_draw_ptr_t) * 1);
     // *interactTable = malloc(sizeof(entity_interact_ptr_t) * 1);
     entity_action_ptr_t *at = malloc(sizeof(entity_action_ptr_t) * 1);
-    entity_draw_ptr_t *dt = malloc(sizeof(entity_action_ptr_t) * 1);
-    entity_interact_ptr_t *it = malloc(sizeof(entity_action_ptr_t) * 1);
+    entity_draw_ptr_t *dt = malloc(sizeof(entity_draw_ptr_t) * 1);
+    entity_interact_ptr_t *it = malloc(sizeof(entity_interact_ptr_t) * 1);
     
     at[00000] = NULL;
     dt[00000] = NULL;
