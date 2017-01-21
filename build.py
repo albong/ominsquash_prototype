@@ -59,22 +59,23 @@ def configure():
     elif "windows" in platform.system().lower() or "win32" in platform.system().lower():
         print "Windows detected"
         PLATFORM = "WINDOWS"
-        CC = "c:\\Program Files\\Dev-Cpp\\MinGW64\\bin\\gcc.exe"
-        LIBS = "-L\"C:/Program Files/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib32\" "\
-                "-L\"D:/SDL-1.2.15/lib\" "\
+        CC = "gcc"
+        # CC = "c:\\Program Files\\Dev-Cpp\\MinGW64\\bin\\gcc.exe"
+        # LIBS = "-L\"C:/Program Files/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib32\" "\
+        LIBS = "-L\"D:/SDL2-2.0.4/lib\" "\
                 "-static-libgcc "\
                 "-lmingw32 "\
-                "-lSDLmain "\
-                "-lSDL "\
-                "-lSDL_image "\
-                "-lSDL_mixer "\
-                "-lSDL_ttf "\
+                "-lSDL2main "\
+                "-lSDL2 "\
+                "-lSDL2_image "\
+                "-lSDL2_ttf "\
                 "-m32 "\
                 "-g3"
-        INCS = "-I\"C:/Program Files/Dev-Cpp/MinGW64/include\" "\
-                "-I\"C:/Program Files/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include\" "\
-                "-I\"C:/Program Files/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include\" "\
-                "-I\"D:/SDL-1.2.15/include\""
+        # INCS = "-I\"C:/Program Files/Dev-Cpp/MinGW64/include\" "\
+        #        "-I\"C:/Program Files/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include\" "\
+        #        "-I\"C:/Program Files/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include\" "\
+        #        "-I\"D:/SDL-1.2.15/include\""
+        INCS = "-I\"D:\\SDL2-2.0.4\\include\\\" "
         BIN = "omnisquash.exe"
     elif "mac" in platform.system().lower() or "darwin" in platform.system().lower():
         PLATFORM = "MAC"
@@ -453,6 +454,18 @@ handleArguments()
 os.chdir(BUILD_DIR)
 configure()
 
+#if FORCE is set, recreate the table files too
+if FORCE:
+    if not SILENT:
+        print "Recreating function tables"
+    if PLATFORM == "CYGWIN":
+        ret = subprocess.call("./createtablefiles.py", shell=True)
+        if ret != 0:
+            print "Function table creation failed"
+            exit(1)
+    else:
+        print "Not yet implemented, please run createtablefiles.py manually."
+    
 #load files and directories to be ignored
 toIgnore = findIgnore()
 
@@ -483,13 +496,16 @@ for f in cFileList:
         if VERBOSE:
             print compileCmd
         elif not SILENT:
-            print "Compiling " + f.cFile() + "..."
+            print "Compiling " + f.cFile() + ""
         
         #make platform specific changes to, and then run, compile command here
         ret = -1
         if PLATFORM == "CYGWIN":
             compileCmd = "eval \"" + compileCmd.replace("\"", "\\\"") + "\""
             ret = subprocess.call(compileCmd, shell=True)
+        elif PLATFORM == "WINDOWS":
+            compileCmd = compileCmd.replace("\"", "\\\"") + "\""
+            ret = subprocess.call(compileCmd)
         else:
             ret = subprocess.call(compileCmd)
             
@@ -504,6 +520,7 @@ for f in cFileList:
 if compilationFailed:
     print "Build failed"
     
+#link the object files
 elif not CLEAN:
     #remove the old binary
     removeFile(os.path.join(BUILD_DIR, BIN))
@@ -515,7 +532,7 @@ elif not CLEAN:
     if VERBOSE:
         print linkCmd
     elif not SILENT:
-        print "Linking..."
+        print "Linking"
 
     #make platform specific changes to, and then run, linking command here
     if PLATFORM == "CYGWIN":
