@@ -53,7 +53,8 @@ Area *readAreaFromFile(char *filename, Area *result){
     char *fileContents = readFileToCharStar(filename);
     cJSON *root = cJSON_Parse(fileContents);
     if (!root){
-        printf("Error before: [%s]\n", cJSON_GetErrorPtr());
+        printf("Error before: %s\n", cJSON_GetErrorPtr());
+        fflush(stdout);
         free(result);
         free(fileContents);
         return NULL;
@@ -154,7 +155,8 @@ Entity *readEntityFromFile(char *filename, Entity *result){
     char *fileContents = readFileToCharStar(filename);
     cJSON *root = cJSON_Parse(fileContents);
     if (!root){
-        printf("Error before: [%s]\n", cJSON_GetErrorPtr());
+        printf("Error before: %s\n", cJSON_GetErrorPtr());
+        fflush(stdout);
         free(result);
         free(fileContents);
         return NULL;
