@@ -12,3 +12,4 @@ sound/*
 font/*
 Makefile.win
 .build.changed
+entities/entity_tables.c

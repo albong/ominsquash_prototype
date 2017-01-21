@@ -9,3 +9,4 @@
 # the string if it needs to be '\' for Windows
 
 /old_src
+/entities/entity_tables_example.c

@@ -3,6 +3,13 @@
 
 #include "weapon.h"
 
+/*
+I kinda think it might be better to always have EVERYTHING in the inventory, with
+a flag for whether or not its actually in the inventory.
+
+We def need to ask Vince about this idea
+*/
+
 // Does this really need to be a struct?  Couldn't we just store all this
 // data in private variables in the C file with accessor methods?
 // Its not like anyone but the player will have an inventory.
