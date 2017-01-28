@@ -145,7 +145,7 @@ Area *readAreaFromFile(char *filename, Area *result){
 }
 
 Entity *readEntityFromFile(char *filename, Entity *result){
-    //init the area
+    //init the entity
     if (result == NULL){
         result = malloc(sizeof(Entity));
     }
@@ -215,6 +215,102 @@ Entity *readEntityFromFile(char *filename, Entity *result){
     //PIZZA - ultimately we will load sprite data from JSON files too, so this will be different
 	result->sprite = loadAnimatedSprite(cJSON_GetObjectItem(root, "sprite")->valuestring, cJSON_GetObjectItem(root, "sprite width")->valueint);
     // result->tilesetName = strdup(cJSON_GetObjectItem(root, "tilesheet")->valuestring);
+    
+    //free and return
+    cJSON_Delete(root);
+    free(fileContents);
+    return result;
+}
+
+NewSprite *readNewSpriteFromFile(char *filename, NewSprite *result){
+    //init the sprite
+    if (result == NULL){
+        result = malloc(sizeof(NewSprite));
+    }
+    init_NewSprite(result);
+    
+    //read in the given file to a cJSON object
+    char *fileContents = readFileToCharStar(filename);
+    cJSON *root = cJSON_Parse(fileContents);
+    if (!root){
+        printf("Error before: %s\n", cJSON_GetErrorPtr());
+        fflush(stdout);
+        free(result);
+        free(fileContents);
+        return NULL;
+    }
+    
+    //load the source image
+    char *imageFile = cJSON_GetObjectItem(root, "source image")->valuestring;
+    result->image = loadImage(imageFile);
+    
+    //get the width and height
+    result->frameWidth = cJSON_GetObjectItem(root, "frame width")->valueint;
+    result->frameHeight = cJSON_GetObjectItem(root, "frame height")->valueint;
+    if (result->frameWidth > result->image->width){
+        result->frameWidth = result->image->width;
+    }
+    if (result->frameHeight > result->image->height){
+        result->frameHeight = result->image->height;
+    }
+    
+    //compute number of frames per row
+    result->numFramesPerRow = result->image->width / result->frameWidth;
+    
+    //free and return
+    cJSON_Delete(root);
+    free(fileContents);
+    return result;
+}
+
+SpriteAnimation *readSpriteAnimationFromFile(char *filename, SpriteAnimation *result){
+    //init the animation
+    if (result == NULL){
+        result = malloc(sizeof(SpriteAnimation));
+    }
+    init_SpriteAnimation(result);
+    
+    //read in the given file to a cJSON object
+    char *fileContents = readFileToCharStar(filename);
+    cJSON *root = cJSON_Parse(fileContents);
+    if (!root){
+        printf("Error before: %s\n", cJSON_GetErrorPtr());
+        fflush(stdout);
+        free(result);
+        free(fileContents);
+        return NULL;
+    }
+    
+    //count loops and allocate
+    //PIZZA - should verify that this number and size of lengths array agrees
+    int numLoops = cJSON_GetObjectItem(root, "number of loops")->valueint;
+    result->numLoops = numLoops;
+    result->loopLength = malloc(sizeof(int) * numLoops);
+    result->frameNumber = malloc(sizeof(int *) * numLoops);
+    result->frameDuration = malloc(sizeof(int *) * numLoops);
+    
+    //set the lengths and store loop data
+    //PIZZA - as above, need some verification all the numbers align
+    size_t i, j;
+    int loopLength;
+    cJSON *lengthsArr = cJSON_GetObjectItem(root, "loop lengths");
+    cJSON *loopsArr = cJSON_GetObjectItem(root, "loops");
+    cJSON *loopTemp, *frameArr, *durationArr;
+    for (i = 0; i < numLoops; i++){
+        loopLength = cJSON_GetArrayItem(lengthsArr, i)->valueint;
+        result->loopLength[i] = loopLength;
+        result->frameNumber[i] = malloc(sizeof(int) * loopLength);
+        result->frameDuration[i] = malloc(sizeof(int) * loopLength);
+        
+        //store the loop data
+        loopTemp = cJSON_GetArrayItem(loopsArr, i);
+        frameArr = cJSON_GetObjectItem(root, "frame numbers");
+        durationArr = cJSON_GetObjectItem(root, "durations");
+        for (j = 0; j < loopLength; j++){
+            result->frameNumber[i][j] = cJSON_GetArrayItem(frameArr, j)->valueint;
+            result->frameDuration[i][j] = cJSON_GetArrayItem(durationArr, j)->valueint;
+        }
+    }
     
     //free and return
     cJSON_Delete(root);

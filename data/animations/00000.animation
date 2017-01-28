@@ -1,0 +1,38 @@
+{
+    "number of loops" : 8,
+    "loop lengths" : [1, 1, 1, 1, 2, 2, 2, 2],
+    "loops" : [
+        {
+            "frame numbers" : [4],
+            "durations" : [0]
+        },
+        {
+            "frame numbers" : [2],
+            "durations" : [0]
+        },
+        {
+            "frame numbers" : [0],
+            "durations" : [0]
+        },
+        {
+            "frame numbers" : [6],
+            "durations" : [0]
+        },
+        {
+            "frame numbers" : [4, 5],
+            "durations" : [200, 200]
+        },
+        {
+            "frame numbers" : [2, 3],
+            "durations" : [200, 200]
+        },
+        {
+            "frame numbers" : [0, 1],
+            "durations" : [200, 200]
+        },
+        {
+            "frame numbers" : [6, 7],
+            "durations" : [200, 200]
+        },
+    ]
+}

@@ -14,6 +14,30 @@ typedef struct Sprite{
     int height;
 } Sprite;
 
+typedef struct Image{
+    SDL_Surface *surface;
+    SDL_Texture *texture;
+    int width;
+    int height;
+    int isTexture;
+} Image;
+
+typedef struct NewSprite{
+    Image *image;
+    int frameWidth;
+    int frameHeight;
+    int numFramesPerRow;
+} NewSprite;
+
+//perhaps we ought have an animation list per room to simplify logic?  then you just increment the milliPassed there?
+typedef struct SpriteAnimation{
+    int numLoops;
+    int milliPassed;
+    int *loopLength;
+    int **frameNumber;
+    int **frameDuration;
+} SpriteAnimation;
+
 // Globals
 // static SDL_Surface *screen;
 static TTF_Font *font;
@@ -22,13 +46,18 @@ static TTF_Font *font;
 void initSDL();
 void stopSDL();
 
+// Init
+NewSprite *init_NewSprite(NewSprite *self);
+SpriteAnimation *init_SpriteAnimation(SpriteAnimation *self);
+
 // Loading
-SDL_Surface *loadImage(char *name);
+SDL_Surface *loadSurface(char *name);
 SDL_Texture *loadTexture(char *name);
 SDL_Texture *convertToTexture(SDL_Surface *surface);
 Sprite *loadSprite(char *name);
 Sprite *loadAnimatedSprite(char *name, int frameWidth);
 SDL_Surface* getEmptySurface(int width, int height);
+Image *loadImage(char *name);
 
 // Draw
 void drawImage_S(SDL_Surface *image, int x, int y);

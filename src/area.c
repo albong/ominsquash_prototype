@@ -65,7 +65,7 @@ void loadArea(){
     
     //load the tilesheet
     // _current_area.tilesetName = "gfx/area1tiles.png";
-    _current_area.tilesheet.sheet = loadImage(_current_area.tilesetName);
+    _current_area.tilesheet.sheet = loadSurface(_current_area.tilesetName);
     _current_area.tilesheet.sheetT = convertToTexture(_current_area.tilesheet.sheet);
     _current_area.tilesheet.tileWidth = TILE_SIZE;
     _current_area.tilesheet.tileHeight = TILE_SIZE;
@@ -82,6 +82,9 @@ void loadArea(){
     createAreaEnemies(&_current_area);
     createAreaEntities(&_current_area);
 
+    //PIZZA - testing stuff to set the room we're going to use, add starting room stuff later
+    _current_area.currentRoom = _current_area.roomList[1];
+    
     //PIZZA remove this later
     Room *TEMP_ROOM = _current_area.roomList[0];
     Sprite *doorSprite = loadAnimatedSprite("gfx/door1.png", TILE_SIZE);

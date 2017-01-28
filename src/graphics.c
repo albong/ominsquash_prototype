@@ -72,9 +72,40 @@ void stopSDL(){
 
 
 /////////////////////////////////////////////////
+// Init
+/////////////////////////////////////////////////
+NewSprite *init_NewSprite(NewSprite *self){
+    if (self == NULL){
+        return NULL;
+    }
+
+    self->image = NULL;
+    self->frameWidth = 0;
+    self->frameHeight = 0;
+    self->numFramesPerRow = 0;
+
+    return self;
+}
+
+SpriteAnimation *init_SpriteAnimation(SpriteAnimation *self){
+    if (self == NULL){
+        return NULL;
+    }
+
+    self->numLoops = 0;
+    self->milliPassed = 0;
+    self->loopLength = NULL;
+    self->frameNumber = NULL;
+    self->frameDuration = NULL;
+    
+    return self;
+}
+
+
+/////////////////////////////////////////////////
 // Loading
 /////////////////////////////////////////////////
-SDL_Surface *loadImage(char *name){
+SDL_Surface *loadSurface(char *name){
     SDL_Surface* loadedImage = NULL;
     SDL_Surface* optimizedImage = NULL;
     
@@ -104,8 +135,10 @@ SDL_Surface *loadImage(char *name){
 }
 
 SDL_Texture *loadTexture(char *name){
-    SDL_Surface *surface = loadImage(name);
-    return convertToTexture(surface);
+    SDL_Surface *surface = loadSurface(name);
+    SDL_Texture *result = convertToTexture(surface);
+    SDL_FreeSurface(surface);
+    return result;
 }
 
 SDL_Texture *convertToTexture(SDL_Surface *surface){
@@ -115,7 +148,7 @@ SDL_Texture *convertToTexture(SDL_Surface *surface){
 Sprite *loadSprite(char *name){
     int i;
     Sprite *result = (Sprite *) malloc(sizeof(Sprite));
-    result->image = loadImage(name);
+    result->image = loadSurface(name);
     result->texture = convertToTexture(result->image);
     result->width = result->image->w;
     result->height = result->image->h;
@@ -125,7 +158,7 @@ Sprite *loadSprite(char *name){
 Sprite *loadAnimatedSprite(char *name, int frameWidth){
     int i;
     Sprite *result = (Sprite *) malloc(sizeof(Sprite));
-    result->image = loadImage(name);
+    result->image = loadSurface(name);
     result->texture = convertToTexture(result->image);
     result->width = frameWidth;
     result->height = result->image->h;
@@ -142,6 +175,17 @@ SDL_Surface *getEmptySurface(int width, int height){
         fmt->Gmask,
         fmt->Bmask,
         fmt->Amask);
+}
+
+Image *loadImage(char *name){
+    Image *result = malloc(sizeof(Image));
+    
+    result->texture = loadTexture(name);
+    result->surface = NULL;
+    result->isTexture = 1;
+    SDL_QueryTexture(result->texture, NULL, NULL, &(result->width), &(result->height));
+    
+    return result;
 }
 
 
