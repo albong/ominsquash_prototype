@@ -31,11 +31,13 @@ typedef struct NewSprite{
 
 //perhaps we ought have an animation list per room to simplify logic?  then you just increment the milliPassed there?
 typedef struct SpriteAnimation{
+    int currLoop;
     int numLoops;
     int milliPassed;
     int *loopLength;
+    int *loopTotalDuration;
     int **frameNumber;
-    int **frameDuration;
+    int **frameStartTime;
 } SpriteAnimation;
 
 // Globals
@@ -70,6 +72,7 @@ void drawAnimatedSprite(Sprite *s, int frame, int x, int y);
 void drawInvertedAnimatedSprite(Sprite *s, int frame, int x, int y, int invert);
 void drawUnfilledRect_S(int x, int y, int w, int h, int r, int g, int b);
 void drawUnfilledRect_T(int x, int y, int w, int h, int r, int g, int b);
+void drawAnimation(NewSprite *s, SpriteAnimation *anim, int x, int y);
 
 // Screen Management
 void clearScreen();

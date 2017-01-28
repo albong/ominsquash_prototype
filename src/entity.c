@@ -33,6 +33,8 @@ Entity *init_Entity(Entity *self){
 	self->numFrames = 0;
 	self->invertSprite = 0;
 	self->sprite = NULL;
+    self->nsprite = NULL;
+    self->animation = NULL;
 	self->orientation = UP;
 	self->action = NULL;
 	self->draw = &defaultDrawEntity;

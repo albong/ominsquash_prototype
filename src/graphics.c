@@ -92,12 +92,13 @@ SpriteAnimation *init_SpriteAnimation(SpriteAnimation *self){
         return NULL;
     }
 
+    self->currLoop = 0;
     self->numLoops = 0;
     self->milliPassed = 0;
+    self->loopTotalDuration = NULL;
     self->loopLength = NULL;
     self->frameNumber = NULL;
-    self->frameDuration = NULL;
-    
+    self->frameStartTime = NULL;
     return self;
 }
 
@@ -336,6 +337,42 @@ void drawUnfilledRect_T(int x, int y, int w, int h, int r, int g, int b){
     temp = (SDL_Rect){ x, y, w, h };
     SDL_RenderDrawRect(renderer, &temp);
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
+}
+
+void drawAnimation(NewSprite *s, SpriteAnimation *anim, int x, int y){
+    SDL_Rect src, dest;
+    size_t i;
+    int frameNum;
+    int currLoop = anim->currLoop;
+    
+    //determine where we are in the animation
+    //PIZZA - determine if we ought replace with more book-keeping at the sprite holder's end
+    // possibly with a standard updateAnimation method?
+    anim->milliPassed %= anim->loopTotalDuration[currLoop];
+    for (i = 0; i < anim->loopLength[currLoop]; i++){
+        if (anim->frameStartTime[currLoop][i] > anim->milliPassed){
+            break;
+        }
+    }
+    frameNum = anim->frameNumber[currLoop][i-1];
+    
+    //set the src/dst rectangles
+    src.x = (frameNum % s->numFramesPerRow) * s->frameWidth;
+    src.y = (frameNum / s->numFramesPerRow) * s->frameHeight;
+    src.w = s->frameWidth;
+    src.h = s->frameHeight;
+    
+    dest.x = x;
+    dest.y = y;
+    dest.w = s->frameWidth;
+    dest.h = s->frameHeight;
+    
+    //draw
+    if (s->image->isTexture){
+        drawImageSrcDst_T(s->image->texture, src, dest);
+    } else {
+        drawImageSrcDst_S(s->image->surface, src, dest);
+    }
 }
 
 

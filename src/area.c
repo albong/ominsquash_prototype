@@ -76,6 +76,19 @@ void loadArea(){
         drawRoomBuffers(_current_area.roomList[i]);
     }
     
+    //PIZZA - enemy loading not written yet since enemy loading not overhauled
+    Room *TEMP_ROOM = _current_area.roomList[1];
+    TEMP_ROOM->numEnemies = 1;
+//    TEMP_ROOM->enemies = malloc(sizeof(Enemy) * TEMP_ROOM->numEnemies);
+    TEMP_ROOM->enemyIds = malloc(sizeof(size_t) * TEMP_ROOM->numEnemies);
+    TEMP_ROOM->enemyInitialX = malloc(sizeof(double) * TEMP_ROOM->numEnemies);
+    TEMP_ROOM->enemyInitialY = malloc(sizeof(double) * TEMP_ROOM->numEnemies);
+//    TEMP_ROOM->enemies[0] = createOctorok(_current_area.sprites[0]);
+//    TEMP_ROOM->enemies[0] = createOctorok();
+    TEMP_ROOM->enemyIds[0] = 0;
+    TEMP_ROOM->enemyInitialX[0] = 1;
+    TEMP_ROOM->enemyInitialY[0] = 1;
+    
     //load the enemies for all of the rooms, set their positions
     loadAreaEnemySprites(&_current_area);
     loadAreaEntityData(&_current_area);
@@ -86,13 +99,12 @@ void loadArea(){
     _current_area.currentRoom = _current_area.roomList[1];
     
     //PIZZA remove this later
-    Room *TEMP_ROOM = _current_area.roomList[0];
+    TEMP_ROOM = _current_area.roomList[0];
     Sprite *doorSprite = loadAnimatedSprite("gfx/door1.png", TILE_SIZE);
     TEMP_ROOM->numDoors = 2;
     TEMP_ROOM->doors = malloc(sizeof(Door *) * TEMP_ROOM->numDoors);
     TEMP_ROOM->doors[0] = createDoor(doorSprite, UP, (ROOM_WIDTH/2) * TILE_SIZE, 0);
     TEMP_ROOM->doors[1] = createDoor(doorSprite, DOWN, (ROOM_WIDTH/2) * TILE_SIZE, (ROOM_HEIGHT-1) * TILE_SIZE);
-
     
     //reset enemy and entity placement
     for (i = 0; i < _current_area.numRooms; i++){

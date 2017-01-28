@@ -286,8 +286,9 @@ SpriteAnimation *readSpriteAnimationFromFile(char *filename, SpriteAnimation *re
     int numLoops = cJSON_GetObjectItem(root, "number of loops")->valueint;
     result->numLoops = numLoops;
     result->loopLength = malloc(sizeof(int) * numLoops);
+    result->loopTotalDuration = calloc(numLoops, sizeof(int));
     result->frameNumber = malloc(sizeof(int *) * numLoops);
-    result->frameDuration = malloc(sizeof(int *) * numLoops);
+    result->frameStartTime = malloc(sizeof(int *) * numLoops);
     
     //set the lengths and store loop data
     //PIZZA - as above, need some verification all the numbers align
@@ -300,15 +301,16 @@ SpriteAnimation *readSpriteAnimationFromFile(char *filename, SpriteAnimation *re
         loopLength = cJSON_GetArrayItem(lengthsArr, i)->valueint;
         result->loopLength[i] = loopLength;
         result->frameNumber[i] = malloc(sizeof(int) * loopLength);
-        result->frameDuration[i] = malloc(sizeof(int) * loopLength);
+        result->frameStartTime[i] = malloc(sizeof(int) * loopLength);
         
         //store the loop data
         loopTemp = cJSON_GetArrayItem(loopsArr, i);
-        frameArr = cJSON_GetObjectItem(root, "frame numbers");
-        durationArr = cJSON_GetObjectItem(root, "durations");
+        frameArr = cJSON_GetObjectItem(loopTemp, "frame numbers");
+        durationArr = cJSON_GetObjectItem(loopTemp, "durations");
         for (j = 0; j < loopLength; j++){
             result->frameNumber[i][j] = cJSON_GetArrayItem(frameArr, j)->valueint;
-            result->frameDuration[i][j] = cJSON_GetArrayItem(durationArr, j)->valueint;
+            result->frameStartTime[i][j] = result->loopTotalDuration[i];
+            result->loopTotalDuration[i] += cJSON_GetArrayItem(durationArr, j)->valueint;
         }
     }
     

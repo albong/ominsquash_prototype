@@ -3,12 +3,14 @@
 #include "../src/entity.h"
 #include "../src/graphics.h"
 #include "../src/hitbox.h"
+#include "../src/data_reader.h"
 #include <stdlib.h>
 
 static int totalDelta = 0;
 static const hitstunMilli = 1000;
 static const DEFAULT_HEALTH = 8;
 
+static void drawOctorok(Entity *self, double shiftX, double shiftY);
 static void doOctorok(Enemy *self, int delta);
 static void updatePosition(Enemy *self, int delta);
 static void updateFrame(Enemy *self, int delta);
@@ -22,6 +24,9 @@ Enemy *createOctorok(Sprite *sprite){
     enemy->action = &doOctorok;
     enemy->e.sprite = sprite;
     enemy->enemySprite = sprite;
+    enemy->e.nsprite = readNewSpriteFromFile("data/sprites/00000.sprite", NULL);
+    enemy->e.animation = readSpriteAnimationFromFile("data/animations/00000.animation", NULL);
+    enemy->e.draw = &drawOctorok;
     
     enemy->e.pixelsPerMilli = 50;
     enemy->e.isMoving = 1;
@@ -59,28 +64,51 @@ Enemy *createOctorok(Sprite *sprite){
     return enemy;
 }
 
+static void drawOctorok(Entity *self, double shiftX, double shiftY){
+    drawAnimation(self->nsprite, self->animation, self->x + 0.5 + shiftX, self->y + 0.5 + shiftY);
+}
+
 static void doOctorok(Enemy *self, int delta){
     totalDelta += delta;
+    self->e.animation->milliPassed += delta;
     
     if (totalDelta >= 1500){
         if (rand() % 2){
             totalDelta = 0;
             int orientation = rand() % 4;
-//            if (orientation == 0){
-//                self->e.orientation = UP;
-//            } else if (orientation == 1){
-//                self->e.orientation = DOWN;
-//            } else if (orientation == 2){
-//                self->e.orientation = LEFT;
-//            } else if (orientation == 3){
-//                self->e.orientation = RIGHT;
-//            }
+           if (orientation == 0){
+               self->e.orientation = UP;
+           } else if (orientation == 1){
+               self->e.orientation = DOWN;
+           } else if (orientation == 2){
+               self->e.orientation = LEFT;
+           } else if (orientation == 3){
+               self->e.orientation = RIGHT;
+           }
         } else {
             totalDelta -= 750;
         }
     }
-    updateFrame(self, delta);
+    // updateFrame(self, delta);
     updatePosition(self, delta);
+    
+    //update animation loop
+    switch (self->e.orientation){
+        case UP:
+            self->e.animation->currLoop = 0;
+            break;
+        case DOWN:
+            self->e.animation->currLoop = 5;
+            break;
+        case LEFT:
+            self->e.animation->currLoop = 6;
+            break;
+        case RIGHT:
+            self->e.animation->currLoop = 3;
+            break;
+        default:
+            break;
+    }
     
     self->milliHitstun = (self->milliHitstun - delta < 0) ? 0 : self->milliHitstun - delta;
 }
