@@ -214,40 +214,23 @@ Image *loadImage(char *name){
 // Drawing
 /////////////////////////////////////////////////
 void drawImage(Image *image, int x, int y){
+    //if image is null, do nothing
     if (image == NULL){
         return;
     }
-    
+
+    SDL_Rect dest;
+    dest.x = x;
+    dest.y = y;
+    dest.w = image->width;
+    dest.h = image->height;
+
+    //do something different depending on if the image is a surface/texture - almost no reason to believe it will ever be a surface
     if (image->isTexture){
-        drawImage_T(image->texture, x, y);
+        SDL_RenderCopy(renderer, image->texture, NULL, &dest);
     } else {
-        drawImage_S(image->surface, x, y);
+        SDL_BlitSurface(image->surface, NULL, screen, &dest);
     }
-}
-
-void drawImage_S(SDL_Surface *image, int x, int y){
-    SDL_Rect dest;
-    
-    //set the blitting rectangle to the size of the src image
-    dest.x = x;
-    dest.y = y;
-    dest.w = image->w;
-    dest.h = image->h;
-    
-    //blit the entire image onto the screen
-    SDL_BlitSurface(image, NULL, screen, &dest);
-}
-
-void drawImage_T(SDL_Texture *image, int x, int y){
-    SDL_Rect dest;
-    
-    //set the blitting rectangle to the size of the src image
-    dest.x = x;
-    dest.y = y;
-    SDL_QueryTexture(image, NULL, NULL, &dest.w, &dest.h);
-    
-    //blit the entire image onto the screen
-    SDL_RenderCopy(renderer, image, NULL, &dest);
 }
 
 void drawImageToImage(Image *src, Image *dst, ImageRect *srcRect, ImageRect *dstRect){
@@ -291,32 +274,39 @@ void drawImageToImage(Image *src, Image *dst, ImageRect *srcRect, ImageRect *dst
     }
 }
 
-void drawImageSrcDst_S(SDL_Surface *image, SDL_Rect src, SDL_Rect dst){
-    SDL_BlitSurface(image, &src, screen, &dst);
+void drawImageSrcDst(Image *image, ImageRect *srcRect, ImageRect *dstRect){
+    if (image == NULL){
+        return;
+    }
+    
+    //create SDL_Rects from ImageRects - PIZZA make internal method for this conversion
+    SDL_Rect sR, dR;
+    SDL_Rect *sRPtr, *dRPtr;
+    if (srcRect != NULL){
+        sR.x = srcRect->x;
+        sR.y = srcRect->y;
+        sR.w = srcRect->w;
+        sR.h = srcRect->h;
+    }
+    if (dstRect != NULL){
+        dR.x = dstRect->x;
+        dR.y = dstRect->y;
+        dR.w = dstRect->w;
+        dR.h = dstRect->h;
+    }
+    sRPtr = (srcRect != NULL) ? &sR : NULL;
+    dRPtr = (dstRect != NULL) ? &dR : NULL;
+    
+    //draw depending on how the image is stored
+    if (image->isTexture){
+        SDL_RenderCopy(renderer, image->texture, sRPtr, dRPtr);
+    } else {
+        SDL_BlitSurface(image->surface, sRPtr, screen, dRPtr);
+    }
 }
 
 void drawImageSrcDst_T(SDL_Texture *image, SDL_Rect src, SDL_Rect dst){
     SDL_RenderCopy(renderer, image, &src, &dst);
-}
-
-void drawSprite(Sprite *s, int x, int y){
-    drawImage_T(s->texture, x, y);    
-}
-
-void drawSpriteSrcDst(Sprite *s, int srcX, int srcY, int w, int h, int dstX, int dstY){
-    SDL_Rect src, dest;
-    
-    src.x = srcX;
-    src.y = srcY;
-    src.w = w;
-    src.h = h;
-    
-    dest.x = dstX;
-    dest.y = dstY;
-    dest.w = w;
-    dest.h = h;
-    
-    drawImageSrcDst_T(s->texture, src, dest);
 }
 
 void drawAnimatedSprite(Sprite *s, int frame, int x, int y){
@@ -413,7 +403,7 @@ void drawUnfilledRect_T(int x, int y, int w, int h, int r, int g, int b){
 }
 
 void drawAnimation(NewSprite *s, SpriteAnimation *anim, int x, int y){
-    SDL_Rect src, dest;
+    ImageRect src, dest;
     size_t i;
     int frameNum;
     int currLoop = anim->currLoop;
@@ -441,11 +431,7 @@ void drawAnimation(NewSprite *s, SpriteAnimation *anim, int x, int y){
     dest.h = s->frameHeight;
     
     //draw
-    if (s->image->isTexture){
-        drawImageSrcDst_T(s->image->texture, src, dest);
-    } else {
-        drawImageSrcDst_S(s->image->surface, src, dest);
-    }
+    drawImageSrcDst(s->image, &src, &dest);
 }
 
 

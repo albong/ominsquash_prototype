@@ -12,8 +12,8 @@
 #define LETTER_WIDTH 18
 #define LETTER_HEIGHT 20
 
-static Sprite *textboxSprite;
-static Sprite *alphabetSprite;
+static Image *textboxImage;
+static Image *alphabetSheet;
 
 static int numLines;
 static int currLine;
@@ -22,8 +22,8 @@ static char **lines;
 static void cleanupText();
 
 void initTextbox(){
-    textboxSprite = loadSprite("gfx/textbox.png");
-    alphabetSprite = loadSprite("gfx/alphabet.png");
+    textboxImage = loadImage("gfx/textbox.png");
+    alphabetSheet = loadImage("gfx/alphabet.png");
     numLines = 0;
     currLine = 0;
 }
@@ -50,15 +50,15 @@ int doTextbox(unsigned delta){
 
 void drawTextbox(){
     int i, j;
-    int shiftX = (SCREEN_WIDTH / 2) - (textboxSprite->width / 2);
-    int shiftY = SCREEN_HEIGHT - 20 - textboxSprite->height;
+    int shiftX = (SCREEN_WIDTH / 2) - (textboxImage->width / 2);
+    int shiftY = SCREEN_HEIGHT - 20 - textboxImage->height;
     int alphaX, alphaY;
     int charX, charY;
     int charNum;
     int OFFSET = 14;
     int LINE_SPACE = 6;
     
-    drawSprite(textboxSprite, shiftX, shiftY);
+    drawImage(textboxImage, shiftX, shiftY);
     for (i = currLine; i < currLine + NUM_LINES && i < numLines; i++){
         for (j = 0; j < NUM_CHAR_LINE; j++){
             if (lines[i][j] == '\0'){
@@ -75,7 +75,19 @@ void drawTextbox(){
             alphaY = ((lines[i][j] - 32) / ALPHA_HEIGHT) * LETTER_HEIGHT;
             charX = shiftX + OFFSET + (j * LETTER_WIDTH);
             charY = shiftY + OFFSET + ((i - currLine) * (LINE_SPACE + LETTER_HEIGHT));
-            drawSpriteSrcDst(alphabetSprite, alphaX, alphaY, LETTER_WIDTH, LETTER_HEIGHT, charX, charY);
+
+            ImageRect srcRect, dstRect;
+            srcRect.x = alphaX;
+            srcRect.y = alphaY;
+            srcRect.w = LETTER_WIDTH;
+            srcRect.h = LETTER_HEIGHT;
+            
+            dstRect.x = charX;
+            dstRect.y = charY;
+            dstRect.w = LETTER_WIDTH;
+            dstRect.h = LETTER_HEIGHT;
+            
+            drawImageSrcDst(alphabetSheet, &srcRect, &dstRect);
         }
     }
 }

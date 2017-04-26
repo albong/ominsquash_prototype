@@ -3,12 +3,12 @@
 #include "constants.h"
 #include "player.h"
 
-static Sprite *menuSprite;
+static Image *menuImage;
 
 void initMenu(){
-    menuSprite = loadSprite("gfx/menu_placeholder.png");
+    menuImage = loadImage("gfx/menu_placeholder.png");
 }
 
 void drawMenu(){
-    drawSprite(menuSprite, (SCREEN_WIDTH / 2) - (menuSprite->width / 2), (SCREEN_HEIGHT / 2) - (menuSprite->height / 2));
+    drawImage(menuImage, (SCREEN_WIDTH / 2) - (menuImage->width / 2), (SCREEN_HEIGHT / 2) - (menuImage->height / 2));
 }
