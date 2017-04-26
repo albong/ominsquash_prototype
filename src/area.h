@@ -1,15 +1,12 @@
 #ifndef AREA_H
 #define AREA_H
 
-#include "SDL2/SDL.h"
-
 #include "graphics.h"
 #include "room.h"
 
 // Structs
 typedef struct Tilesheet {
-    SDL_Surface *sheet;
-    SDL_Texture *sheetT;
+    Image *sheet;
     int tileWidth, tileHeight;
 } Tilesheet;
 

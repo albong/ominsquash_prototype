@@ -22,6 +22,13 @@ typedef struct Image{
     int isTexture;
 } Image;
 
+typedef struct ImageRect{
+    int x;
+    int y;
+    int w;
+    int h;
+} ImageRect;
+
 typedef struct NewSprite{
     Image *image;
     int frameWidth;
@@ -59,11 +66,14 @@ SDL_Texture *convertToTexture(SDL_Surface *surface);
 Sprite *loadSprite(char *name);
 Sprite *loadAnimatedSprite(char *name, int frameWidth);
 SDL_Surface* getEmptySurface(int width, int height);
+Image *getEmptyImage(int width, int height);
 Image *loadImage(char *name);
 
 // Draw
+void drawImage(Image *image, int x, int y);
 void drawImage_S(SDL_Surface *image, int x, int y);
 void drawImage_T(SDL_Texture *image, int x, int y);
+void drawImageToImage(Image *src, Image *dst, ImageRect *srcRect, ImageRect *dstRect);
 void drawImageSrcDst_S(SDL_Surface *image, SDL_Rect src, SDL_Rect dst);
 void drawImageSrcDst_T(SDL_Texture *image, SDL_Rect src, SDL_Rect dst);
 void drawSprite(Sprite *s, int x, int y);

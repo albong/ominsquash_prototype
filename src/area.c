@@ -14,7 +14,6 @@
 #include "entity_creator.h"
 
 #include "stdint.h"
-#include "SDL2/SDL.h"
  
 static int changingRooms = 0;
 static int changingToRoom = -1;
@@ -45,7 +44,6 @@ Area *init_Area(Area *self){
     self->tilesetName = NULL;
 
     self->tilesheet.sheet = NULL;
-    self->tilesheet.sheetT;
     self->tilesheet.tileWidth = 0; 
     self->tilesheet.tileHeight = 0;
 
@@ -65,14 +63,13 @@ void loadArea(){
     
     //load the tilesheet
     // _current_area.tilesetName = "gfx/area1tiles.png";
-    _current_area.tilesheet.sheet = loadSurface(_current_area.tilesetName);
-    _current_area.tilesheet.sheetT = convertToTexture(_current_area.tilesheet.sheet);
+    _current_area.tilesheet.sheet = loadImage(_current_area.tilesetName);
     _current_area.tilesheet.tileWidth = TILE_SIZE;
     _current_area.tilesheet.tileHeight = TILE_SIZE;
 
     //draw the buffers
     for (i = 0; i < _current_area.numRooms; i++){
-        _current_area.roomList[i]->buffer = getEmptySurface(TILE_SIZE * ROOM_WIDTH, TILE_SIZE * ROOM_HEIGHT);
+        _current_area.roomList[i]->buffer = getEmptyImage(TILE_SIZE * ROOM_WIDTH, TILE_SIZE * ROOM_HEIGHT);
         drawRoomBuffers(_current_area.roomList[i]);
     }
     
@@ -212,9 +209,10 @@ static void drawRoomBuffers(Room *room){
     int roomHeight = ROOM_HEIGHT;
     int tileWidth = _current_area.tilesheet.tileWidth;
     int tileHeight = _current_area.tilesheet.tileHeight;
-    int numTilesWide = (_current_area.tilesheet.sheet->w - 1) / tileWidth;
-    int numTilesHigh = (_current_area.tilesheet.sheet->h - 1) / tileHeight;
+    int numTilesWide = (_current_area.tilesheet.sheet->width - 1) / tileWidth;
+    int numTilesHigh = (_current_area.tilesheet.sheet->height - 1) / tileHeight;
     SDL_Rect src, dst;
+    ImageRect srcR, dstR;
     int i, x, y;
     for (i = 0; i < roomWidth * roomHeight; i++){
         x = room->tileIndices[i] % numTilesWide;
@@ -230,10 +228,19 @@ static void drawRoomBuffers(Room *room){
         dst.y = (i / roomWidth) * tileHeight;
         dst.w = tileWidth;
         dst.h = tileHeight;
+        
+        srcR.x = x * (tileWidth + 1) + 1;
+        srcR.y = y * (tileHeight + 1) + 1;
+        srcR.w = tileWidth;
+        srcR.h = tileHeight;
+    
+        dstR.x = (i % roomWidth) * tileWidth;
+        dstR.y = (i / roomWidth) * tileHeight;
+        dstR.w = tileWidth;
+        dstR.h = tileHeight;
 
-        SDL_BlitSurface(_current_area.tilesheet.sheet, &src, room->buffer, &dst);
+        drawImageToImage(_current_area.tilesheet.sheet, room->buffer, &srcR, &dstR);
     }
-    finalizeBuffer(room);
 }
 
 
@@ -390,13 +397,13 @@ static void doRoomEnemies(int delta){
 /////////////////////////////////////////////////
 void drawCurrentRoom(){
     if (!changingRooms){
-        drawImage_T(_current_area.currentRoom->bufferT, 0, 0);
+        drawImage(_current_area.currentRoom->buffer, 0, 0);
         drawRoomDoors(_current_area.currentRoom, 0, 0);
         drawRoomEntities(_current_area.currentRoom, 0, 0);
         drawRoomEnemies(_current_area.currentRoom, 0, 0);
     } else {
-        drawImage_T(_current_area.currentRoom->bufferT, room_transition.oldX, room_transition.oldY);
-        drawImage_T(room_transition.newRoom->bufferT, room_transition.newX, room_transition.newY);
+        drawImage(_current_area.currentRoom->buffer, room_transition.oldX, room_transition.oldY);
+        drawImage(room_transition.newRoom->buffer, room_transition.newX, room_transition.newY);
         
         drawRoomDoors(_current_area.currentRoom, room_transition.oldX, room_transition.oldY);
         drawRoomDoors(room_transition.newRoom, room_transition.newX, room_transition.newY);
@@ -485,7 +492,7 @@ static Room *createFirstDemoRoom(){
     firstRoom->connectingRooms[1] = 1;
     firstRoom->connectingRooms[2] = 1;
     firstRoom->connectingRooms[3] = 1;
-    firstRoom->buffer = getEmptySurface(_current_area.tilesheet.tileWidth * ROOM_WIDTH, _current_area.tilesheet.tileHeight * ROOM_HEIGHT);
+    // firstRoom->buffer = getEmptySurface(_current_area.tilesheet.tileWidth * ROOM_WIDTH, _current_area.tilesheet.tileHeight * ROOM_HEIGHT);
     drawRoomBuffers(firstRoom);
     generateWallList(firstRoom, _current_area.tilesheet.tileWidth);
     
@@ -528,7 +535,7 @@ static Room *createSecondDemoRoom(){
     room->connectingRooms[1] = 0;
     room->connectingRooms[2] = 0;
     room->connectingRooms[3] = 0;
-    room->buffer = getEmptySurface(_current_area.tilesheet.tileWidth * ROOM_WIDTH, _current_area.tilesheet.tileHeight * ROOM_HEIGHT);
+    // room->buffer = getEmptySurface(_current_area.tilesheet.tileWidth * ROOM_WIDTH, _current_area.tilesheet.tileHeight * ROOM_HEIGHT);
     drawRoomBuffers(room);
     generateWallList(room, _current_area.tilesheet.tileWidth);
 
@@ -577,7 +584,7 @@ static Room *createThirdDemoRoom(){
     room->connectingRooms[1] = 2;
     room->connectingRooms[2] = 2;
     room->connectingRooms[3] = 2;
-    room->buffer = getEmptySurface(_current_area.tilesheet.tileWidth * ROOM_WIDTH, _current_area.tilesheet.tileHeight * ROOM_HEIGHT);
+    // room->buffer = getEmptySurface(_current_area.tilesheet.tileWidth * ROOM_WIDTH, _current_area.tilesheet.tileHeight * ROOM_HEIGHT);
     generateWallList(room, _current_area.tilesheet.tileWidth);
     drawRoomBuffers(room);
     

@@ -15,7 +15,6 @@ Room *init_Room(Room *self){
     self->transitionTiles = NULL;
     self->transitionToRoom = NULL;
     self->buffer = NULL;
-    self->bufferT = NULL;
     self->connectingRooms[0] = -1;
     self->connectingRooms[1] = -1;
     self->connectingRooms[2] = -1;
@@ -42,10 +41,6 @@ Room *init_Room(Room *self){
     self->doors = NULL;
     
     return self;
-}
-
-void finalizeBuffer(Room *self){
-    self->bufferT = convertToTexture(self->buffer);
 }
 
 

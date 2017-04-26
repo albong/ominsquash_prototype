@@ -178,6 +178,26 @@ SDL_Surface *getEmptySurface(int width, int height){
         fmt->Amask);
 }
 
+Image *getEmptyImage(int width, int height){
+    Image *result = malloc(sizeof(Image));
+    
+    result->width = width;
+    result->height = height;
+    result->isTexture = 1;
+    result->surface = NULL;
+    
+    //create a blank texture that can be edited
+    result->texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, width, height);;
+    
+    //if the texture was not created, return null
+    if (result->texture == NULL){
+        free(result);
+        result = NULL;
+    }
+    
+    return result;
+}
+
 Image *loadImage(char *name){
     Image *result = malloc(sizeof(Image));
     
@@ -193,6 +213,18 @@ Image *loadImage(char *name){
 /////////////////////////////////////////////////
 // Drawing
 /////////////////////////////////////////////////
+void drawImage(Image *image, int x, int y){
+    if (image == NULL){
+        return;
+    }
+    
+    if (image->isTexture){
+        drawImage_T(image->texture, x, y);
+    } else {
+        drawImage_S(image->surface, x, y);
+    }
+}
+
 void drawImage_S(SDL_Surface *image, int x, int y){
     SDL_Rect dest;
     
@@ -216,6 +248,47 @@ void drawImage_T(SDL_Texture *image, int x, int y){
     
     //blit the entire image onto the screen
     SDL_RenderCopy(renderer, image, NULL, &dest);
+}
+
+void drawImageToImage(Image *src, Image *dst, ImageRect *srcRect, ImageRect *dstRect){
+    //safety first
+    if (src == NULL || dst == NULL){
+        return;
+    }
+    
+    //create SDL_Rects from ImageRects - PIZZA make internal method for this conversion
+    SDL_Rect sR, dR;
+    SDL_Rect *sRPtr, *dRPtr;
+    if (srcRect != NULL){
+        sR.x = srcRect->x;
+        sR.y = srcRect->y;
+        sR.w = srcRect->w;
+        sR.h = srcRect->h;
+    }
+    if (dstRect != NULL){
+        dR.x = dstRect->x;
+        dR.y = dstRect->y;
+        dR.w = dstRect->w;
+        dR.h = dstRect->h;
+    }
+    sRPtr = (srcRect != NULL) ? &sR : NULL;
+    dRPtr = (dstRect != NULL) ? &dR : NULL;
+    
+    //PIZZA - need to handle all these cases?  Surface is never used outside of loading
+    if (src->isTexture && dst->isTexture){
+        SDL_SetRenderTarget(renderer, dst->texture);
+        
+        //PIZZA, need to verify can render to texture, check access flags
+        SDL_RenderCopy(renderer, src->texture, sRPtr, dRPtr);
+        
+        SDL_SetRenderTarget(renderer, NULL);
+    } else if (src->isTexture && !dst->isTexture){
+        printf("NAH\n");
+    } else if (src->isTexture && !dst->isTexture){
+        printf("NAH\n");
+    } else { //both surfaces
+        SDL_BlitSurface(src->surface, &sR, dst->surface, &dR);
+    }
 }
 
 void drawImageSrcDst_S(SDL_Surface *image, SDL_Rect src, SDL_Rect dst){
