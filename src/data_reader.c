@@ -25,20 +25,22 @@ char *readFileToCharStar(char *filename){
 
     // open in read binary mode
     f = fopen(filename,"rb");
+    if (f == NULL){
+        return NULL;
+    }
+    
     // get the length
     fseek(f, 0, SEEK_END);
     len = ftell(f);
     fseek(f, 0, SEEK_SET);
 
+    //allocate and read the data
     data = (char*)malloc(len + 1);
-
     fread(data, 1, len, f);
     data[len] = '\0';
+    
     fclose(f);
-
-    // result = cJSON_Parse(data);
-    //PIZZA - Should this be freed after parsing the json?  Dr Memory indicates yes?
-    // free(data);
+    
     return data;
 }
 
