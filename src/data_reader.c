@@ -84,10 +84,10 @@ Area *readAreaFromFile(char *filename, Area *result){
         currRoom->flags = (uint32_t *) malloc(sizeof(uint32_t) * ROOM_HEIGHT * ROOM_WIDTH);
         
         //set the connecting rooms
-        currRoom->connectingRooms[0] = cJSON_GetObjectItem(jsonRoom, "up connecting room")->valueint;
-        currRoom->connectingRooms[1] = cJSON_GetObjectItem(jsonRoom, "down connecting room")->valueint;
-        currRoom->connectingRooms[2] = cJSON_GetObjectItem(jsonRoom, "left connecting room")->valueint;
-        currRoom->connectingRooms[3] = cJSON_GetObjectItem(jsonRoom, "right connecting room")->valueint;
+        currRoom->connectingRooms[ROOM_UP] = cJSON_GetObjectItem(jsonRoom, "up connecting room")->valueint;
+        currRoom->connectingRooms[ROOM_DOWN] = cJSON_GetObjectItem(jsonRoom, "down connecting room")->valueint;
+        currRoom->connectingRooms[ROOM_LEFT] = cJSON_GetObjectItem(jsonRoom, "left connecting room")->valueint;
+        currRoom->connectingRooms[ROOM_RIGHT] = cJSON_GetObjectItem(jsonRoom, "right connecting room")->valueint;
         
         //set the tile indices
         arrY = cJSON_GetObjectItem(jsonRoom, "tile layout");
