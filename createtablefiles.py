@@ -13,11 +13,14 @@ import os
 BUILD_DIR = os.path.dirname(os.path.realpath(__file__))
 ENTITIES_DIR = "entities/"
 ENTITY_TABLES = "entity_tables.c"
+WEAPONS_DIR = "weapons/"
+WEAPON_TABLES = "weapon_tables.c"
 
 def clean():
     """remove existing table files"""
     try:
         os.remove("entities/entity_tables.c")
+        os.remove("weapons/weapon_tables.c")
     except OSError:
         pass
 
@@ -65,7 +68,7 @@ def checkEntityHeaderMethods(headerList):
         hasAction = False
         hasDraw = False
         hasInteract = False
-        ID = h[7:-2]
+        ID = h[len("entity_"):-2]
         
         try:
             with open(ENTITIES_DIR + h, "r") as fin:
@@ -89,7 +92,7 @@ def checkEntityHeaderMethods(headerList):
             exit(1)
             
     return result
-
+    
 def writeEntityTableFile(fout, headerList, methodDict):
     """write the entity tables file"""
     #first, write the header
@@ -100,7 +103,7 @@ def writeEntityTableFile(fout, headerList, methodDict):
     fout.write("\n")
     
     #now write the beginning of the method
-    tableSize = int(headerList[-1][7:-2]) + 1
+    tableSize = int(headerList[-1][len("entity_"):-2]) + 1
     fout.write("void fillEntityTables(entity_action_ptr_t **actionTable, entity_draw_ptr_t **drawTable, entity_interact_ptr_t **interactTable, size_t *tableSize){\n")
     fout.write("    *tableSize = " + str(tableSize) + ";\n")
     fout.write("\n")
@@ -144,14 +147,92 @@ def writeEntityTableFile(fout, headerList, methodDict):
     fout.write("    *interactTable = it;\n")
     fout.write("}\n")
     
+def checkWeaponHeaderMethods(headerList):
+    """Check each header file line by line to see if it contains lines of the correct format
+    returns a dict of tuples; ID : (hasCreate, hasCollide)"""
+    result = {}
+    
+    for h in headerList:
+        hasCreate = False
+        hasCollide = False
+        ID = h[len("weapon_"):-2]
+        
+        try:
+            with open(WEAPONS_DIR + h, "r") as fin:
+                for line in fin:
+                    #format the line for easier parsing
+                    line = line.strip()
+                    line = " ".join(line.split())
+                    
+                    #check for methods
+                    if line.startswith("Weapon *weapon_create_" + ID):
+                        hasCreate = True
+                    if line.startswith("void weapon_collide_" + ID):
+                        hasCollide = True
+                    
+                result[ID] = (hasCreate, hasCollide)
+                
+        except IOError:
+            print "Error reading file " + WEAPONS_DIR + h
+            exit(1)
+            
+    return result
 
+def writeWeaponTableFile(fout, headerList, methodDict):
+    """write the entity tables file"""
+    #first, write the header
+    fout.write("#include \"weapon_tables.h\"\n\n")
+    fout.write("\n")
+    for h in headerList:
+        fout.write("#include \"" + h + "\"\n")
+    fout.write("\n")
+    
+    #now write the beginning of the method
+    tableSize = int(headerList[-1][len("weapon_"):-2]) + 1
+    fout.write("void fillWeaponTables(weapon_create_ptr_t **createTable, weapon_collide_ptr_t **collideTable, size_t *tableSize){\n")
+    fout.write("    *tableSize = " + str(tableSize) + ";\n")
+    fout.write("\n")
+    fout.write("    weapon_create_ptr_t *createT = malloc(sizeof(weapon_create_ptr_t) * " + str(tableSize) + ");\n")
+    fout.write("    weapon_collide_ptr_t *collideT = malloc(sizeof(weapon_collide_ptr_t) * " + str(tableSize) + ");\n")
+    fout.write("\n")
+    
+    #populate the tables
+    for i in range(0, tableSize):
+        ID = str(i).zfill(5)
+        hasCreate = True
+        hasCollide = True
+
+        if ID in methodDict:
+            hasCreate, hasCollide = methodDict[ID]
+        
+        #create
+        if hasCreate:
+            fout.write("    createT[" + ID + "] = &weapon_create_" + ID + ";\n")
+        else:
+            fout.write("    createT[" + ID + "] = NULL;\n")
+        
+        #collide
+        if hasCollide:
+            fout.write("    collideT[" + ID + "] = &weapon_collide_" + ID + ";\n")
+        else:
+            fout.write("    collideT[" + ID + "] = NULL;\n")
+        
+    fout.write("\n")
+    
+    #write the end of the method
+    fout.write("    *createTable = createT;\n")
+    fout.write("    *collideTable = collideT;\n")
+    fout.write("}\n")
+    
+    
 #################################################
 # Script start
 #################################################
 #change directory to script location
 os.chdir(BUILD_DIR)
 
-#remove the old files
+#remove the old files - this is important, since this prevents picking up the table files when
+#searching for files to put in the table files
 clean()
 
 #get the files to not include
@@ -161,10 +242,21 @@ toIgnore = findIgnoreList()
 entityHeaders = findFiles(toIgnore, ENTITIES_DIR)
 entityHeaderMethods = checkEntityHeaderMethods(entityHeaders)
 
-#write the table file
+weaponHeaders = findFiles(toIgnore, WEAPONS_DIR)
+weaponHeaderMethods = checkWeaponHeaderMethods(weaponHeaders)
+
+
+#write the table files
 try:
     with open(ENTITIES_DIR + ENTITY_TABLES, "w") as fout:
         writeEntityTableFile(fout, entityHeaders, entityHeaderMethods)
 except IOError:
     print "Couldn't open " + ENTITY_TABLES + " for writing"
+    exit(1)
+
+try:
+    with open(WEAPONS_DIR + WEAPON_TABLES, "w") as fout:
+        writeWeaponTableFile(fout, weaponHeaders, weaponHeaderMethods)
+except IOError:
+    print "Couldn't open " + WEAPON_TABLES + " for writing"
     exit(1)

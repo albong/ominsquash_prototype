@@ -13,3 +13,4 @@ font/*
 Makefile.win
 .build.changed
 entities/entity_tables.c
+weapons/weapon_tables.c

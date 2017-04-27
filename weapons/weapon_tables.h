@@ -4,7 +4,8 @@
 #include "../src/weapon.h"
 #include "../src/entity.h"
 
-//these correspond to the pointers used by the Entity struct
+//these correspond to the pointers used by the Weapon struct, and
+//one for creation since weapons aren't finalized yet, to ease development
 typedef Weapon *(*weapon_create_ptr_t)();
 typedef void (*weapon_collide_ptr_t)(Weapon *, void *, int, CollisionType);
 
