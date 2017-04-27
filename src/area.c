@@ -93,7 +93,7 @@ void loadArea(){
     createAreaEntities(&_current_area);
 
     //PIZZA - testing stuff to set the room we're going to use, add starting room stuff later
-    _current_area.currentRoom = _current_area.roomList[1];
+    _current_area.currentRoom = _current_area.roomList[0];
     
     //PIZZA remove this later
     TEMP_ROOM = _current_area.roomList[0];
@@ -427,7 +427,6 @@ static void drawRoomEntities(Room *room, double shiftX, double shiftY){
     size_t i;
     for (i = 0; i < room->numEntities; i++){
         if (room->entities[i]->active){
-//            drawAnimatedSprite(room->entities[i]->sprite, 0, room->entities[i]->x + shiftX, room->entities[i]->y + shiftY);
             room->entities[i]->draw(room->entities[i], shiftX, shiftY);
         }
     }
@@ -437,7 +436,6 @@ static void drawRoomEnemies(Room *room, double shiftX, double shiftY){
     int i;
     for (i = 0; i < room->numEnemies; i++){
         if (room->enemies[i]->e.active){
-//            drawAnimatedSprite(room->entities[i]->sprite, 0, room->entities[i]->x + shiftX, room->entities[i]->y + shiftY);
             room->enemies[i]->e.draw(&room->enemies[i]->e, shiftX, shiftY);
         }
     }

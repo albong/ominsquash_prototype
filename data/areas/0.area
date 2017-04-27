@@ -5,7 +5,7 @@
     "rooms" : [
         {
             "room number" : 0,
-            "up connecting room" : 0,
+            "up connecting room" : 1,
             "down connecting room" : 0,
             "left connecting room" : 0,
             "right connecting room" : 0,

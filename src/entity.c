@@ -138,13 +138,7 @@ void applyExternalMoves(Entity *self, int delta){
 // Drawing
 /////////////////////////////////////////////////
 void defaultDrawEntity(Entity *self, double shiftX, double shiftY){
-    if (self->sprite != NULL && self->currFrame >= 0){
-        // drawAnimatedSprite(self->sprite, self->currFrame, self->x + 0.5 + shiftX, self->y + 0.5 + shiftY);
-    }
-    
-    //if nsprite not null and animation not null, draw animation
-    //if nsprite not null, draw image contained in nsprite
-    if (self->nsprite != NULL && self->animation != NULL){
+    if (self != NULL && self->nsprite != NULL && self->animation != NULL){
         drawAnimation(self->nsprite, self->animation, self->x + 0.5 + shiftX, self->y + 0.5 + shiftY);
     }
 }
