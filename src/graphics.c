@@ -209,6 +209,22 @@ Image *loadImage(char *name){
     return result;
 }
 
+SpriteAnimation *shallowCopySpriteAnimation(SpriteAnimation *original){
+    if (original == NULL){
+        return NULL;
+    }
+    
+    //copy the memory
+    SpriteAnimation *result = malloc(sizeof(SpriteAnimation));
+    memcpy(result, original, sizeof(SpriteAnimation));
+    
+    //we can keep pointers to the loops and data, we just need to have different counters
+    result->currLoop = 0;
+    result->numLoops = 0;
+    result->milliPassed = 0;
+    
+    return result;
+}
 
 /////////////////////////////////////////////////
 // Drawing

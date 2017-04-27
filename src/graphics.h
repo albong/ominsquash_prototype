@@ -68,6 +68,7 @@ Sprite *loadAnimatedSprite(char *name, int frameWidth);
 SDL_Surface* getEmptySurface(int width, int height);
 Image *getEmptyImage(int width, int height);
 Image *loadImage(char *name);
+SpriteAnimation *shallowCopySpriteAnimation(SpriteAnimation *original);
 
 // Draw
 void drawImage(Image *image, int x, int y);
