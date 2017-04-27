@@ -33,7 +33,8 @@ int main(int argc, char *argv[]){
     
     //initialization stuff
     initEntityCreateTable();
-    initWeaponLists(); //before the area and player
+    initWeaponCreateTable();
+    initWeaponLists(); //creates the player's arrays, must be done before the area and player
     loadArea(); // eventually this will be gone since the areas will be loaded from files
     initInventory(); //should be done before player
     initPlayer();

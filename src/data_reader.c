@@ -219,7 +219,6 @@ Entity *readEntityFromFile(char *filename, Entity *result){
     char dataFilename[80];
     int spriteId = cJSON_GetObjectItem(root, "new sprite")->valueint;
     sprintf(dataFilename, "data/sprites/%05d.sprite", spriteId);
-    printf("%s\n", dataFilename);
     result->nsprite = readNewSpriteFromFile(dataFilename, malloc(sizeof(NewSprite)));
     sprintf(dataFilename, "data/animations/%05d.animation", spriteId);
     result->animation = readSpriteAnimationFromFile(dataFilename, malloc(sizeof(SpriteAnimation)));
@@ -287,7 +286,7 @@ SpriteAnimation *readSpriteAnimationFromFile(char *filename, SpriteAnimation *re
     char *fileContents = readFileToCharStar(filename);
     cJSON *root = cJSON_Parse(fileContents);
     if (!root){
-        printf("Animation: Error before: %s\n", cJSON_GetErrorPtr());
+        printf("Animation: %s Error before: %s\n", filename, cJSON_GetErrorPtr());
         fflush(stdout);
         free(result);
         free(fileContents);

@@ -1,29 +1,22 @@
-#include "sword.h"
+#include "weapon_00000.h"
 #include "../src/enemy.h"
 #include "../src/graphics.h"
+#include "../src/data_reader.h"
 
-static Sprite *swordSprite;
 static const int DAMAGE = 4;
 
-static void loadSwordSprite();
 static void createHitBoxes(Weapon *w);
 static void doSword(void *self, int delta);
 static void collideWithSword(Weapon *self, void *o, int collCode, CollisionType t);
 
-static void loadSwordSprite(){
-    if (swordSprite == NULL){
-        swordSprite = loadAnimatedSprite("gfx/swordsprite.png", 31);
-    }
-}
-
-Weapon *createSword(){
-    loadSwordSprite();
+Weapon *weapon_create_00000(){
     Weapon *w = init_Weapon(malloc(sizeof(Weapon)));
         
     w->e.active = 1;
     
     w->e.action = &doSword;
-    w->e.sprite = swordSprite;
+    w->e.nsprite = readNewSpriteFromFile("data/sprites/00002.sprite", NULL);
+    w->e.animation = readSpriteAnimationFromFile("data/animations/no_animation.animation", NULL);
     
     w->e.pixelsPerMilli = 50;
 //    double changeX, changeY;
@@ -176,7 +169,7 @@ static void doSword(void *w, int delta){
     self->e.currHitBox = self->e.currFrame;
 }
 
-static void collideWithSword(Weapon *self, void *o, int collCode, CollisionType t){
+void collideWithSword(Weapon *self, void *o, int collCode, CollisionType t){
     if (t == ENEMY){
         Enemy *enemy = (Enemy *)o;
         if (enemy->takeDamage(enemy, DAMAGE)){
@@ -185,4 +178,8 @@ static void collideWithSword(Weapon *self, void *o, int collCode, CollisionType 
             self->cancelled = 1;
         }
     }
+}
+
+void weapon_collide_00000(Weapon *self, void *o, int collCode, CollisionType t){
+    collideWithSword(self, o, collCode, t);
 }

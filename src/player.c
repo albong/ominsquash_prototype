@@ -3,10 +3,8 @@
 #include "constants.h"
 #include "input.h"
 #include "weapon.h"
+#include "weapon_creator.h"
 #include "inventory.h"
-
-//needed for demo, not fully
-#include "../weapons/sword.h"
 
 #include <stdio.h>
 
@@ -65,7 +63,8 @@ void initPlayer(){
     _player.milliHitstun = 0;
     
     //weapon
-    Weapon *sword = createSword();
+    // Weapon *sword = createSword();
+    Weapon *sword = createWeaponById(0);
     sword->owner = &_player.e;
     addPlayerWeapon(sword);
     addWeaponToInventory(sword);
