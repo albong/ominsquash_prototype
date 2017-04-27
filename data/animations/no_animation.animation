@@ -1,0 +1,10 @@
+{
+    "number of loops" : 1,
+    "loop lengths" : [1],
+    "loops" : [
+        {
+            "frame numbers" : [0],
+            "durations" : [1]
+        }
+    ]
+}

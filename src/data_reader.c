@@ -213,10 +213,21 @@ Entity *readEntityFromFile(char *filename, Entity *result){
         }
     }
     
-    //load the sprite
+    //load the sprite and animation
     //PIZZA - ultimately we will load sprite data from JSON files too, so this will be different
 	result->sprite = loadAnimatedSprite(cJSON_GetObjectItem(root, "sprite")->valuestring, cJSON_GetObjectItem(root, "sprite width")->valueint);
-    // result->tilesetName = strdup(cJSON_GetObjectItem(root, "tilesheet")->valuestring);
+    char dataFilename[80];
+    int spriteId = cJSON_GetObjectItem(root, "new sprite")->valueint;
+    sprintf(dataFilename, "data/sprites/%05d.sprite", spriteId);
+    printf("%s\n", dataFilename);
+    result->nsprite = readNewSpriteFromFile(dataFilename, malloc(sizeof(NewSprite)));
+    sprintf(dataFilename, "data/animations/%05d.animation", spriteId);
+    result->animation = readSpriteAnimationFromFile(dataFilename, malloc(sizeof(SpriteAnimation)));
+    
+    //if there is no associated animation file, then just load the one for a static animation
+    if (result->animation == NULL){
+        result->animation = readSpriteAnimationFromFile("data/animations/no_animation.animation", malloc(sizeof(SpriteAnimation)));
+    }
     
     //free and return
     cJSON_Delete(root);
@@ -235,7 +246,7 @@ NewSprite *readNewSpriteFromFile(char *filename, NewSprite *result){
     char *fileContents = readFileToCharStar(filename);
     cJSON *root = cJSON_Parse(fileContents);
     if (!root){
-        printf("Error before: %s\n", cJSON_GetErrorPtr());
+        printf("Sprite: Error before: %s\n", cJSON_GetErrorPtr());
         fflush(stdout);
         free(result);
         free(fileContents);
@@ -249,10 +260,10 @@ NewSprite *readNewSpriteFromFile(char *filename, NewSprite *result){
     //get the width and height
     result->frameWidth = cJSON_GetObjectItem(root, "frame width")->valueint;
     result->frameHeight = cJSON_GetObjectItem(root, "frame height")->valueint;
-    if (result->frameWidth > result->image->width){
+    if (result->frameWidth > result->image->width || result->frameWidth <= 0){
         result->frameWidth = result->image->width;
     }
-    if (result->frameHeight > result->image->height){
+    if (result->frameHeight > result->image->height || result->frameHeight <= 0){
         result->frameHeight = result->image->height;
     }
     
@@ -276,7 +287,7 @@ SpriteAnimation *readSpriteAnimationFromFile(char *filename, SpriteAnimation *re
     char *fileContents = readFileToCharStar(filename);
     cJSON *root = cJSON_Parse(fileContents);
     if (!root){
-        printf("Error before: %s\n", cJSON_GetErrorPtr());
+        printf("Animation: Error before: %s\n", cJSON_GetErrorPtr());
         fflush(stdout);
         free(result);
         free(fileContents);
