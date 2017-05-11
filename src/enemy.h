@@ -13,6 +13,8 @@ typedef struct Enemy {
     int milliHitstun;
     Sprite *enemySprite;
     Sprite *deathSprite;
+    NewSprite *nDeathSprite;
+    SpriteAnimation *deathAnimation;
     int touchDamage;
     int (*takeDamage)(struct Enemy *self, int amount);
     void (*collidePlayer)(struct Enemy *self, int collCode);

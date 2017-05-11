@@ -17,6 +17,8 @@ Enemy *init_Enemy(Enemy *self){
     self->milliHitstun = 0;
     self->enemySprite = NULL;
     self->deathSprite = getDefaultDeathSprite();
+    self->nDeathSprite = NULL;
+    self->deathAnimation = NULL;
     self->touchDamage = 0;
     self->takeDamage = NULL;
     self->collidePlayer = &defaultCollidePlayer;
@@ -35,6 +37,7 @@ Sprite *getDefaultDeathSprite(){
 }
 
 void defaultDrawEnemy(Entity *self, double shiftX, double shiftY){
+    return;
     if (((Enemy *)self)->health > 0 && self->sprite != NULL){
         switch (self->orientation){
             case UP:

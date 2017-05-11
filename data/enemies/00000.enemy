@@ -1,0 +1,51 @@
+{   
+    "entity" : {
+        "active" : true,
+        "speed in pixelsPerMillisecond" : 50.0,
+        "width" : 0,
+        "height" : 0,
+        "milliseconds per frame" : 200,
+        "number of frames" : 2,
+        
+        "sprite" : "gfx/skull.png",
+        "sprite width" : 16,
+        "new sprite" : 0,
+        
+        "collision type" : "ENEMY",
+        "has movement hitbox" : true,
+        "has interact hitbox" : true,
+        "interactable" : true,
+        
+        "movement hitboxes" : [
+            {
+                "circles" : [],
+                "rectangles" : [
+                    {
+                        "x" : 1,
+                        "y" : 5,
+                        "width" : 16,
+                        "height" : 11
+                    }
+                ]
+            }
+        ],
+        
+        "interact hitboxes" : [
+            {
+                "circles" : [],
+                "rectangles" : [
+                    {
+                        "x" : 1,
+                        "y" : 2,
+                        "width" : 16,
+                        "height" : 14
+                    }
+                ]
+            }
+        ]
+    },
+    
+    "health" : 8,
+    "damage for touching" : 2,
+    "death sprite" : 3
+}

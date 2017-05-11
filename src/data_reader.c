@@ -13,6 +13,12 @@
 //PIZZA - Needs to check for existence of all fields being read!
 
 static char *readFileToCharStar(char *filename);
+//return 0 on failure
+static int fillAreaFromJson(cJSON *root, Area *result);
+static int fillEntityFromJson(cJSON *root, Entity *result);
+static int fillEnemyFromJson(cJSON *root, Enemy *result);
+static int fillNewSpriteFromJson(cJSON *root, NewSprite *result);
+static int fillSpriteAnimationFromJson(cJSON *root, SpriteAnimation *result);
 
 //read in a JSON file to a cJSON object
 char *readFileToCharStar(char *filename){
@@ -54,14 +60,133 @@ Area *readAreaFromFile(char *filename, Area *result){
     //read in the given file to a cJSON object
     char *fileContents = readFileToCharStar(filename);
     cJSON *root = cJSON_Parse(fileContents);
-    if (!root){
+    
+    //if the initial parsing failed, or the detailed parsing failed, print an error and free/NULL result
+    //otherwise free the cJSON root correctly
+    if (!root || !fillAreaFromJson(root, result)){
         printf("Error before: %s\n", cJSON_GetErrorPtr());
         fflush(stdout);
         free(result);
-        free(fileContents);
-        return NULL;
+        // return NULL;
+        result = NULL;
+    } else {
+        cJSON_Delete(root);
     }
     
+    //free the read file and return
+    free(fileContents);
+    return result;
+}
+
+Entity *readEntityFromFile(char *filename, Entity *result){
+    //init the entity
+    if (result == NULL){
+        result = malloc(sizeof(Entity));
+    }
+    init_Entity(result);
+    
+    //read in the given file to a cJSON object
+    char *fileContents = readFileToCharStar(filename);
+    cJSON *root = cJSON_Parse(fileContents);
+
+    //if the initial parsing failed, or the detailed parsing failed, print an error and free/NULL result
+    //otherwise free the cJSON root correctly
+    if (!root || !fillEntityFromJson(root, result)){
+        printf("Error before: %s\n", cJSON_GetErrorPtr());
+        fflush(stdout);
+        free(result);
+        result = NULL;
+    } else {
+        cJSON_Delete(root);
+    }
+    
+    //free the read file and return
+    free(fileContents);
+    return result;
+}
+
+Enemy *readEnemyFromFile(char *filename, Enemy *result){
+    //init the entity
+    if (result == NULL){
+        result = malloc(sizeof(Enemy));
+    }
+    init_Enemy(result);
+    
+    //read in the given file to a cJSON object
+    char *fileContents = readFileToCharStar(filename);
+    cJSON *root = cJSON_Parse(fileContents);
+
+    //if the initial parsing failed, or the detailed parsing failed, print an error and free/NULL result
+    //otherwise free the cJSON root correctly
+    if (!root || !fillEnemyFromJson(root, result)){
+        printf("Error before: %s\n", cJSON_GetErrorPtr());
+        fflush(stdout);
+        free(result);
+        result = NULL;
+    } else {
+        cJSON_Delete(root);
+    }
+    
+    //free the read file and return
+    free(fileContents);
+    return result;
+}
+
+NewSprite *readNewSpriteFromFile(char *filename, NewSprite *result){
+    //init the sprite
+    if (result == NULL){
+        result = malloc(sizeof(NewSprite));
+    }
+    init_NewSprite(result);
+    
+    //read in the given file to a cJSON object
+    char *fileContents = readFileToCharStar(filename);
+    cJSON *root = cJSON_Parse(fileContents);
+    
+    //if the initial parsing failed, or the detailed parsing failed, print an error and free/NULL result
+    //otherwise free the cJSON root correctly
+    if (!root || !fillNewSpriteFromJson(root, result)){
+        printf("Error before: %s\n", cJSON_GetErrorPtr());
+        fflush(stdout);
+        free(result);
+        result = NULL;
+    } else {
+        cJSON_Delete(root);
+    }
+    
+    //free the read file and return
+    free(fileContents);
+    return result;
+}
+
+SpriteAnimation *readSpriteAnimationFromFile(char *filename, SpriteAnimation *result){
+    //init the animation
+    if (result == NULL){
+        result = malloc(sizeof(SpriteAnimation));
+    }
+    init_SpriteAnimation(result);
+    
+    //read in the given file to a cJSON object
+    char *fileContents = readFileToCharStar(filename);
+    cJSON *root = cJSON_Parse(fileContents);
+    
+    //if the initial parsing failed, or the detailed parsing failed, print an error and free/NULL result
+    //otherwise free the cJSON root correctly
+    if (!root || !fillSpriteAnimationFromJson(root, result)){
+        printf("Error before: %s\n", cJSON_GetErrorPtr());
+        fflush(stdout);
+        free(result);
+        result = NULL;
+    } else {
+        cJSON_Delete(root);
+    }
+    
+    //free the read file and return
+    free(fileContents);
+    return result;
+}
+
+int fillAreaFromJson(cJSON *root, Area *result){
     //fill in the object
     result->tilesetName = strdup(cJSON_GetObjectItem(root, "tilesheet")->valuestring);
     // result->numRooms = cJSON_GetObjectItem(root, "number of rooms")->valueint;
@@ -140,30 +265,10 @@ Area *readAreaFromFile(char *filename, Area *result){
     }
     result->currentRoom = result->roomList[0];
     
-    //free and return
-    cJSON_Delete(root);
-    free(fileContents);
-    return result;
+    return 1;
 }
 
-Entity *readEntityFromFile(char *filename, Entity *result){
-    //init the entity
-    if (result == NULL){
-        result = malloc(sizeof(Entity));
-    }
-    init_Entity(result);
-    
-    //read in the given file to a cJSON object
-    char *fileContents = readFileToCharStar(filename);
-    cJSON *root = cJSON_Parse(fileContents);
-    if (!root){
-        printf("Error before: %s\n", cJSON_GetErrorPtr());
-        fflush(stdout);
-        free(result);
-        free(fileContents);
-        return NULL;
-    }
-    
+int fillEntityFromJson(cJSON *root, Entity *result){
     //some entities may be disabled by default?
     if (cJSON_HasObjectItem(root, "active")){
         if (cJSON_GetObjectItem(root, "active")->type == cJSON_True){
@@ -187,7 +292,26 @@ Entity *readEntityFromFile(char *filename, Entity *result){
     size_t numHitboxes, numShapes;
     size_t i, j;
     if (result->hasMoveHitBox){
-        //result->moveHitBox = NULL;
+        hitboxArr = cJSON_GetObjectItem(root, "movement hitboxes");
+        numHitboxes = cJSON_GetArraySize(hitboxArr);
+        result->moveHitBox = malloc(sizeof(HitBox) * numHitboxes);
+        for (i = 0; i < numHitboxes; i++){
+            hitboxJson = cJSON_GetArrayItem(hitboxArr, i);
+            result->moveHitBox[i].numCircle = 0;
+            result->moveHitBox[i].circles = NULL;
+            
+            shapeArr = cJSON_GetObjectItem(hitboxJson, "rectangles");
+            numShapes = cJSON_GetArraySize(shapeArr);
+            result->moveHitBox[i].numRect = numShapes;
+            result->moveHitBox[i].rects = malloc(sizeof(CollRect) * numShapes);
+            for (j = 0; j < numShapes; j++){
+                shapeJson = cJSON_GetArrayItem(shapeArr, j);
+                result->moveHitBox[i].rects[j].x = cJSON_GetObjectItem(shapeJson, "x")->valueint;
+                result->moveHitBox[i].rects[j].y = cJSON_GetObjectItem(shapeJson, "y")->valueint;
+                result->moveHitBox[i].rects[j].w = cJSON_GetObjectItem(shapeJson, "width")->valueint;
+                result->moveHitBox[i].rects[j].h = cJSON_GetObjectItem(shapeJson, "height")->valueint;
+            }
+        }
     }
     
     if (result->hasInteractHitBox){
@@ -228,30 +352,36 @@ Entity *readEntityFromFile(char *filename, Entity *result){
         result->animation = readSpriteAnimationFromFile("data/animations/no_animation.animation", malloc(sizeof(SpriteAnimation)));
     }
     
-    //free and return
-    cJSON_Delete(root);
-    free(fileContents);
-    return result;
+    return 1;
 }
 
-NewSprite *readNewSpriteFromFile(char *filename, NewSprite *result){
-    //init the sprite
-    if (result == NULL){
-        result = malloc(sizeof(NewSprite));
-    }
-    init_NewSprite(result);
+int fillEnemyFromJson(cJSON *root, Enemy *result){
+    //fill in the entity superclass
+    fillEntityFromJson(cJSON_GetObjectItem(root, "entity"), (Entity *)result);
     
-    //read in the given file to a cJSON object
-    char *fileContents = readFileToCharStar(filename);
-    cJSON *root = cJSON_Parse(fileContents);
-    if (!root){
-        printf("Sprite: Error before: %s\n", cJSON_GetErrorPtr());
-        fflush(stdout);
-        free(result);
-        free(fileContents);
-        return NULL;
+    //set the health
+    result->health = cJSON_GetObjectItem(root, "health")->valueint;
+    
+    //set the damage the player receives for touching
+    result->touchDamage = cJSON_GetObjectItem(root, "damage for touching")->valueint;
+    
+    //load the death sprite and animation
+    char dataFilename[80];
+    int spriteId = cJSON_GetObjectItem(root, "death sprite")->valueint;
+    sprintf(dataFilename, "data/sprites/%05d.sprite", spriteId);
+    result->nDeathSprite = readNewSpriteFromFile(dataFilename, malloc(sizeof(NewSprite)));
+    sprintf(dataFilename, "data/animations/%05d.animation", spriteId);
+    result->deathAnimation = readSpriteAnimationFromFile(dataFilename, malloc(sizeof(SpriteAnimation)));
+    
+    //if there is no associated animation file, then just load the one for a static animation
+    if (result->deathAnimation == NULL){
+        result->deathAnimation = readSpriteAnimationFromFile("data/animations/no_animation.animation", malloc(sizeof(SpriteAnimation)));
     }
     
+    return 1;
+}
+
+int fillNewSpriteFromJson(cJSON *root, NewSprite *result){
     //load the source image
     char *imageFile = cJSON_GetObjectItem(root, "source image")->valuestring;
     result->image = loadImage(imageFile);
@@ -269,30 +399,10 @@ NewSprite *readNewSpriteFromFile(char *filename, NewSprite *result){
     //compute number of frames per row
     result->numFramesPerRow = result->image->width / result->frameWidth;
     
-    //free and return
-    cJSON_Delete(root);
-    free(fileContents);
-    return result;
+    return 1;
 }
 
-SpriteAnimation *readSpriteAnimationFromFile(char *filename, SpriteAnimation *result){
-    //init the animation
-    if (result == NULL){
-        result = malloc(sizeof(SpriteAnimation));
-    }
-    init_SpriteAnimation(result);
-    
-    //read in the given file to a cJSON object
-    char *fileContents = readFileToCharStar(filename);
-    cJSON *root = cJSON_Parse(fileContents);
-    if (!root){
-        printf("Animation: %s Error before: %s\n", filename, cJSON_GetErrorPtr());
-        fflush(stdout);
-        free(result);
-        free(fileContents);
-        return NULL;
-    }
-    
+int fillSpriteAnimationFromJson(cJSON *root, SpriteAnimation *result){
     //count loops and allocate
     //PIZZA - should verify that this number and size of lengths array agrees
     int numLoops = cJSON_GetObjectItem(root, "number of loops")->valueint;
@@ -326,8 +436,6 @@ SpriteAnimation *readSpriteAnimationFromFile(char *filename, SpriteAnimation *re
         }
     }
     
-    //free and return
-    cJSON_Delete(root);
-    free(fileContents);
-    return result;
+    return 1;
 }
+
