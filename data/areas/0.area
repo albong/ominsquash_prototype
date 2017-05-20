@@ -114,6 +114,7 @@
             "entity positions" : [
                 ],
             "enemy positions" : [
+                    { "ID":0, "x":30, "y":30 }
                 ],
             "door positions" : [
                 ]

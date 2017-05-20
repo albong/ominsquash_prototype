@@ -9,6 +9,7 @@
 #include "textbox.h"
 #include "inventory.h"
 #include "entity_creator.h"
+#include "enemy_creator.h"
 
 #include "../debug/hitbox_drawer.h"
 
@@ -33,6 +34,7 @@ int main(int argc, char *argv[]){
     
     //initialization stuff
     initEntityCreateTable();
+    initEnemyCreateTable();
     initWeaponCreateTable();
     initWeaponLists(); //creates the player's arrays, must be done before the area and player
     loadArea(); // eventually this will be gone since the areas will be loaded from files

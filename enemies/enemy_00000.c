@@ -1,4 +1,4 @@
-#include "octorok.h"
+#include "enemy_00000.h"
 #include "../src/constants.h"
 #include "../src/entity.h"
 #include "../src/graphics.h"
@@ -10,65 +10,19 @@ static int totalDelta = 0;
 static const hitstunMilli = 1000;
 static const DEFAULT_HEALTH = 8;
 
-static void drawOctorok(Entity *self, double shiftX, double shiftY);
-static void doOctorok(Enemy *self, int delta);
 static void updatePosition(Enemy *self, int delta);
 static void updateFrame(Enemy *self, int delta);
-static int damageOctorok(Enemy *self, int damage);
 
-Enemy *createOctorok(Sprite *sprite){
-    Enemy *enemy = init_Enemy(malloc(sizeof(Enemy)));
-    
-    enemy->e.active = 1;
-    
-    enemy->action = &doOctorok;
-    enemy->e.sprite = sprite;
-    enemy->enemySprite = sprite;
-    enemy->e.nsprite = readNewSpriteFromFile("data/sprites/00000.sprite", NULL);
-    enemy->e.animation = readSpriteAnimationFromFile("data/animations/00000.animation", NULL);
-    enemy->e.draw = &drawOctorok;
-    
-    enemy->e.pixelsPerMilli = 50;
-    enemy->e.isMoving = 1;
-    enemy->e.milliPerFrame = 200;
-    enemy->e.numFrames = 2;
-	enemy->e.orientation = DOWN;
+// Enemy *createOctorok(Sprite *sprite){
+    // return readEnemyFromFile("data/enemies/00000.enemy", NULL);
+    // // return createOctorokOLD(sprite);
+// }
 
-	enemy->e.type = ENEMY;
-
-    enemy->e.hasMoveHitBox = 1;
-    enemy->e.moveHitBox = malloc(sizeof(HitBox) * 1);
-    enemy->e.moveHitBox[0].numCircle = 0;
-    enemy->e.moveHitBox[0].numRect = 1;
-    enemy->e.moveHitBox[0].rects = malloc(sizeof(CollRect) * 1);
-    enemy->e.moveHitBox[0].rects[0].x = 1;
-    enemy->e.moveHitBox[0].rects[0].y = 5;
-    enemy->e.moveHitBox[0].rects[0].w = 16;
-    enemy->e.moveHitBox[0].rects[0].h = 11;
-
-    enemy->e.hasInteractHitBox = 1;
-    enemy->e.interactHitBox = malloc(sizeof(HitBox) * 1);
-    enemy->e.interactHitBox[0].numCircle = 0;
-    enemy->e.interactHitBox[0].numRect = 1;
-    enemy->e.interactHitBox[0].rects = malloc(sizeof(CollRect) * 1);
-    enemy->e.interactHitBox[0].rects[0].x = 1;
-    enemy->e.interactHitBox[0].rects[0].y = 2;
-    enemy->e.interactHitBox[0].rects[0].w = 16;
-    enemy->e.interactHitBox[0].rects[0].h = 14;
-    
-    enemy->health = DEFAULT_HEALTH;
-    enemy->milliHitstun = 0;
-    enemy->touchDamage = 2;
-    enemy->takeDamage = &damageOctorok;
-    
-    return enemy;
-}
-
-static void drawOctorok(Entity *self, double shiftX, double shiftY){
+void enemy_draw_00000(Entity *self, double shiftX, double shiftY){
     drawAnimation(self->nsprite, self->animation, self->x + 0.5 + shiftX, self->y + 0.5 + shiftY);
 }
 
-static void doOctorok(Enemy *self, int delta){
+void enemy_action_00000(Enemy *self, int delta){
     totalDelta += delta;
     self->e.animation->milliPassed += delta;
     
@@ -113,7 +67,7 @@ static void doOctorok(Enemy *self, int delta){
     self->milliHitstun = (self->milliHitstun - delta < 0) ? 0 : self->milliHitstun - delta;
 }
 
-static void updatePosition(Enemy *self, int delta){
+void updatePosition(Enemy *self, int delta){
     if (self->health <= 0){
         return;
     }
@@ -141,7 +95,7 @@ static void updatePosition(Enemy *self, int delta){
 	}
 }
 
-static void updateFrame(Enemy *self, int delta){
+void updateFrame(Enemy *self, int delta){
     int frame;
     int invert = (self->milliHitstun / HITSTUN_FLASH_MILLI) % 2;
     
@@ -195,7 +149,7 @@ static void updateFrame(Enemy *self, int delta){
     constants and do the function.
     Another thing to add here is that this part is probably always going to run, so we might want to add a "constant" function pointer for anything special to call after this has been called
  */
-static int damageOctorok(Enemy *self, int damage){
+int enemy_takeDamage_00000(Enemy *self, int damage){
     if (self->milliHitstun == 0 && self->health > 0){
         self->health -= damage;
         if (self->health <= 0){

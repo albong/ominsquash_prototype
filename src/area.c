@@ -9,9 +9,9 @@
 #include "entity.h"
 #include "enemy.h"
 
-#include "../enemies/enemyloader.h"
 #include "data_reader.h"
 #include "entity_creator.h"
+#include "enemy_creator.h"
 
 #include "stdint.h"
  
@@ -28,7 +28,7 @@ typedef struct Transition{
 
 Transition room_transition;
 
-static void loadAreaEnemySprites(Area *self);
+static void loadAreaEnemyData(Area *self);
 static void createAreaEnemies(Area *self);
 static void loadAreaEntityData(Area *self);
 static void createAreaEntities(Area *self);
@@ -87,7 +87,8 @@ void loadArea(){
     TEMP_ROOM->enemyInitialY[0] = 1;
     
     //load the enemies for all of the rooms, set their positions
-    loadAreaEnemySprites(&_current_area);
+    // loadAreaEnemySprites(&_current_area);
+    loadAreaEnemyData(&_current_area);
     loadAreaEntityData(&_current_area);
     createAreaEnemies(&_current_area);
     createAreaEntities(&_current_area);
@@ -112,7 +113,7 @@ void loadArea(){
     _current_area.changingRooms = 0;
 }
 
-void loadAreaEnemySprites(Area *self){
+void loadAreaEnemyData(Area *self){
     /*
     
     When we move to loading in files, I would want the area file to have the list of unique ids already in the file
@@ -139,7 +140,8 @@ void loadAreaEnemySprites(Area *self){
         }
     }
     
-    loadEnemySprites(ids, count);
+    // loadEnemySprites(ids, count);
+    loadEnemyData(ids, count);
     free(ids);
 }
 
