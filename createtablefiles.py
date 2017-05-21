@@ -4,9 +4,9 @@
 #
 # Used to create function tables needed by Omnisquash
 #
+# Certainly could be improved and duplication removed, but the current format is clear and easy to read
+#
 #################################################
-
-#just entities for now - find all c files, generate new entity_tables.c
 
 import os
 
@@ -15,12 +15,15 @@ ENTITIES_DIR = "entities/"
 ENTITY_TABLES = "entity_tables.c"
 WEAPONS_DIR = "weapons/"
 WEAPON_TABLES = "weapon_tables.c"
+ENEMIES_DIR = "enemies/"
+ENEMY_TABLES = "enemy_tables.c"
 
 def clean():
     """remove existing table files"""
     try:
-        os.remove("entities/entity_tables.c")
-        os.remove("weapons/weapon_tables.c")
+        os.remove(ENTITIES_DIR + ENTITY_TABLES)
+        os.remove(WEAPONS_DIR + WEAPON_TABLES)
+        os.remove(ENEMIES_DIR + ENEMY_TABLES)
     except OSError:
         pass
 
@@ -223,6 +226,137 @@ def writeWeaponTableFile(fout, headerList, methodDict):
     fout.write("    *createTable = createT;\n")
     fout.write("    *collideTable = collideT;\n")
     fout.write("}\n")
+
+def checkEnemyHeaderMethods(headerList):
+    """Check each header file line by line to see if it contains lines of the correct format
+    returns a dict of tuples ID : (hasEAction, hasDraw, hasInteract, hasTakeDamage, hasCollide, hasAction)"""
+    result = {}
+    
+    for h in headerList:
+        hasEAction = False
+        hasDraw = False
+        hasInteract = False
+        hasTakeDamage = False
+        hasCollide = False
+        hasAction = False
+        ID = h[len("enemy_"):-2]
+        
+        try:
+            with open(ENEMIES_DIR + h, "r") as fin:
+                for line in fin:
+                    #format the line for easier parsing
+                    line = line.strip()
+                    line = " ".join(line.split())
+                    
+                    #check for methods
+                    if line.startswith("void enemy_entity_action_" + ID):
+                        hasEAction = True
+                    if line.startswith("void enemy_draw_" + ID):
+                        hasDraw = True
+                    if line.startswith("void enemy_interact_" + ID):
+                        hasInteract = True
+                    if line.startswith("int enemy_takeDamage_" + ID):
+                        hasTakeDamage = True
+                    if line.startswith("void enemy_collidePlayer_" + ID):
+                        hasCollide = True
+                    if line.startswith("void enemy_action_" + ID):
+                        hasAction = True
+                        
+                result[ID] = (hasEAction, hasDraw, hasInteract, hasTakeDamage, hasCollide, hasAction)
+                
+        except IOError:
+            print "Error reading file " + ENTITIES_DIR + h
+            exit(1)
+            
+    return result    
+
+def writeEnemyTableFile(fout, headerList, methodDict):
+    """write the entity tables file"""
+    #first, write the header
+    fout.write("#include \"enemy_tables.h\"\n\n")
+    fout.write("\n")
+    for h in headerList:
+        fout.write("#include \"" + h + "\"\n")
+    fout.write("\n")
+    
+    #now write the beginning of the method
+    tableSize = int(headerList[-1][len("enemy_"):-2]) + 1
+    fout.write("void fillEnemyTables(enemy_entity_action_ptr_t **eActionTable,\n")
+    fout.write("                    enemy_draw_ptr_t **drawTable,\n")
+    fout.write("                    enemy_interact_ptr_t **interactTable,\n")
+    fout.write("                    enemy_takeDamage_ptr_t **takeDamageTable,\n")
+    fout.write("                    enemy_collidePlayer_ptr_t **collidePlayerTable,\n")
+    fout.write("                    enemy_action_ptr_t **actionTable,\n")
+    fout.write("                    size_t *tableSize){\n")
+    fout.write("    *tableSize = " + str(tableSize) + ";\n")
+    fout.write("\n")
+    
+    fout.write("    enemy_entity_action_ptr_t *e_at = malloc(sizeof(enemy_entity_action_ptr_t) * " + str(tableSize) + ");\n")
+    fout.write("    enemy_draw_ptr_t *dt = malloc(sizeof(enemy_draw_ptr_t) * " + str(tableSize) + ");\n")
+    fout.write("    enemy_interact_ptr_t *it = malloc(sizeof(enemy_interact_ptr_t) * " + str(tableSize) + ");\n")
+    fout.write("    enemy_takeDamage_ptr_t *tdt = malloc(sizeof(enemy_takeDamage_ptr_t) * " + str(tableSize) + ");\n")
+    fout.write("    enemy_collidePlayer_ptr_t *cpt = malloc(sizeof(enemy_collidePlayer_ptr_t) * " + str(tableSize) + ");\n")
+    fout.write("    enemy_action_ptr_t *at = malloc(sizeof(enemy_action_ptr_t) * " + str(tableSize) + ");\n")
+    fout.write("\n")
+    
+    #populate the tables
+    for i in range(0, tableSize):
+        ID = str(i).zfill(5)
+        hasEAction = False
+        hasDraw = False
+        hasInteract = False
+        hasTakeDamage = False
+        hasCollide = False
+        hasAction = False
+        
+        if ID in methodDict:
+            hasEAction, hasDraw, hasInteract, hasTakeDamage, hasCollide, hasAction = methodDict[ID]
+        
+        #entity_action
+        if hasEAction:
+            fout.write("    e_at[" + ID + "] = &enemy_entity_action_" + ID + ";\n")
+        else:
+            fout.write("    e_at[" + ID + "] = NULL;\n")
+        
+        #draw
+        if hasDraw:
+            fout.write("    dt[" + ID + "] = &enemy_draw_" + ID + ";\n")
+        else:
+            fout.write("    dt[" + ID + "] = NULL;\n")
+        
+        #interact
+        if hasInteract:
+            fout.write("    it[" + ID + "] = &enemy_interact_" + ID + ";\n")
+        else:
+            fout.write("    it[" + ID + "] = NULL;\n")
+            
+        #takeDamage
+        if hasTakeDamage:
+            fout.write("    tdt[" + ID + "] = &enemy_takeDamage_" + ID + ";\n")
+        else:
+            fout.write("    tdt[" + ID + "] = NULL;\n")
+            
+        #collidePlayer
+        if hasCollide:
+            fout.write("    cpt[" + ID + "] = &enemy_collidePlayer_" + ID + ";\n")
+        else:
+            fout.write("    cpt[" + ID + "] = NULL;\n")
+            
+        #action
+        if hasAction:
+            fout.write("    at[" + ID + "] = &enemy_action_" + ID + ";\n")
+        else:
+            fout.write("    at[" + ID + "] = NULL;\n")
+    fout.write("\n")
+    
+    #write the end of the method
+    fout.write("    *eActionTable = e_at;\n")
+    fout.write("    *drawTable = dt;\n")
+    fout.write("    *interactTable = it;\n")
+    fout.write("    *takeDamageTable = tdt;\n")
+    fout.write("    *collidePlayerTable = cpt;\n")
+    fout.write("    *actionTable = at;\n")
+    fout.write("}\n")
     
     
 #################################################
@@ -245,6 +379,8 @@ entityHeaderMethods = checkEntityHeaderMethods(entityHeaders)
 weaponHeaders = findFiles(toIgnore, WEAPONS_DIR)
 weaponHeaderMethods = checkWeaponHeaderMethods(weaponHeaders)
 
+enemyHeaders = findFiles(toIgnore, ENEMIES_DIR)
+enemyHeaderMethods = checkEnemyHeaderMethods(enemyHeaders)
 
 #write the table files
 try:
@@ -260,3 +396,11 @@ try:
 except IOError:
     print "Couldn't open " + WEAPON_TABLES + " for writing"
     exit(1)
+    
+try:
+    with open(ENEMIES_DIR + ENEMY_TABLES, "w") as fout:
+        writeEnemyTableFile(fout, enemyHeaders, enemyHeaderMethods)
+except IOError:
+    print "Couldn't open " + ENEMY_TABLES + " for writing"
+    exit(1)
+    

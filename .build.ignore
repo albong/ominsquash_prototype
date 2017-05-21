@@ -11,6 +11,7 @@
 /old_src
 /entities/entity_tables_example.c
 /weapons/weapon_tables_example.c
+/enemies/enemy_tables_example.c
 /enemies/enemyloader.h
 /enemies/enemyloader.c
 
