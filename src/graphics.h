@@ -60,12 +60,8 @@ NewSprite *init_NewSprite(NewSprite *self);
 SpriteAnimation *init_SpriteAnimation(SpriteAnimation *self);
 
 // Loading
-SDL_Surface *loadSurface(char *name);
-SDL_Texture *loadTexture(char *name);
-SDL_Texture *convertToTexture(SDL_Surface *surface);
 Sprite *loadSprite(char *name);
 Sprite *loadAnimatedSprite(char *name, int frameWidth);
-SDL_Surface* getEmptySurface(int width, int height);
 Image *getEmptyImage(int width, int height);
 Image *loadImage(char *name);
 SpriteAnimation *shallowCopySpriteAnimation(SpriteAnimation *original);
@@ -74,9 +70,6 @@ SpriteAnimation *shallowCopySpriteAnimation(SpriteAnimation *original);
 void drawImage(Image *image, int x, int y);
 void drawImageToImage(Image *src, Image *dst, ImageRect *srcRect, ImageRect *dstRect);
 void drawImageSrcDst(Image *image, ImageRect *srcRect, ImageRect *dstRect);
-void drawImageSrcDst_T(SDL_Texture *image, SDL_Rect src, SDL_Rect dst);
-void drawAnimatedSprite(Sprite *s, int frame, int x, int y);
-void drawInvertedAnimatedSprite(Sprite *s, int frame, int x, int y, int invert);
 void drawUnfilledRect_S(int x, int y, int w, int h, int r, int g, int b);
 void drawUnfilledRect_T(int x, int y, int w, int h, int r, int g, int b);
 void drawAnimation(NewSprite *s, SpriteAnimation *anim, int x, int y);

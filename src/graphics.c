@@ -5,6 +5,9 @@
 #include <stdint.h>
 #include <stdio.h>
 
+static SDL_Surface *loadSurface(char *name);
+static SDL_Texture *loadTexture(char *name);
+static SDL_Texture *convertToTexture(SDL_Surface *surface);
 
 /////////////////////////////////////////////////
 // Variables
@@ -166,18 +169,6 @@ Sprite *loadAnimatedSprite(char *name, int frameWidth){
     return result;
 }
 
-SDL_Surface *getEmptySurface(int width, int height){
-    SDL_PixelFormat *fmt = screen->format;
-    return SDL_CreateRGBSurface(0,
-        width,
-        height,
-        fmt->BitsPerPixel,
-        fmt->Rmask,
-        fmt->Gmask,
-        fmt->Bmask,
-        fmt->Amask);
-}
-
 Image *getEmptyImage(int width, int height){
     Image *result = malloc(sizeof(Image));
     
@@ -225,6 +216,7 @@ SpriteAnimation *shallowCopySpriteAnimation(SpriteAnimation *original){
     
     return result;
 }
+
 
 /////////////////////////////////////////////////
 // Drawing
@@ -318,73 +310,6 @@ void drawImageSrcDst(Image *image, ImageRect *srcRect, ImageRect *dstRect){
         SDL_RenderCopy(renderer, image->texture, sRPtr, dRPtr);
     } else {
         SDL_BlitSurface(image->surface, sRPtr, screen, dRPtr);
-    }
-}
-
-void drawImageSrcDst_T(SDL_Texture *image, SDL_Rect src, SDL_Rect dst){
-    SDL_RenderCopy(renderer, image, &src, &dst);
-}
-
-void drawAnimatedSprite(Sprite *s, int frame, int x, int y){
-    SDL_Rect src, dest;
-    
-    src.x = frame * s->width;
-    src.y = 0;
-    src.w = s->width;
-    SDL_QueryTexture(s->texture, NULL, NULL, NULL, &src.h);
-    
-    dest.x = x;
-    dest.y = y;
-    dest.w = s->width;
-    SDL_QueryTexture(s->texture, NULL, NULL, NULL, &dest.h);
-    
-    drawImageSrcDst_T(s->texture, src, dest);
-}
-
-/*
-Given the processing cost associated with this, it may make more sense to store an inverted version of the sprite in memory?
-*/
-void drawInvertedAnimatedSprite(Sprite *s, int frame, int x, int y, int invert){
-    if (!invert){
-        drawAnimatedSprite(s, frame, x, y);
-        return;
-    }
-    
-    return;
-    SDL_Rect src, dest;
-    
-    src.x = frame * s->width;
-    src.y = 0;
-    src.w = s->width;
-    src.h = s->image->h;
-    
-    dest.x = x;
-    dest.y = y;
-    dest.w = s->width;
-    dest.h = s->image->h;
-    
-    size_t px, py;
-    uint32_t *pixels = (uint32_t *)s->image->pixels;
-    uint8_t r, g, b;
-    for (px = 0; px < s->image->w; px++){
-        for (py = 0; py < s->image->h; py++){
-            SDL_GetRGB(pixels[(py * s->image->w) + px], screen->format, &r, &g, &b);
-            if (r != 255 && g != 0 && b != 255){
-                pixels[(py * s->image->w) + px] = SDL_MapRGB(screen->format, 255-r, 255-g, 255-b);
-            }
-        }
-    }
-    
-    SDL_BlitSurface(s->image, &src, screen, &dest);
-    
-    //revert the inversion
-    for (px = 0; px < s->image->w; px++){
-        for (py = 0; py < s->image->h; py++){
-            SDL_GetRGB(pixels[(py * s->image->w) + px], screen->format, &r, &g, &b);
-            if (r != 255 && g != 0 && b != 255){
-                pixels[(py * s->image->w) + px] = SDL_MapRGB(screen->format, 255-r, 255-g, 255-b);
-            }
-        }
     }
 }
 
