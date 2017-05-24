@@ -5,6 +5,7 @@
 #include "weapon.h"
 #include "weapon_creator.h"
 #include "inventory.h"
+#include "data_reader.h"
 
 #include <stdio.h>
 
@@ -17,13 +18,16 @@ static const hitstunMilli = 1000;
 // Loading
 /////////////////////////////////////////////////
 void initPlayer(){
-    _player.e.sprite = loadAnimatedSprite("gfx/linksprite.png", 15);
+    // _player.e.sprite = loadAnimatedSprite("gfx/linksprite.png", 15);
+    _player.e.sprite = NULL;
+    _player.e.nsprite = readNewSpriteFromFile("data/sprites/00004.sprite", NULL);
+    _player.e.animation = readSpriteAnimationFromFile("data/animations/00004.animation", NULL);
     _player.e.orientation = DOWN;    
     
     _player.e.x = SCREEN_WIDTH / 2;
     _player.e.y = SCREEN_HEIGHT / 2;
     
-    _player.e.h = _player.e.sprite->image->h;
+    _player.e.h = 18;
     _player.e.w = 15;
     
     _player.e.milliPerFrame = 200;
@@ -46,7 +50,7 @@ void initPlayer(){
     _player.e.moveHitBox[0].rects[0].x = 4;
     _player.e.moveHitBox[0].rects[0].y = 5;
     _player.e.moveHitBox[0].rects[0].w = _player.e.w-8;
-    _player.e.moveHitBox[0].rects[0].h = _player.e.sprite->image->h - 5-2;
+    _player.e.moveHitBox[0].rects[0].h = _player.e.h - 5-2;
     
     //interaction hitbox
     _player.e.hasInteractHitBox = 1;
@@ -188,11 +192,48 @@ void movePlayer(){
 }
 
 static void updatePlayerFrame(int delta){
+    _player.e.animation->milliPassed += delta;
+    
+    //PIZZA - honestly can't remember what all the milliPassed are doing, only the above line may be necessary
     if (_player.e.isMoving){
         _player.e.milliPassed += delta;
         _player.e.milliPassed %= (_player.e.milliPerFrame * _player.e.numFrames);
+        
+        switch (_player.e.orientation){
+            case UP:
+                _player.e.animation->currLoop = 4;
+                break;
+            case DOWN:
+                _player.e.animation->currLoop = 5;
+                break;
+            case LEFT:
+                _player.e.animation->currLoop = 6;
+                break;
+            case RIGHT:
+                _player.e.animation->currLoop = 7;
+                break;
+            default:
+                break;
+        }
     } else {
         _player.e.milliPassed = 0;
+        
+        switch (_player.e.orientation){
+            case UP:
+                _player.e.animation->currLoop = 0;
+                break;
+            case DOWN:
+                _player.e.animation->currLoop = 1;
+                break;
+            case LEFT:
+                _player.e.animation->currLoop = 2;
+                break;
+            case RIGHT:
+                _player.e.animation->currLoop = 3;
+                break;
+            default:
+                break;
+        }
     }
 }
 
@@ -248,27 +289,8 @@ static void updatePlayerPosition(int delta){
 // Drawing
 /////////////////////////////////////////////////
 void drawPlayer(){
-    //determine the frame to be drawn and whether or not to invert
-    int frame = ((_player.e.milliPassed / _player.e.milliPerFrame) + 1) % _player.e.numFrames;
-    frame = (_player.e.isMoving || roomTransition) ? frame : 0;    
-    int invert = (!roomTransition) ? _player.e.invertSprite : 0;
-
-    switch (_player.e.orientation){
-        case UP:
-            drawInvertedAnimatedSprite(_player.e.sprite, 4 + frame, _player.e.x + 0.5, _player.e.y + 0.5, invert);
-            break;
-        case DOWN:
-            drawInvertedAnimatedSprite(_player.e.sprite, 2 + frame, _player.e.x + 0.5, _player.e.y + 0.5, invert);
-            break;
-        case LEFT:
-            drawInvertedAnimatedSprite(_player.e.sprite, 0 + frame, _player.e.x + 0.5, _player.e.y + 0.5, invert);
-            break;
-        case RIGHT:
-            drawInvertedAnimatedSprite(_player.e.sprite, 6 + frame, _player.e.x + 0.5, _player.e.y + 0.5, invert);
-            break;
-        default:
-            break;
-    }
+    //draw the player
+    drawAnimation(_player.e.nsprite, _player.e.animation, _player.e.x + 0.5, _player.e.y + 0.5);
     
     //draw my weapons
     if (_player.equippedAInd >= 0 && _player_weapons.weapons[_player.equippedAInd]->e.active){

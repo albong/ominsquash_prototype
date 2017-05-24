@@ -47,6 +47,7 @@ void enemy_action_00000(Enemy *self, int delta){
     updatePosition(self, delta);
     
     //update animation loop
+    //remember, Entity has an "isMoving" field for this exact thing
     switch (self->e.orientation){
         case UP:
             self->e.animation->currLoop = 0;
