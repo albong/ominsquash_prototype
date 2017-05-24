@@ -1,7 +1,12 @@
 #include "enemy.h"
 #include "player.h"
+#include "data_reader.h"
 
-static Sprite *defaultDeathSprite = NULL;
+static NewSprite *defaultDeathSprite = NULL;
+static SpriteAnimation *defaultDeathAnimation = NULL;
+
+static NewSprite *getDefaultDeathSprite();
+static SpriteAnimation *getDefaultDeathAnimation();
 static void defaultDrawEnemy(Entity *self, double shiftX, double shiftY);
 static void defaultCollidePlayer(Enemy *self, int collCode);
 /////////////////////////////////////////////////
@@ -16,9 +21,9 @@ Enemy *init_Enemy(Enemy *self){
     self->health = 0;
     self->milliHitstun = 0;
     self->enemySprite = NULL;
-    self->deathSprite = getDefaultDeathSprite();
-    self->nDeathSprite = NULL;
-    self->deathAnimation = NULL;
+    self->deathSprite = NULL;
+    self->nDeathSprite = getDefaultDeathSprite();
+    self->deathAnimation = getDefaultDeathAnimation();
     self->touchDamage = 0;
     self->takeDamage = NULL;
     self->collidePlayer = &defaultCollidePlayer;
@@ -29,38 +34,25 @@ Enemy *init_Enemy(Enemy *self){
     return self;
 }
 
-Sprite *getDefaultDeathSprite(){
+NewSprite *getDefaultDeathSprite(){
     if (defaultDeathSprite == NULL){
-        defaultDeathSprite = loadAnimatedSprite("gfx/explosion.png", 27);
+        defaultDeathSprite = readNewSpriteFromFile("data/sprites/00003.sprite", NULL);
     }
     return defaultDeathSprite;
 }
 
+SpriteAnimation *getDefaultDeathAnimation(){
+    if (defaultDeathAnimation == NULL){
+        defaultDeathAnimation = readSpriteAnimationFromFile("data/animations/00003.animation", NULL);
+    }
+    return defaultDeathAnimation;
+}
+
 void defaultDrawEnemy(Entity *self, double shiftX, double shiftY){
-    return;
-    if (((Enemy *)self)->health > 0 && self->sprite != NULL){
-        switch (self->orientation){
-            case UP:
-                drawInvertedAnimatedSprite(self->sprite, self->currFrame, self->x + 0.5 + shiftX, self->y + 0.5 + shiftY, self->invertSprite);
-                break;
-            case DOWN:
-                drawInvertedAnimatedSprite(self->sprite, self->currFrame, self->x + 0.5 + shiftX, self->y + 0.5 + shiftY, self->invertSprite);
-                break;
-            case LEFT:
-                drawInvertedAnimatedSprite(self->sprite, self->currFrame, self->x + 0.5 + shiftX, self->y + 0.5 + shiftY, self->invertSprite);
-                break;
-            case RIGHT:
-                drawInvertedAnimatedSprite(self->sprite, self->currFrame, self->x + 0.5 + shiftX, self->y + 0.5 + shiftY, self->invertSprite);
-                break;
-            default:
-                break;
-        }
-    } else if (((Enemy *)self)->deathSprite != NULL){
-        if (self->currFrame < NUM_FRAMES_DEFAULT_DEATH){
-            drawAnimatedSprite(((Enemy *)self)->deathSprite, self->currFrame, self->x + 0.5 + shiftX, self->y + 0.5 + shiftY);
-        } else {
-            self->active = 0;
-        }
+    if (((Enemy *)self)->health > 0 && self->nsprite != NULL){
+        drawAnimation(self->nsprite, self->animation, self->x + 0.5 + shiftX, self->y + 0.5 + shiftY);
+    } else if (((Enemy *)self)->nDeathSprite != NULL){
+        drawAnimation(((Enemy *)self)->nDeathSprite, ((Enemy *)self)->deathAnimation, self->x + 0.5 + shiftX, self->y + 0.5 + shiftY);
     }
 }
 

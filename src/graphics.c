@@ -419,14 +419,21 @@ void drawUnfilledRect_T(int x, int y, int w, int h, int r, int g, int b){
 }
 
 void drawAnimation(NewSprite *s, SpriteAnimation *anim, int x, int y){
+    //if no animation data given, just draw the image contained in the sprite
+    if (anim == NULL){
+        drawImage(s->image, x, y);
+        return;
+    }
+    
     ImageRect src, dest;
     size_t i;
     int frameNum;
-    int currLoop = anim->currLoop;
+    int currLoop;
     
     //determine where we are in the animation
     //PIZZA - determine if we ought replace with more book-keeping at the sprite holder's end
     // possibly with a standard updateAnimation method?
+    currLoop = anim->currLoop;
     anim->milliPassed %= anim->loopTotalDuration[currLoop];
     for (i = 0; i < anim->loopLength[currLoop]; i++){
         if (anim->frameStartTime[currLoop][i] > anim->milliPassed){

@@ -18,9 +18,9 @@ static void updateFrame(Enemy *self, int delta);
     // // return createOctorokOLD(sprite);
 // }
 
-void enemy_draw_00000(Entity *self, double shiftX, double shiftY){
-    drawAnimation(self->nsprite, self->animation, self->x + 0.5 + shiftX, self->y + 0.5 + shiftY);
-}
+// void enemy_draw_00000(Entity *self, double shiftX, double shiftY){
+    // drawAnimation(self->nsprite, self->animation, self->x + 0.5 + shiftX, self->y + 0.5 + shiftY);
+// }
 
 void enemy_action_00000(Enemy *self, int delta){
     totalDelta += delta;

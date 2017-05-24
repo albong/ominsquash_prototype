@@ -23,6 +23,5 @@ typedef struct Enemy {
 
 // Loading
 Enemy *init_Enemy(Enemy *self);
-Sprite *getDefaultDeathSprite();
 
 #endif
