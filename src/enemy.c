@@ -20,8 +20,6 @@ Enemy *init_Enemy(Enemy *self){
     init_Entity((Entity *)self);
     self->health = 0;
     self->milliHitstun = 0;
-    self->enemySprite = NULL;
-    self->deathSprite = NULL;
     self->nDeathSprite = getDefaultDeathSprite();
     self->deathAnimation = getDefaultDeathAnimation();
     self->touchDamage = 0;

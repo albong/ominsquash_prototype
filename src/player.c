@@ -18,8 +18,6 @@ static const hitstunMilli = 1000;
 // Loading
 /////////////////////////////////////////////////
 void initPlayer(){
-    // _player.e.sprite = loadAnimatedSprite("gfx/linksprite.png", 15);
-    _player.e.sprite = NULL;
     _player.e.nsprite = readNewSpriteFromFile("data/sprites/00004.sprite", NULL);
     _player.e.animation = readSpriteAnimationFromFile("data/animations/00004.animation", NULL);
     _player.e.orientation = DOWN;    

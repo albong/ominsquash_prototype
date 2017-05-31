@@ -36,7 +36,6 @@ typedef struct Entity {
 	int currFrame;
 	int numFrames;
 	int invertSprite;
-	Sprite *sprite;
     NewSprite *nsprite;
     SpriteAnimation *animation;
 	Orientation orientation;

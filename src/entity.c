@@ -32,7 +32,6 @@ Entity *init_Entity(Entity *self){
 	self->currFrame = 0;
 	self->numFrames = 0;
 	self->invertSprite = 0;
-	self->sprite = NULL;
     self->nsprite = NULL;
     self->animation = NULL;
 	self->orientation = UP;

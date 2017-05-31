@@ -97,12 +97,13 @@ void loadArea(){
     _current_area.currentRoom = _current_area.roomList[0];
     
     //PIZZA remove this later
+    //PIZZA - doors need to be reworked, but they're using the old graphics code
     TEMP_ROOM = _current_area.roomList[0];
-    Sprite *doorSprite = loadAnimatedSprite("gfx/door1.png", TILE_SIZE);
-    TEMP_ROOM->numDoors = 2;
-    TEMP_ROOM->doors = malloc(sizeof(Door *) * TEMP_ROOM->numDoors);
-    TEMP_ROOM->doors[0] = createDoor(doorSprite, UP, (ROOM_WIDTH/2) * TILE_SIZE, 0);
-    TEMP_ROOM->doors[1] = createDoor(doorSprite, DOWN, (ROOM_WIDTH/2) * TILE_SIZE, (ROOM_HEIGHT-1) * TILE_SIZE);
+    // Sprite *doorSprite = loadAnimatedSprite("gfx/door1.png", TILE_SIZE);
+    TEMP_ROOM->numDoors = 0;
+    // TEMP_ROOM->doors = malloc(sizeof(Door *) * TEMP_ROOM->numDoors);
+    // TEMP_ROOM->doors[0] = createDoor(doorSprite, UP, (ROOM_WIDTH/2) * TILE_SIZE, 0);
+    // TEMP_ROOM->doors[1] = createDoor(doorSprite, DOWN, (ROOM_WIDTH/2) * TILE_SIZE, (ROOM_HEIGHT-1) * TILE_SIZE);
     
     //reset enemy and entity placement
     for (i = 0; i < _current_area.numRooms; i++){
@@ -598,11 +599,12 @@ static Room *createThirdDemoRoom(){
     room->entityInitialX[0] = 30;
     room->entityInitialY[0] = 30;
     
-    Sprite *doorSprite = loadAnimatedSprite("gfx/door1.png", TILE_SIZE);
-    room->numDoors = 2;
-    room->doors = malloc(sizeof(Door *) * room->numDoors);
-    room->doors[0] = createDoor(doorSprite, UP, (ROOM_WIDTH/2) * TILE_SIZE, 0);
-    room->doors[1] = createDoor(doorSprite, DOWN, (ROOM_WIDTH/2) * TILE_SIZE, (ROOM_HEIGHT-1) * TILE_SIZE);
+    //PIZZA - graphics for doors a little buggered atm
+    // Sprite *doorSprite = loadAnimatedSprite("gfx/door1.png", TILE_SIZE);
+    room->numDoors = 0;
+    // room->doors = malloc(sizeof(Door *) * room->numDoors);
+    // room->doors[0] = createDoor(doorSprite, UP, (ROOM_WIDTH/2) * TILE_SIZE, 0);
+    // room->doors[1] = createDoor(doorSprite, DOWN, (ROOM_WIDTH/2) * TILE_SIZE, (ROOM_HEIGHT-1) * TILE_SIZE);
     
     return room;
 }

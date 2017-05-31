@@ -149,26 +149,6 @@ SDL_Texture *convertToTexture(SDL_Surface *surface){
     return SDL_CreateTextureFromSurface(renderer, surface);
 }
 
-Sprite *loadSprite(char *name){
-    int i;
-    Sprite *result = (Sprite *) malloc(sizeof(Sprite));
-    result->image = loadSurface(name);
-    result->texture = convertToTexture(result->image);
-    result->width = result->image->w;
-    result->height = result->image->h;
-    return result;
-}
-
-Sprite *loadAnimatedSprite(char *name, int frameWidth){
-    int i;
-    Sprite *result = (Sprite *) malloc(sizeof(Sprite));
-    result->image = loadSurface(name);
-    result->texture = convertToTexture(result->image);
-    result->width = frameWidth;
-    result->height = result->image->h;
-    return result;
-}
-
 Image *getEmptyImage(int width, int height){
     Image *result = malloc(sizeof(Image));
     

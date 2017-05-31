@@ -11,7 +11,9 @@ typedef struct Door {
     int isLocked;
 } Door;
 
-Door *createDoor(Sprite *sprite, Orientation direction, double x, double y); //replace id with sprite - have areas have list of door sprites
+// PIZZA - graphics stuff needs updating
+// Door *createDoor(Sprite *sprite, Orientation direction, double x, double y); //replace id with sprite - have areas have list of door sprites
+Door *createDoor(Orientation direction, double x, double y); //replace id with sprite - have areas have list of door sprites
 void setDoorOpening(Door *self, int open);
 void setDoorOpen(Door *self, int open);
 void setDoorLocked(Door *self, int locked);

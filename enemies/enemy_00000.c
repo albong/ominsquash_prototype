@@ -88,10 +88,10 @@ void updatePosition(Enemy *self, int delta){
 	applyExternalMoves(&self->e, delta);
 	
 	//prevent from drifting off the screen
-	if (self->e.x + self->e.changeX < 0 || self->e.x + self->e.sprite->width + self->e.changeX > SCREEN_WIDTH){
+	if (self->e.x + self->e.changeX < 0 || self->e.x + self->e.w + self->e.changeX > SCREEN_WIDTH){
 	    self->e.changeX = 0;
 	}
-	if (self->e.y + self->e.changeY < 0 || self->e.y + self->e.sprite->image->h + self->e.changeY > SCREEN_HEIGHT){
+	if (self->e.y + self->e.changeY < 0 || self->e.y + self->e.h + self->e.changeY > SCREEN_HEIGHT){
 	    self->e.changeY = 0;
 	}
 }

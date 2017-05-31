@@ -5,7 +5,7 @@ static Door *init_Door(Door *self);
 static void doDoor(void *self, int delta);
 static void drawDoor(Entity *self, double shiftX, double shiftY);
 
-Door *createDoor(Sprite *sprite, Orientation direction, double x, double y){
+Door *createDoor(Orientation direction, double x, double y){
     Door *result = init_Door(malloc(sizeof(Door)));
     
     result->e.active = 1;
@@ -21,22 +21,21 @@ Door *createDoor(Sprite *sprite, Orientation direction, double x, double y){
     result->e.moveHitBox[0].rects = malloc(sizeof(CollRect) * 1);
     result->e.moveHitBox[0].rects[0].x = 0;
     result->e.moveHitBox[0].rects[0].y = 0;
-    result->e.moveHitBox[0].rects[0].w = sprite->width;
-    result->e.moveHitBox[0].rects[0].h = sprite->height;
+    // result->e.moveHitBox[0].rects[0].w = sprite->width;
+    // result->e.moveHitBox[0].rects[0].h = sprite->height;
     
     result->e.hasInteractHitBox = 1;
     result->e.interactHitBox = malloc(sizeof(HitBox) * 1);
     result->e.interactHitBox[0].numCircle = 0;
     result->e.interactHitBox[0].numRect = 1;
     result->e.interactHitBox[0].rects = malloc(sizeof(CollRect) * 1);
-    result->e.interactHitBox[0].rects[0].x = -1 * sprite->width;
-    result->e.interactHitBox[0].rects[0].y = -1 * sprite->width;
-    result->e.interactHitBox[0].rects[0].w = sprite->width * 3;
-    result->e.interactHitBox[0].rects[0].h = sprite->width * 3;
+    // result->e.interactHitBox[0].rects[0].x = -1 * sprite->width;
+    // result->e.interactHitBox[0].rects[0].y = -1 * sprite->width;
+    // result->e.interactHitBox[0].rects[0].w = sprite->width * 3;
+    // result->e.interactHitBox[0].rects[0].h = sprite->width * 3;
     
     result->e.currHitBox = 0;
     
-    result->e.sprite = sprite;
     result->e.numFrames = 3;
     result->e.milliPerFrame = 75;
     if (direction == UP){

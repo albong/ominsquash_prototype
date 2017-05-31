@@ -7,13 +7,6 @@
 #define MAX_SPRITES 100
 
 // Structs
-typedef struct Sprite{
-    SDL_Surface *image;
-    SDL_Texture *texture;
-    int width;
-    int height;
-} Sprite;
-
 typedef struct Image{
     SDL_Surface *surface;
     SDL_Texture *texture;
@@ -60,8 +53,6 @@ NewSprite *init_NewSprite(NewSprite *self);
 SpriteAnimation *init_SpriteAnimation(SpriteAnimation *self);
 
 // Loading
-Sprite *loadSprite(char *name);
-Sprite *loadAnimatedSprite(char *name, int frameWidth);
 Image *getEmptyImage(int width, int height);
 Image *loadImage(char *name);
 SpriteAnimation *shallowCopySpriteAnimation(SpriteAnimation *original);

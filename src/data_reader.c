@@ -338,8 +338,6 @@ int fillEntityFromJson(cJSON *root, Entity *result){
     }
     
     //load the sprite and animation
-    //PIZZA - ultimately we will load sprite data from JSON files too, so this will be different
-	result->sprite = loadAnimatedSprite(cJSON_GetObjectItem(root, "sprite")->valuestring, cJSON_GetObjectItem(root, "sprite width")->valueint);
     char dataFilename[80];
     int spriteId = cJSON_GetObjectItem(root, "new sprite")->valueint;
     sprintf(dataFilename, "data/sprites/%05d.sprite", spriteId);
