@@ -21,6 +21,9 @@ Weapon *init_Weapon(Weapon *self){
 void initWeaponLists(){
     _player_weapons.num = 0;
     _enemy_weapons.num = 0;
+    
+    _player_weapons.weapons = malloc(0);
+    _enemy_weapons.weapons = malloc(0);
 }
 
 
@@ -28,7 +31,7 @@ void initWeaponLists(){
 // Access
 /////////////////////////////////////////////////
 void addPlayerWeapon(Weapon *w){
-    _player_weapons.weapons = (Weapon **)realloc(_player_weapons.weapons, _player_weapons.num + 1);
+    _player_weapons.weapons = (Weapon **)realloc(_player_weapons.weapons, (_player_weapons.num + 1) * sizeof(Weapon *));
     _player_weapons.weapons[_player_weapons.num] = w;
     _player_weapons.num++;
 }
