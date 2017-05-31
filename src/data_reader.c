@@ -407,6 +407,7 @@ int fillSpriteAnimationFromJson(cJSON *root, SpriteAnimation *result){
     result->numLoops = numLoops;
     result->loopLength = malloc(sizeof(int) * numLoops);
     result->loopTotalDuration = calloc(numLoops, sizeof(int));
+    result->repeatLoop = malloc(sizeof(int) * numLoops);
     result->frameNumber = malloc(sizeof(int *) * numLoops);
     result->frameStartTime = malloc(sizeof(int *) * numLoops);
     
@@ -432,6 +433,7 @@ int fillSpriteAnimationFromJson(cJSON *root, SpriteAnimation *result){
             result->frameStartTime[i][j] = result->loopTotalDuration[i];
             result->loopTotalDuration[i] += cJSON_GetArrayItem(durationArr, j)->valueint;
         }
+        result->repeatLoop[i] = (cJSON_GetObjectItem(loopTemp, "repeat")->type == cJSON_True) ? 1 : 0;
     }
     
     return 1;

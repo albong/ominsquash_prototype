@@ -27,6 +27,7 @@ Enemy *init_Enemy(Enemy *self){
     self->collidePlayer = &defaultCollidePlayer;
     self->action = NULL;
     
+    self->e.type = ENEMY;
     self->e.draw = &defaultDrawEnemy;
 
     return self;

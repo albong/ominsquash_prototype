@@ -4,35 +4,43 @@
     "loops" : [
         {
             "frame numbers" : [4],
-            "durations" : [1]
+            "durations" : [1],
+            "repeat" : true
         },
         {
             "frame numbers" : [2],
-            "durations" : [1]
+            "durations" : [1],
+            "repeat" : true
         },
         {
             "frame numbers" : [0],
-            "durations" : [1]
+            "durations" : [1],
+            "repeat" : true
         },
         {
             "frame numbers" : [6],
-            "durations" : [1]
+            "durations" : [1],
+            "repeat" : true
         },
         {
             "frame numbers" : [4, 5],
-            "durations" : [200, 200]
+            "durations" : [200, 200],
+            "repeat" : true
         },
         {
             "frame numbers" : [2, 3],
-            "durations" : [200, 200]
+            "durations" : [200, 200],
+            "repeat" : true
         },
         {
             "frame numbers" : [0, 1],
-            "durations" : [200, 200]
+            "durations" : [200, 200],
+            "repeat" : true
         },
         {
             "frame numbers" : [6, 7],
-            "durations" : [200, 200]
+            "durations" : [200, 200],
+            "repeat" : true
         }
     ]
 }

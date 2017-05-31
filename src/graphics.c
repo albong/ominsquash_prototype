@@ -100,6 +100,7 @@ SpriteAnimation *init_SpriteAnimation(SpriteAnimation *self){
     self->milliPassed = 0;
     self->loopTotalDuration = NULL;
     self->loopLength = NULL;
+    self->repeatLoop = NULL;
     self->frameNumber = NULL;
     self->frameStartTime = NULL;
     return self;
@@ -339,7 +340,12 @@ void drawAnimation(Sprite *s, SpriteAnimation *anim, int x, int y){
     //PIZZA - determine if we ought replace with more book-keeping at the sprite holder's end
     // possibly with a standard updateAnimation method?
     currLoop = anim->currLoop;
-    anim->milliPassed %= anim->loopTotalDuration[currLoop];
+    if (anim->repeatLoop[currLoop]){
+        anim->milliPassed %= anim->loopTotalDuration[currLoop];
+    } else if (anim->milliPassed >= anim->loopTotalDuration[currLoop]) { //if we've played the loop, then stop
+        anim->milliPassed = anim->loopTotalDuration[currLoop];
+        return;
+    }
     for (i = 0; i < anim->loopLength[currLoop]; i++){
         if (anim->frameStartTime[currLoop][i] > anim->milliPassed){
             break;

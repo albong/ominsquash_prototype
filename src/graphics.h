@@ -36,6 +36,7 @@ typedef struct SpriteAnimation{
     int milliPassed;
     int *loopLength;
     int *loopTotalDuration;
+    int *repeatLoop;
     int **frameNumber;
     int **frameStartTime;
 } SpriteAnimation;

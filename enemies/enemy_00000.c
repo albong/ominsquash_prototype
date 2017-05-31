@@ -25,6 +25,9 @@ static void updateFrame(Enemy *self, int delta);
 void enemy_action_00000(Enemy *self, int delta){
     totalDelta += delta;
     self->e.animation->milliPassed += delta;
+    if (self->health <= 0 && self->deathAnimation != NULL){
+        self->deathAnimation->milliPassed += delta;
+    }
     
     if (totalDelta >= 1500){
         if (rand() % 2){

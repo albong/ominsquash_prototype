@@ -4,7 +4,8 @@
     "loops" : [
         {
             "frame numbers" : [0],
-            "durations" : [1]
+            "durations" : [1],
+            "repeat" : true
         }
     ]
 }
