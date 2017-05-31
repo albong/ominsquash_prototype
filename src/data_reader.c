@@ -341,7 +341,7 @@ int fillEntityFromJson(cJSON *root, Entity *result){
     char dataFilename[80];
     int spriteId = cJSON_GetObjectItem(root, "new sprite")->valueint;
     sprintf(dataFilename, "data/sprites/%05d.sprite", spriteId);
-    result->nsprite = readNewSpriteFromFile(dataFilename, malloc(sizeof(NewSprite)));
+    result->sprite = readNewSpriteFromFile(dataFilename, malloc(sizeof(NewSprite)));
     sprintf(dataFilename, "data/animations/%05d.animation", spriteId);
     result->animation = readSpriteAnimationFromFile(dataFilename, malloc(sizeof(SpriteAnimation)));
     
@@ -367,7 +367,7 @@ int fillEnemyFromJson(cJSON *root, Enemy *result){
     char dataFilename[80];
     int spriteId = cJSON_GetObjectItem(root, "death sprite")->valueint;
     sprintf(dataFilename, "data/sprites/%05d.sprite", spriteId);
-    result->nDeathSprite = readNewSpriteFromFile(dataFilename, malloc(sizeof(NewSprite)));
+    result->deathSprite = readNewSpriteFromFile(dataFilename, malloc(sizeof(NewSprite)));
     sprintf(dataFilename, "data/animations/%05d.animation", spriteId);
     result->deathAnimation = readSpriteAnimationFromFile(dataFilename, malloc(sizeof(SpriteAnimation)));
     

@@ -32,7 +32,7 @@ Entity *init_Entity(Entity *self){
 	self->currFrame = 0;
 	self->numFrames = 0;
 	self->invertSprite = 0;
-    self->nsprite = NULL;
+    self->sprite = NULL;
     self->animation = NULL;
 	self->orientation = UP;
 	self->action = NULL;
@@ -137,7 +137,7 @@ void applyExternalMoves(Entity *self, int delta){
 // Drawing
 /////////////////////////////////////////////////
 void defaultDrawEntity(Entity *self, double shiftX, double shiftY){
-    if (self != NULL && self->nsprite != NULL && self->animation != NULL){
-        drawAnimation(self->nsprite, self->animation, self->x + 0.5 + shiftX, self->y + 0.5 + shiftY);
+    if (self != NULL && self->sprite != NULL && self->animation != NULL){
+        drawAnimation(self->sprite, self->animation, self->x + 0.5 + shiftX, self->y + 0.5 + shiftY);
     }
 }

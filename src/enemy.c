@@ -20,7 +20,7 @@ Enemy *init_Enemy(Enemy *self){
     init_Entity((Entity *)self);
     self->health = 0;
     self->milliHitstun = 0;
-    self->nDeathSprite = getDefaultDeathSprite();
+    self->deathSprite = getDefaultDeathSprite();
     self->deathAnimation = getDefaultDeathAnimation();
     self->touchDamage = 0;
     self->takeDamage = NULL;
@@ -47,10 +47,10 @@ SpriteAnimation *getDefaultDeathAnimation(){
 }
 
 void defaultDrawEnemy(Entity *self, double shiftX, double shiftY){
-    if (((Enemy *)self)->health > 0 && self->nsprite != NULL){
-        drawAnimation(self->nsprite, self->animation, self->x + 0.5 + shiftX, self->y + 0.5 + shiftY);
-    } else if (((Enemy *)self)->nDeathSprite != NULL){
-        drawAnimation(((Enemy *)self)->nDeathSprite, ((Enemy *)self)->deathAnimation, self->x + 0.5 + shiftX, self->y + 0.5 + shiftY);
+    if (((Enemy *)self)->health > 0 && self->sprite != NULL){
+        drawAnimation(self->sprite, self->animation, self->x + 0.5 + shiftX, self->y + 0.5 + shiftY);
+    } else if (((Enemy *)self)->deathSprite != NULL){
+        drawAnimation(((Enemy *)self)->deathSprite, ((Enemy *)self)->deathAnimation, self->x + 0.5 + shiftX, self->y + 0.5 + shiftY);
     }
 }
 

@@ -18,7 +18,7 @@ static const hitstunMilli = 1000;
 // Loading
 /////////////////////////////////////////////////
 void initPlayer(){
-    _player.e.nsprite = readNewSpriteFromFile("data/sprites/00004.sprite", NULL);
+    _player.e.sprite = readNewSpriteFromFile("data/sprites/00004.sprite", NULL);
     _player.e.animation = readSpriteAnimationFromFile("data/animations/00004.animation", NULL);
     _player.e.orientation = DOWN;    
     
@@ -288,7 +288,7 @@ static void updatePlayerPosition(int delta){
 /////////////////////////////////////////////////
 void drawPlayer(){
     //draw the player
-    drawAnimation(_player.e.nsprite, _player.e.animation, _player.e.x + 0.5, _player.e.y + 0.5);
+    drawAnimation(_player.e.sprite, _player.e.animation, _player.e.x + 0.5, _player.e.y + 0.5);
     
     //draw my weapons
     if (_player.equippedAInd >= 0 && _player_weapons.weapons[_player.equippedAInd]->e.active){
