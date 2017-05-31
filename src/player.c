@@ -18,7 +18,7 @@ static const hitstunMilli = 1000;
 // Loading
 /////////////////////////////////////////////////
 void initPlayer(){
-    _player.e.sprite = readNewSpriteFromFile("data/sprites/00004.sprite", NULL);
+    _player.e.sprite = readSpriteFromFile("data/sprites/00004.sprite", NULL);
     _player.e.animation = readSpriteAnimationFromFile("data/animations/00004.animation", NULL);
     _player.e.orientation = DOWN;    
     

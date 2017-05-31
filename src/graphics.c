@@ -77,7 +77,7 @@ void stopSDL(){
 /////////////////////////////////////////////////
 // Init
 /////////////////////////////////////////////////
-NewSprite *init_NewSprite(NewSprite *self){
+Sprite *init_Sprite(Sprite *self){
     if (self == NULL){
         return NULL;
     }
@@ -323,7 +323,7 @@ void drawUnfilledRect_T(int x, int y, int w, int h, int r, int g, int b){
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
 }
 
-void drawAnimation(NewSprite *s, SpriteAnimation *anim, int x, int y){
+void drawAnimation(Sprite *s, SpriteAnimation *anim, int x, int y){
     //if no animation data given, just draw the image contained in the sprite
     if (anim == NULL){
         drawImage(s->image, x, y);

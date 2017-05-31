@@ -17,7 +17,7 @@ static char *readFileToCharStar(char *filename);
 static int fillAreaFromJson(cJSON *root, Area *result);
 static int fillEntityFromJson(cJSON *root, Entity *result);
 static int fillEnemyFromJson(cJSON *root, Enemy *result);
-static int fillNewSpriteFromJson(cJSON *root, NewSprite *result);
+static int fillSpriteFromJson(cJSON *root, Sprite *result);
 static int fillSpriteAnimationFromJson(cJSON *root, SpriteAnimation *result);
 
 //read in a JSON file to a cJSON object
@@ -132,12 +132,12 @@ Enemy *readEnemyFromFile(char *filename, Enemy *result){
     return result;
 }
 
-NewSprite *readNewSpriteFromFile(char *filename, NewSprite *result){
+Sprite *readSpriteFromFile(char *filename, Sprite *result){
     //init the sprite
     if (result == NULL){
-        result = malloc(sizeof(NewSprite));
+        result = malloc(sizeof(Sprite));
     }
-    init_NewSprite(result);
+    init_Sprite(result);
     
     //read in the given file to a cJSON object
     char *fileContents = readFileToCharStar(filename);
@@ -145,7 +145,7 @@ NewSprite *readNewSpriteFromFile(char *filename, NewSprite *result){
     
     //if the initial parsing failed, or the detailed parsing failed, print an error and free/NULL result
     //otherwise free the cJSON root correctly
-    if (!root || !fillNewSpriteFromJson(root, result)){
+    if (!root || !fillSpriteFromJson(root, result)){
         printf("Error before: %s\n", cJSON_GetErrorPtr());
         fflush(stdout);
         free(result);
@@ -341,7 +341,7 @@ int fillEntityFromJson(cJSON *root, Entity *result){
     char dataFilename[80];
     int spriteId = cJSON_GetObjectItem(root, "new sprite")->valueint;
     sprintf(dataFilename, "data/sprites/%05d.sprite", spriteId);
-    result->sprite = readNewSpriteFromFile(dataFilename, malloc(sizeof(NewSprite)));
+    result->sprite = readSpriteFromFile(dataFilename, malloc(sizeof(Sprite)));
     sprintf(dataFilename, "data/animations/%05d.animation", spriteId);
     result->animation = readSpriteAnimationFromFile(dataFilename, malloc(sizeof(SpriteAnimation)));
     
@@ -367,7 +367,7 @@ int fillEnemyFromJson(cJSON *root, Enemy *result){
     char dataFilename[80];
     int spriteId = cJSON_GetObjectItem(root, "death sprite")->valueint;
     sprintf(dataFilename, "data/sprites/%05d.sprite", spriteId);
-    result->deathSprite = readNewSpriteFromFile(dataFilename, malloc(sizeof(NewSprite)));
+    result->deathSprite = readSpriteFromFile(dataFilename, malloc(sizeof(Sprite)));
     sprintf(dataFilename, "data/animations/%05d.animation", spriteId);
     result->deathAnimation = readSpriteAnimationFromFile(dataFilename, malloc(sizeof(SpriteAnimation)));
     
@@ -379,7 +379,7 @@ int fillEnemyFromJson(cJSON *root, Enemy *result){
     return 1;
 }
 
-int fillNewSpriteFromJson(cJSON *root, NewSprite *result){
+int fillSpriteFromJson(cJSON *root, Sprite *result){
     //load the source image
     char *imageFile = cJSON_GetObjectItem(root, "source image")->valuestring;
     result->image = loadImage(imageFile);

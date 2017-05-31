@@ -22,12 +22,12 @@ typedef struct ImageRect{
     int h;
 } ImageRect;
 
-typedef struct NewSprite{
+typedef struct Sprite{
     Image *image;
     int frameWidth;
     int frameHeight;
     int numFramesPerRow;
-} NewSprite;
+} Sprite;
 
 //perhaps we ought have an animation list per room to simplify logic?  then you just increment the milliPassed there?
 typedef struct SpriteAnimation{
@@ -49,7 +49,7 @@ void initSDL();
 void stopSDL();
 
 // Init
-NewSprite *init_NewSprite(NewSprite *self);
+Sprite *init_Sprite(Sprite *self);
 SpriteAnimation *init_SpriteAnimation(SpriteAnimation *self);
 
 // Loading
@@ -63,7 +63,7 @@ void drawImageToImage(Image *src, Image *dst, ImageRect *srcRect, ImageRect *dst
 void drawImageSrcDst(Image *image, ImageRect *srcRect, ImageRect *dstRect);
 void drawUnfilledRect_S(int x, int y, int w, int h, int r, int g, int b);
 void drawUnfilledRect_T(int x, int y, int w, int h, int r, int g, int b);
-void drawAnimation(NewSprite *s, SpriteAnimation *anim, int x, int y);
+void drawAnimation(Sprite *s, SpriteAnimation *anim, int x, int y);
 
 // Screen Management
 void clearScreen();

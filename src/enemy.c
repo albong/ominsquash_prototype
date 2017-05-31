@@ -2,10 +2,10 @@
 #include "player.h"
 #include "data_reader.h"
 
-static NewSprite *defaultDeathSprite = NULL;
+static Sprite *defaultDeathSprite = NULL;
 static SpriteAnimation *defaultDeathAnimation = NULL;
 
-static NewSprite *getDefaultDeathSprite();
+static Sprite *getDefaultDeathSprite();
 static SpriteAnimation *getDefaultDeathAnimation();
 static void defaultDrawEnemy(Entity *self, double shiftX, double shiftY);
 static void defaultCollidePlayer(Enemy *self, int collCode);
@@ -32,9 +32,9 @@ Enemy *init_Enemy(Enemy *self){
     return self;
 }
 
-NewSprite *getDefaultDeathSprite(){
+Sprite *getDefaultDeathSprite(){
     if (defaultDeathSprite == NULL){
-        defaultDeathSprite = readNewSpriteFromFile("data/sprites/00003.sprite", NULL);
+        defaultDeathSprite = readSpriteFromFile("data/sprites/00003.sprite", NULL);
     }
     return defaultDeathSprite;
 }
