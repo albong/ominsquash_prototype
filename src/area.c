@@ -544,10 +544,11 @@ void addTempEntityToArea(Entity *e){
     
     size_t i;
     for (i = 0; i < NUM_AREA_TEMP_ENTITIES; i++){
-        if (_current_area.temporaryEntities[i].active = 0){
+        if (_current_area.temporaryEntities[i].active == 0){
             break;
         }
     }
+    
     memcpy(&_current_area.temporaryEntities[i], e, sizeof(Entity));
     memcpy(_current_area.temporaryEntities[i].animation, e->animation, sizeof(SpriteAnimation));
     copySpriteAnimation(e->animation, _current_area.temporaryEntities[i].animation);

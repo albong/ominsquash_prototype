@@ -5,6 +5,7 @@
 #include "entity.h"
 #include "hitbox.h"
 #include "graphics.h"
+#include "entity_creator.h"
 
 #include "../lib/cJSON/cJSON.h"
 #include <stdio.h>
@@ -64,7 +65,7 @@ Area *readAreaFromFile(char *filename, Area *result){
     //if the initial parsing failed, or the detailed parsing failed, print an error and free/NULL result
     //otherwise free the cJSON root correctly
     if (!root || !fillAreaFromJson(root, result)){
-        printf("Error before: %s\n", cJSON_GetErrorPtr());
+        printf("%s: Error before: %s\n", filename, cJSON_GetErrorPtr());
         fflush(stdout);
         free(result);
         // return NULL;
@@ -92,7 +93,7 @@ Entity *readEntityFromFile(char *filename, Entity *result){
     //if the initial parsing failed, or the detailed parsing failed, print an error and free/NULL result
     //otherwise free the cJSON root correctly
     if (!root || !fillEntityFromJson(root, result)){
-        printf("Error before: %s\n", cJSON_GetErrorPtr());
+        printf("%s: Error before: %s\n", filename, cJSON_GetErrorPtr());
         fflush(stdout);
         free(result);
         result = NULL;
@@ -119,7 +120,7 @@ Enemy *readEnemyFromFile(char *filename, Enemy *result){
     //if the initial parsing failed, or the detailed parsing failed, print an error and free/NULL result
     //otherwise free the cJSON root correctly
     if (!root || !fillEnemyFromJson(root, result)){
-        printf("Error before: %s\n", cJSON_GetErrorPtr());
+        printf("%s: Error before: %s\n", filename, cJSON_GetErrorPtr());
         fflush(stdout);
         free(result);
         result = NULL;
@@ -146,7 +147,7 @@ Sprite *readSpriteFromFile(char *filename, Sprite *result){
     //if the initial parsing failed, or the detailed parsing failed, print an error and free/NULL result
     //otherwise free the cJSON root correctly
     if (!root || !fillSpriteFromJson(root, result)){
-        printf("Error before: %s\n", cJSON_GetErrorPtr());
+        printf("%s: Error before: %s\n", filename, cJSON_GetErrorPtr());
         fflush(stdout);
         free(result);
         result = NULL;
@@ -173,7 +174,7 @@ SpriteAnimation *readSpriteAnimationFromFile(char *filename, SpriteAnimation *re
     //if the initial parsing failed, or the detailed parsing failed, print an error and free/NULL result
     //otherwise free the cJSON root correctly
     if (!root || !fillSpriteAnimationFromJson(root, result)){
-        printf("Error before: %s\n", cJSON_GetErrorPtr());
+        printf("%s: Error before: %s\n", filename, cJSON_GetErrorPtr());
         fflush(stdout);
         free(result);
         result = NULL;
@@ -375,6 +376,11 @@ int fillEnemyFromJson(cJSON *root, Enemy *result){
     if (result->deathAnimation == NULL){
         result->deathAnimation = readSpriteAnimationFromFile("data/animations/no_animation.animation", malloc(sizeof(SpriteAnimation)));
     }
+    
+    int entityId = cJSON_GetObjectItem(root, "death entity")->valueint;
+    sprintf(dataFilename, "data/entities/%05d.entity", entityId);
+    result->deathEntity = readEntityFromFile(dataFilename, malloc(sizeof(Entity)));
+    assignEntityFunctionsById(entityId, result->deathEntity);
     
     return 1;
 }

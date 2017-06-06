@@ -12,4 +12,6 @@
     "has movement hitbox" : false,
     "has interact hitbox" : true,
     "interactable" : false,
+    
+    "interact hitboxes" : []
 }

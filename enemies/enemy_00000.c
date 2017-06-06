@@ -5,6 +5,7 @@
 #include "../src/hitbox.h"
 #include "../src/data_reader.h"
 #include <stdlib.h>
+#include <stdio.h>
 
 static int totalDelta = 0;
 static const hitstunMilli = 1000;
@@ -25,8 +26,13 @@ static void updateFrame(Enemy *self, int delta);
 void enemy_action_00000(Enemy *self, int delta){
     totalDelta += delta;
     self->e.animation->milliPassed += delta;
-    if (self->health <= 0 && self->deathAnimation != NULL){
-        self->deathAnimation->milliPassed += delta;
+    
+    if (self->health <= 0 && self->deathEntity != NULL){
+        self->e.active = 0;
+        
+        self->deathEntity->x = self->e.x;
+        self->deathEntity->y = self->e.y;
+        addTempEntityToArea(self->deathEntity);
     }
     
     if (totalDelta >= 1500){

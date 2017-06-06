@@ -22,6 +22,7 @@ Enemy *init_Enemy(Enemy *self){
     self->milliHitstun = 0;
     self->deathSprite = getDefaultDeathSprite();
     self->deathAnimation = getDefaultDeathAnimation();
+    self->deathEntity = NULL;
     self->touchDamage = 0;
     self->takeDamage = NULL;
     self->collidePlayer = &defaultCollidePlayer;
