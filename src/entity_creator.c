@@ -38,6 +38,25 @@ Entity *createEntityById(size_t id){
     return result;
 }
 
+Entity *assignEntityFunctionsById(size_t id, Entity *e){
+    if (e == NULL){
+        return;
+    }
+    
+    //set the entity's methods from the tables
+    if (entityActionTable[id] != NULL){
+        e->action = entityActionTable[id];
+    }
+    if (entityDrawTable[id] != NULL){
+        e->draw = entityDrawTable[id];
+    }
+    if (entityInteractTable[id] != NULL){
+        e->interact = entityInteractTable[id];
+    }
+    
+    return e;
+}
+
 void loadEntityData(size_t *ids, size_t count){
     numLoadedEntities = count;
     loadedEntitiesIds = malloc(sizeof(size_t) * count);

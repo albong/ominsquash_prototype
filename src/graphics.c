@@ -188,14 +188,24 @@ SpriteAnimation *shallowCopySpriteAnimation(SpriteAnimation *original){
     
     //copy the memory
     SpriteAnimation *result = malloc(sizeof(SpriteAnimation));
-    memcpy(result, original, sizeof(SpriteAnimation));
-    
-    //we can keep pointers to the loops and data, we just need to have different counters
-    result->currLoop = 0;
-    result->numLoops = 0;
-    result->milliPassed = 0;
+    copySpriteAnimation(original, result);
     
     return result;
+}
+
+SpriteAnimation *copySpriteAnimation(SpriteAnimation *source, SpriteAnimation *dest){
+    if (source == NULL || dest == NULL){
+        return NULL;
+    }
+    
+    memcpy(dest, source, sizeof(SpriteAnimation));
+    
+    //we can keep pointers to the loops and data, we just need to have different counters
+    dest->currLoop = 0;
+    dest->numLoops = 0;
+    dest->milliPassed = 0;
+    
+    return dest;
 }
 
 

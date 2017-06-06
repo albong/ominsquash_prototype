@@ -5,6 +5,7 @@
 
 void initEntityCreateTable();
 Entity *createEntityById(size_t id);
+Entity *assignEntityFunctionsById(size_t id, Entity *e);
 
 //PIZZA - should change this to loadEntityData(...), load and pass off the data files, and from these
 // load the sprite info - probably should generalize to a subclass of interactables or something

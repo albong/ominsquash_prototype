@@ -39,7 +39,6 @@ static void doRoomEntities(int delta);
 static void doRoomEnemies(int delta);
 static void doRoomDoors(int delta);
 static void doTempEntities(int delta);
-static void removeInactiveTempEntities();
 static void removeTempEntities();
 
 static void drawRoomDoors(Room *room, double shiftX, double shiftY);
@@ -69,7 +68,8 @@ Area *init_Area(Area *self){
     size_t i;
     self->numTemporaryEntities = 0;
     for (i = 0; i < NUM_AREA_TEMP_ENTITIES; i++){
-        self->temporaryEntities[i] = NULL;
+        self->temporaryEntities[i].active = 0;
+        self->temporaryEntities[i].animation = init_SpriteAnimation(malloc(sizeof(SpriteAnimation)));
     }
     
     return self;
@@ -277,7 +277,6 @@ void doRoom(int delta){
         doRoomEntities(delta);
         doRoomEnemies(delta);
         doTempEntities(delta);
-        removeInactiveTempEntities();
         
         newRoom = checkForRoomChange();
         if (newRoom >= 0 && _current_area.currentRoom->connectingRooms[newRoom] != -1){
@@ -418,22 +417,12 @@ void doRoomEnemies(int delta){
 
 void doTempEntities(int delta){
     size_t i;
-    Entity *self;
+    Entity self;
     
     for (i = 0; i < NUM_AREA_TEMP_ENTITIES; i++){
         self = _current_area.temporaryEntities[i];
-        if (self != NULL && self->active && self->action){
-            self->action(self, delta);
-        }
-    }
-}
-
-void removeInactiveTempEntities(){
-    size_t i;
-    for (i = 0; i < NUM_AREA_TEMP_ENTITIES; i++){
-        if (_current_area.temporaryEntities[i] != NULL && !_current_area.temporaryEntities[i]->active){
-            _current_area.temporaryEntities[i] = NULL;
-            _current_area.numTemporaryEntities--;
+        if (self.active && self.action){
+            self.action(&self, delta);
         }
     }
 }
@@ -441,7 +430,7 @@ void removeInactiveTempEntities(){
 void removeTempEntities(){
     size_t i;
     for (i = 0; i < NUM_AREA_TEMP_ENTITIES; i++){
-        _current_area.temporaryEntities[i] = NULL;
+        _current_area.temporaryEntities[i].active = 0;
     }
 }
 
@@ -501,12 +490,12 @@ void drawRoomEnemies(Room *room, double shiftX, double shiftY){
 
 void drawTempEntities(double shiftX, double shiftY){
     size_t i;
-    Entity *self;
+    Entity self;
     
     for (i = 0; i < NUM_AREA_TEMP_ENTITIES; i++){
         self = _current_area.temporaryEntities[i];
-        if (self != NULL && self->active && self->draw){
-            self->draw(self, shiftX, shiftY);
+        if (self.active && self.draw){
+            self.draw(&self, shiftX, shiftY);
         }
     }
 }
@@ -544,7 +533,7 @@ Door **getRoomDoorList(){
 }
 
 void addTempEntityToArea(Entity *e){
-    if (e == NULL || !e->active){
+    if (e == NULL){
         return;
     }
     
@@ -555,11 +544,14 @@ void addTempEntityToArea(Entity *e){
     
     size_t i;
     for (i = 0; i < NUM_AREA_TEMP_ENTITIES; i++){
-        if (_current_area.temporaryEntities[i] == NULL){
+        if (_current_area.temporaryEntities[i].active = 0){
             break;
         }
     }
-    _current_area.temporaryEntities[i] = e;
+    memcpy(&_current_area.temporaryEntities[i], e, sizeof(Entity));
+    memcpy(_current_area.temporaryEntities[i].animation, e->animation, sizeof(SpriteAnimation));
+    copySpriteAnimation(e->animation, _current_area.temporaryEntities[i].animation);
+    _current_area.temporaryEntities[i].active = 1;
     _current_area.numTemporaryEntities++;
 }
 

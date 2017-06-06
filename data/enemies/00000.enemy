@@ -7,8 +7,6 @@
         "milliseconds per frame" : 200,
         "number of frames" : 2,
         
-        "sprite" : "gfx/skull.png",
-        "sprite width" : 16,
         "new sprite" : 0,
         
         "collision type" : "ENEMY",
@@ -47,5 +45,6 @@
     
     "health" : 8,
     "damage for touching" : 2,
-    "death sprite" : 3
+    "death sprite" : 3,
+    "death entity" : 1
 }

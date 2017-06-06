@@ -57,6 +57,7 @@ SpriteAnimation *init_SpriteAnimation(SpriteAnimation *self);
 Image *getEmptyImage(int width, int height);
 Image *loadImage(char *name);
 SpriteAnimation *shallowCopySpriteAnimation(SpriteAnimation *original);
+SpriteAnimation *copySpriteAnimation(SpriteAnimation *source, SpriteAnimation *dest);
 
 // Draw
 void drawImage(Image *image, int x, int y);

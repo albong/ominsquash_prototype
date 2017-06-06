@@ -1,0 +1,15 @@
+{
+    "active" : true,
+    "speed in pixelsPerMillisecond" : 0.0,
+    "width" : 0,
+    "height" : 0,
+    "milliseconds per frame" : 0,
+    "number of frames" : 0,
+    
+    "new sprite" : 3,
+    
+    "collision type" : "NONE",
+    "has movement hitbox" : false,
+    "has interact hitbox" : true,
+    "interactable" : false,
+}
