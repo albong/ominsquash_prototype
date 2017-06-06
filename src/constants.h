@@ -19,6 +19,8 @@
 #define ROOM_UP 2
 #define ROOM_DOWN 3
 
+#define NUM_AREA_TEMP_ENTITIES 100
+
 #define HITSTUN_FLASH_MILLI 75
 
 #define DRAW_MOVE_HITBOX 1

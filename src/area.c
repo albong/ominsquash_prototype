@@ -32,6 +32,20 @@ static void loadAreaEnemyData(Area *self);
 static void createAreaEnemies(Area *self);
 static void loadAreaEntityData(Area *self);
 static void createAreaEntities(Area *self);
+static void drawRoomBuffers(Room *room);
+
+static int checkForRoomChange();
+static void doRoomEntities(int delta);
+static void doRoomEnemies(int delta);
+static void doRoomDoors(int delta);
+static void doTempEntities(int delta);
+static void removeInactiveTempEntities();
+static void removeTempEntities();
+
+static void drawRoomDoors(Room *room, double shiftX, double shiftY);
+static void drawRoomEntities(Room *room, double shiftX, double shiftY);
+static void drawRoomEnemies(Room *room, double shiftX, double shiftY);
+static void drawTempEntities(double shiftX, double shiftY);
 
 /////////////////////////////////////////////////
 // Loading
@@ -51,6 +65,12 @@ Area *init_Area(Area *self){
 	self->currentRoom = NULL;
     self->roomList = NULL;
     self->changingRooms = 0;
+    
+    size_t i;
+    self->numTemporaryEntities = 0;
+    for (i = 0; i < NUM_AREA_TEMP_ENTITIES; i++){
+        self->temporaryEntities[i] = NULL;
+    }
     
     return self;
 }
@@ -159,7 +179,6 @@ void createAreaEnemies(Area *self){
     }
 }
 
-
 void loadAreaEntityData(Area *self){
     /*
     
@@ -205,7 +224,7 @@ void createAreaEntities(Area *self){
     }
 }
 
-static void drawRoomBuffers(Room *room){
+void drawRoomBuffers(Room *room){
 //    int currentRoom = _current_area.currentRoom;
 //    Room *room = _current_area.roomList[currentRoom];
     int roomWidth = ROOM_WIDTH;
@@ -257,6 +276,8 @@ void doRoom(int delta){
         doRoomDoors(delta);
         doRoomEntities(delta);
         doRoomEnemies(delta);
+        doTempEntities(delta);
+        removeInactiveTempEntities();
         
         newRoom = checkForRoomChange();
         if (newRoom >= 0 && _current_area.currentRoom->connectingRooms[newRoom] != -1){
@@ -313,6 +334,7 @@ void changeRoom(int roomIndex, int direction, int delta){
         changingRooms = 0;
         _current_area.changingRooms = 0;
         _current_area.currentRoom = _current_area.roomList[_current_area.currentRoom->connectingRooms[direction]];
+        removeTempEntities();
         stopPlayerTransitioning();
     }
 }
@@ -331,7 +353,7 @@ void moveRoomEnemies(){
     }
 }
 
-static int checkForRoomChange(){
+int checkForRoomChange(){
     /*
             THIS NEEDS TO BE MADE MORE GENERAL
     */
@@ -368,7 +390,7 @@ void doRoomDoors(int delta){
     }
 }
 
-static void doRoomEntities(int delta){
+void doRoomEntities(int delta){
     size_t i;
     Entity *self;
     
@@ -381,7 +403,7 @@ static void doRoomEntities(int delta){
     }
 }
 
-static void doRoomEnemies(int delta){
+void doRoomEnemies(int delta){
     int i;
     Enemy *self;
     
@@ -391,6 +413,35 @@ static void doRoomEnemies(int delta){
         if (self->e.active == 1 && self->action){
             self->action(self, delta);
         }
+    }
+}
+
+void doTempEntities(int delta){
+    size_t i;
+    Entity *self;
+    
+    for (i = 0; i < NUM_AREA_TEMP_ENTITIES; i++){
+        self = _current_area.temporaryEntities[i];
+        if (self != NULL && self->active && self->action){
+            self->action(self, delta);
+        }
+    }
+}
+
+void removeInactiveTempEntities(){
+    size_t i;
+    for (i = 0; i < NUM_AREA_TEMP_ENTITIES; i++){
+        if (_current_area.temporaryEntities[i] != NULL && !_current_area.temporaryEntities[i]->active){
+            _current_area.temporaryEntities[i] = NULL;
+            _current_area.numTemporaryEntities--;
+        }
+    }
+}
+
+void removeTempEntities(){
+    size_t i;
+    for (i = 0; i < NUM_AREA_TEMP_ENTITIES; i++){
+        _current_area.temporaryEntities[i] = NULL;
     }
 }
 
@@ -404,6 +455,7 @@ void drawCurrentRoom(){
         drawRoomDoors(_current_area.currentRoom, 0, 0);
         drawRoomEntities(_current_area.currentRoom, 0, 0);
         drawRoomEnemies(_current_area.currentRoom, 0, 0);
+        drawTempEntities(0, 0);
     } else {
         drawImage(_current_area.currentRoom->buffer, room_transition.oldX, room_transition.oldY);
         drawImage(room_transition.newRoom->buffer, room_transition.newX, room_transition.newY);
@@ -416,17 +468,20 @@ void drawCurrentRoom(){
         
         drawRoomEnemies(_current_area.currentRoom, room_transition.oldX, room_transition.oldY);
         drawRoomEnemies(room_transition.newRoom, room_transition.newX, room_transition.newY);
+        
+        //new room won't have temp stuff yet
+        drawTempEntities(room_transition.oldX, room_transition.oldY);
     }
 }
 
-static void drawRoomDoors(Room *room, double shiftX, double shiftY){
+void drawRoomDoors(Room *room, double shiftX, double shiftY){
     size_t i;
     for (i = 0; i < room->numDoors; i++){
         room->doors[i]->e.draw((Entity *)room->doors[i], shiftX, shiftY);
     }
 }
 
-static void drawRoomEntities(Room *room, double shiftX, double shiftY){
+void drawRoomEntities(Room *room, double shiftX, double shiftY){
     size_t i;
     for (i = 0; i < room->numEntities; i++){
         if (room->entities[i]->active){
@@ -435,11 +490,23 @@ static void drawRoomEntities(Room *room, double shiftX, double shiftY){
     }
 }
 
-static void drawRoomEnemies(Room *room, double shiftX, double shiftY){
+void drawRoomEnemies(Room *room, double shiftX, double shiftY){
     int i;
     for (i = 0; i < room->numEnemies; i++){
         if (room->enemies[i]->e.active){
             room->enemies[i]->e.draw(&room->enemies[i]->e, shiftX, shiftY);
+        }
+    }
+}
+
+void drawTempEntities(double shiftX, double shiftY){
+    size_t i;
+    Entity *self;
+    
+    for (i = 0; i < NUM_AREA_TEMP_ENTITIES; i++){
+        self = _current_area.temporaryEntities[i];
+        if (self != NULL && self->active && self->draw){
+            self->draw(self, shiftX, shiftY);
         }
     }
 }
@@ -474,6 +541,26 @@ size_t getNumRoomDoors(){
 
 Door **getRoomDoorList(){
     return _current_area.currentRoom->doors;
+}
+
+void addTempEntityToArea(Entity *e){
+    if (e == NULL || !e->active){
+        return;
+    }
+    
+    if (_current_area.numTemporaryEntities == NUM_AREA_TEMP_ENTITIES){
+        printf("Too many temporary entities in _current_area!\n");
+        return;
+    }
+    
+    size_t i;
+    for (i = 0; i < NUM_AREA_TEMP_ENTITIES; i++){
+        if (_current_area.temporaryEntities[i] == NULL){
+            break;
+        }
+    }
+    _current_area.temporaryEntities[i] = e;
+    _current_area.numTemporaryEntities++;
 }
 
 
