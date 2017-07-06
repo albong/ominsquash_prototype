@@ -8,6 +8,7 @@
 // #include "constants.h"
 #include "textbox.h"
 #include "inventory.h"
+#include "interface.h"
 #include "entity_creator.h"
 #include "enemy_creator.h"
 
@@ -43,6 +44,7 @@ int main(int argc, char *argv[]){
     initMenu();
     initInput();
     initTextbox();
+    initInterface();
 
     initFrames();
     int newFrame;

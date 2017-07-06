@@ -10,6 +10,7 @@ typedef struct Player {
     int equippedAInd;
     int equippedBInd;
     int health;
+    int shields;
     int milliHitstun;
 } Player;
 

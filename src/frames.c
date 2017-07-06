@@ -68,6 +68,9 @@ int gameFrameLogic(unsigned delta){
     moveRoomEntities();
     moveRoomEnemies();
     
+    //update interface
+    updateInterface();
+    
     //interact button only gets one press here
     if (_input.x){
         _inputRead.x = 1;
@@ -80,6 +83,7 @@ void gameFrameDraw(){
     drawCurrentRoom();
     drawPlayer();
     drawHitBoxes(DRAW_MOVE_HITBOX, DRAW_INTERACT_HITBOX);
+    drawInterface();
 }
 
 int menuFrameLogic(unsigned delta){
