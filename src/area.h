@@ -23,7 +23,7 @@ typedef struct Area {
 //    int numEntitySprites;
     int changingRooms;
     size_t numTemporaryEntities;
-    Entity temporaryEntities[NUM_AREA_TEMP_ENTITIES]; //array of pointers
+    Entity *temporaryEntities[NUM_AREA_TEMP_ENTITIES]; //array of pointers
 } Area;
 
 // Globals
@@ -39,6 +39,7 @@ void doRoom(int delta);
 void changeRoom(int roomIndex, int direction, int delta);
 void moveRoomEntities();
 void moveRoomEnemies();
+void moveTemporaryEntities();
 
 // Drawing
 void drawCurrentRoom();

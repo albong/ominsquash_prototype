@@ -67,6 +67,7 @@ int gameFrameLogic(unsigned delta){
     movePlayer();
     moveRoomEntities();
     moveRoomEnemies();
+    moveTemporaryEntities();
     
     //update interface
     updateInterface();

@@ -72,7 +72,12 @@ void initPlayer(){
     addPlayerWeapon(sword);
     addWeaponToInventory(sword);
     _player.equippedAInd = 0;
-    _player.equippedBInd = -1; //may want to have a none be at index 0
+    
+    Weapon *gun = createWeaponById(1);
+    gun->owner = &_player.e;
+    addPlayerWeapon(gun);
+    addWeaponToInventory(gun);
+    _player.equippedBInd = 1;
 }
 
 

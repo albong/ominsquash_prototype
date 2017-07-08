@@ -68,8 +68,7 @@ Area *init_Area(Area *self){
     size_t i;
     self->numTemporaryEntities = 0;
     for (i = 0; i < NUM_AREA_TEMP_ENTITIES; i++){
-        self->temporaryEntities[i].active = 0;
-        self->temporaryEntities[i].animation = init_SpriteAnimation(malloc(sizeof(SpriteAnimation)));
+        self->temporaryEntities[i] = NULL;
     }
     
     return self;
@@ -339,7 +338,7 @@ void changeRoom(int roomIndex, int direction, int delta){
 }
 
 void moveRoomEntities(){
-    int i;
+    size_t i;
     for (i = 0; i < _current_area.currentRoom->numEntities; i++){
         moveEntity(_current_area.currentRoom->entities[i]);
     }
@@ -349,6 +348,15 @@ void moveRoomEnemies(){
     int i;
     for (i = 0; i < _current_area.currentRoom->numEnemies; i++){
         moveEntity(&_current_area.currentRoom->enemies[i]->e);
+    }
+}
+
+void moveTemporaryEntities(){
+    size_t i;
+    for (i = 0; i < NUM_AREA_TEMP_ENTITIES; i++){
+        if (_current_area.temporaryEntities[i] != NULL){
+            moveEntity(_current_area.temporaryEntities[i]);
+        }
     }
 }
 
@@ -417,12 +425,15 @@ void doRoomEnemies(int delta){
 
 void doTempEntities(int delta){
     size_t i;
-    Entity self;
+    Entity *self;
     
+    //do the temp entities, however, if they're done, set them to null
     for (i = 0; i < NUM_AREA_TEMP_ENTITIES; i++){
         self = _current_area.temporaryEntities[i];
-        if (self.active && self.action){
-            self.action(&self, delta);
+        if (self != NULL && self->active && self->action != NULL){
+            self->action(self, delta);
+        } else if (self != NULL && !self->active){
+            _current_area.temporaryEntities[i] = NULL;
         }
     }
 }
@@ -430,7 +441,10 @@ void doTempEntities(int delta){
 void removeTempEntities(){
     size_t i;
     for (i = 0; i < NUM_AREA_TEMP_ENTITIES; i++){
-        _current_area.temporaryEntities[i].active = 0;
+        if (_current_area.temporaryEntities[i] != NULL){
+            _current_area.temporaryEntities[i]->active = 0;
+            _current_area.temporaryEntities[i] = NULL;
+        }
     }
 }
 
@@ -490,12 +504,12 @@ void drawRoomEnemies(Room *room, double shiftX, double shiftY){
 
 void drawTempEntities(double shiftX, double shiftY){
     size_t i;
-    Entity self;
+    Entity *self;
     
     for (i = 0; i < NUM_AREA_TEMP_ENTITIES; i++){
         self = _current_area.temporaryEntities[i];
-        if (self.active && self.draw){
-            self.draw(&self, shiftX, shiftY);
+        if (self != NULL && self->active && self->draw != NULL){
+            self->draw(self, shiftX, shiftY);
         }
     }
 }
@@ -544,15 +558,12 @@ void addTempEntityToArea(Entity *e){
     
     size_t i;
     for (i = 0; i < NUM_AREA_TEMP_ENTITIES; i++){
-        if (_current_area.temporaryEntities[i].active == 0){
+        if (_current_area.temporaryEntities[i] == NULL){
+            _current_area.temporaryEntities[i] = e;
+            _current_area.temporaryEntities[i]->active = 1;
             break;
         }
     }
-    
-    memcpy(&_current_area.temporaryEntities[i], e, sizeof(Entity));
-    memcpy(_current_area.temporaryEntities[i].animation, e->animation, sizeof(SpriteAnimation));
-    copySpriteAnimation(e->animation, _current_area.temporaryEntities[i].animation);
-    _current_area.temporaryEntities[i].active = 1;
     _current_area.numTemporaryEntities++;
 }
 
