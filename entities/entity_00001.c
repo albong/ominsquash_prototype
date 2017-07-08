@@ -6,10 +6,8 @@
 
 void entity_action_00001(void *e, int delta){
     Entity *self = (Entity *)e;
-    int currLoop = self->animation->currLoop;
-    
-    self->animation->milliPassed += delta;
-    if (self->animation->milliPassed >= self->animation->loopTotalDuration[currLoop]){
+    updateAnimation(self->animation, delta);
+    if (self->animation->currFrame == -1){
         self->active = 0;
     }
 }

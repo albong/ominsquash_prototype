@@ -1,9 +1,11 @@
 #include "entity.h"
 #include <math.h>
 #include <string.h>
+#include <stdio.h>
 
 #define square(x) (x*x)
 
+static void defaultActionEntity(void *e, int delta);
 static void defaultDrawEntity(Entity *self, double shiftX, double shiftY);
 
 /////////////////////////////////////////////////
@@ -35,7 +37,8 @@ Entity *init_Entity(Entity *self){
     self->sprite = NULL;
     self->animation = NULL;
 	self->orientation = UP;
-	self->action = NULL;
+	// self->action = NULL;
+	self->action = &defaultActionEntity;
 	self->draw = &defaultDrawEntity;
     self->type = NONE;
 	self->currHitBox = 0;
@@ -134,8 +137,12 @@ void applyExternalMoves(Entity *self, int delta){
 
 
 /////////////////////////////////////////////////
-// Drawing
+// Default methods
 /////////////////////////////////////////////////
+void defaultActionEntity(void *e, int delta){
+    updateAnimation(((Entity *)e)->animation, delta);
+}
+
 void defaultDrawEntity(Entity *self, double shiftX, double shiftY){
     if (self != NULL && self->sprite != NULL && self->animation != NULL){
         drawAnimation(self->sprite, self->animation, self->x + 0.5 + shiftX, self->y + 0.5 + shiftY);
