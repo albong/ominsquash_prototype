@@ -25,7 +25,7 @@ static void updateFrame(Enemy *self, int delta);
 
 void enemy_action_00000(Enemy *self, int delta){
     totalDelta += delta;
-    self->e.animation->milliPassed += delta;
+    updateAnimation(self->e.animation, delta);
     
     if (self->health <= 0 && self->deathEntity != NULL){
         self->e.active = 0;
@@ -59,16 +59,16 @@ void enemy_action_00000(Enemy *self, int delta){
     //remember, Entity has an "isMoving" field for this exact thing
     switch (self->e.orientation){
         case UP:
-            self->e.animation->currLoop = 0;
+            setAnimationLoop(self->e.animation, 0, 0);
             break;
         case DOWN:
-            self->e.animation->currLoop = 5;
+            setAnimationLoop(self->e.animation, 5, 0);
             break;
         case LEFT:
-            self->e.animation->currLoop = 6;
+            setAnimationLoop(self->e.animation, 6, 0);
             break;
         case RIGHT:
-            self->e.animation->currLoop = 3;
+            setAnimationLoop(self->e.animation, 3, 0);
             break;
         default:
             break;

@@ -196,7 +196,7 @@ void movePlayer(){
 }
 
 static void updatePlayerFrame(int delta){
-    _player.e.animation->milliPassed += delta;
+    updateAnimation(_player.e.animation, delta);
     
     //PIZZA - honestly can't remember what all the milliPassed are doing, only the above line may be necessary
     if (_player.e.isMoving){
@@ -205,16 +205,16 @@ static void updatePlayerFrame(int delta){
         
         switch (_player.e.orientation){
             case UP:
-                _player.e.animation->currLoop = 4;
+                setAnimationLoop(_player.e.animation, 4, 0);
                 break;
             case DOWN:
-                _player.e.animation->currLoop = 5;
+                setAnimationLoop(_player.e.animation, 5, 0);
                 break;
             case LEFT:
-                _player.e.animation->currLoop = 6;
+                setAnimationLoop(_player.e.animation, 6, 0);
                 break;
             case RIGHT:
-                _player.e.animation->currLoop = 7;
+                setAnimationLoop(_player.e.animation, 7, 0);
                 break;
             default:
                 break;
@@ -224,16 +224,16 @@ static void updatePlayerFrame(int delta){
         
         switch (_player.e.orientation){
             case UP:
-                _player.e.animation->currLoop = 0;
+                setAnimationLoop(_player.e.animation, 0, 0);
                 break;
             case DOWN:
-                _player.e.animation->currLoop = 1;
+                setAnimationLoop(_player.e.animation, 1, 0);
                 break;
             case LEFT:
-                _player.e.animation->currLoop = 2;
+                setAnimationLoop(_player.e.animation, 2, 0);
                 break;
             case RIGHT:
-                _player.e.animation->currLoop = 3;
+                setAnimationLoop(_player.e.animation, 3, 0);
                 break;
             default:
                 break;

@@ -69,6 +69,9 @@ void createHitBoxes(Weapon *w){
 void doWeapon(void *w, int delta){
     Weapon *self = (Weapon*)w;
     
+    //update the animation
+    updateAnimation(self->e.animation, delta);
+    
     //check if the bullet is out of bounds - should account for sprite size here using hitboxes?
     if (self->e.x < 0 + self->e.w || self->e.x > SCREEN_WIDTH){
 	    self->e.active = 0;
@@ -81,16 +84,16 @@ void doWeapon(void *w, int delta){
     self->e.changeX = 0;
     self->e.changeY = 0;
     if (self->e.orientation == UP){
-        self->e.animation->currLoop = 1;
+        setAnimationLoop(self->e.animation, 1, 0);
 		self->e.changeY = self->e.pixelsPerMilli * delta/1000.0 * -1;
 	} else if (self->e.orientation == DOWN){
-        self->e.animation->currLoop = 1;
+        setAnimationLoop(self->e.animation, 1, 0);
 		self->e.changeY = self->e.pixelsPerMilli * delta/1000.0;
 	} else if (self->e.orientation == LEFT){
-        self->e.animation->currLoop = 0;
+        setAnimationLoop(self->e.animation, 0, 0);
 		self->e.changeX = self->e.pixelsPerMilli * delta/1000.0 * -1;
 	} else if (self->e.orientation == RIGHT){
-        self->e.animation->currLoop = 0;
+        setAnimationLoop(self->e.animation, 0, 0);
 		self->e.changeX = self->e.pixelsPerMilli * delta/1000.0;
 	}
 }

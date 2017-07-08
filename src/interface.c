@@ -20,28 +20,30 @@ void initInterface(){
     }
 }
 
-void updateInterface(){
+void updateInterface(int delta){
     //number to draw is the max over the shields/health
     numToDraw = (_player.health < _player.shields) ? _player.shields : _player.health;
     
-    //set the frame number
+    //update the animation and set the frame number
     size_t i;
     for (i = 0; i < numToDraw; i++){
+        updateAnimation(healthIconsAnim[i], delta);
+        
         if (i % 2 == 0){ //left side
             if (i < _player.health && i < _player.shields){
-                healthIconsAnim[i]->currLoop = 2;
+                setAnimationLoop(healthIconsAnim[i], 2, 0);
             } else if (i < _player.health){
-                healthIconsAnim[i]->currLoop = 4;
+                setAnimationLoop(healthIconsAnim[i], 4, 0);
             } else {
-                healthIconsAnim[i]->currLoop = 0;
+                setAnimationLoop(healthIconsAnim[i], 0, 0);
             }
         } else { //right side
             if (i < _player.health && i < _player.shields){
-                healthIconsAnim[i]->currLoop = 3;
+                setAnimationLoop(healthIconsAnim[i], 3, 0);
             } else if (i < _player.health){
-                healthIconsAnim[i]->currLoop = 5;
+                setAnimationLoop(healthIconsAnim[i], 5, 0);
             } else {
-                healthIconsAnim[i]->currLoop = 1;
+                setAnimationLoop(healthIconsAnim[i], 1, 0);
             }
         }
     }

@@ -2,7 +2,7 @@
 #define INTERFACE_H
 
 void initInterface();
-void updateInterface();
+void updateInterface(int delta);
 void drawInterface();
 
 #endif

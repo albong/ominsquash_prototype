@@ -34,6 +34,7 @@ typedef struct SpriteAnimation{
     int currLoop;
     int numLoops;
     int milliPassed;
+    int currFrame;
     int *loopLength;
     int *loopTotalDuration;
     int *repeatLoop;
@@ -58,6 +59,10 @@ Image *getEmptyImage(int width, int height);
 Image *loadImage(char *name);
 SpriteAnimation *shallowCopySpriteAnimation(SpriteAnimation *original);
 SpriteAnimation *copySpriteAnimation(SpriteAnimation *source, SpriteAnimation *dest);
+
+// Animation Management
+void updateAnimation(SpriteAnimation *self, int delta);
+void setAnimationLoop(SpriteAnimation *self, int loop, int forceRestart);
 
 // Draw
 void drawImage(Image *image, int x, int y);

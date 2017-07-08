@@ -70,7 +70,7 @@ int gameFrameLogic(unsigned delta){
     moveTemporaryEntities();
     
     //update interface
-    updateInterface();
+    updateInterface(delta);
     
     //interact button only gets one press here
     if (_input.x){

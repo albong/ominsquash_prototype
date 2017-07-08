@@ -98,6 +98,7 @@ SpriteAnimation *init_SpriteAnimation(SpriteAnimation *self){
     self->currLoop = 0;
     self->numLoops = 0;
     self->milliPassed = 0;
+    self->currFrame = 0;
     self->loopTotalDuration = NULL;
     self->loopLength = NULL;
     self->repeatLoop = NULL;
@@ -206,6 +207,51 @@ SpriteAnimation *copySpriteAnimation(SpriteAnimation *source, SpriteAnimation *d
     dest->milliPassed = 0;
     
     return dest;
+}
+
+
+/////////////////////////////////////////////////
+// Animation Management
+/////////////////////////////////////////////////
+void updateAnimation(SpriteAnimation *self, int delta){
+    if (self == NULL || delta < 0){
+        return;
+    }
+    
+    //increase our counter of time passed
+    self->milliPassed += delta;
+    
+    //if we run over the total length of this loop, either mod to restart the count, or set to max time
+    int currLoop = self->currLoop;
+    if (self->repeatLoop[currLoop]){
+        self->milliPassed %= self->loopTotalDuration[currLoop];
+    } else if (self->milliPassed >= self->loopTotalDuration[currLoop]) { //if we've played the loop, then stop
+        self->milliPassed = self->loopTotalDuration[currLoop];
+        self->currFrame = -1;
+        return;
+    }
+    
+    //go through the frames for this loop until we hit the last one that we 
+    size_t i;
+    for (i = 0; i < self->loopLength[currLoop]; i++){
+        if (self->frameStartTime[currLoop][i] > self->milliPassed){
+            break;
+        }
+    }
+    self->currFrame = self->frameNumber[currLoop][i-1];
+}
+
+void setAnimationLoop(SpriteAnimation *self, int loop, int forceRestart){
+    if (self == NULL || loop < 0){
+        return;
+    }
+    
+    //if a different loop has been provided, or you're forcing the loop to restart, set everything to 0
+    if (self->currLoop != loop || forceRestart){
+        self->currLoop = loop;
+        self->currFrame = self->frameNumber[self->currLoop][0];
+        self->milliPassed = 0;
+    }
 }
 
 
@@ -339,33 +385,14 @@ void drawAnimation(Sprite *s, SpriteAnimation *anim, int x, int y){
     if (anim == NULL){
         drawImage(s->image, x, y);
         return;
-    }
-    
-    ImageRect src, dest;
-    size_t i;
-    int frameNum;
-    int currLoop;
-    
-    //determine where we are in the animation
-    //PIZZA - determine if we ought replace with more book-keeping at the sprite holder's end
-    // possibly with a standard updateAnimation method?
-    currLoop = anim->currLoop;
-    if (anim->repeatLoop[currLoop]){
-        anim->milliPassed %= anim->loopTotalDuration[currLoop];
-    } else if (anim->milliPassed >= anim->loopTotalDuration[currLoop]) { //if we've played the loop, then stop
-        anim->milliPassed = anim->loopTotalDuration[currLoop];
+    } else if (anim->currFrame == -1){
         return;
     }
-    for (i = 0; i < anim->loopLength[currLoop]; i++){
-        if (anim->frameStartTime[currLoop][i] > anim->milliPassed){
-            break;
-        }
-    }
-    frameNum = anim->frameNumber[currLoop][i-1];
     
     //set the src/dst rectangles
-    src.x = (frameNum % s->numFramesPerRow) * s->frameWidth;
-    src.y = (frameNum / s->numFramesPerRow) * s->frameHeight;
+    ImageRect src, dest;
+    src.x = (anim->currFrame % s->numFramesPerRow) * s->frameWidth;
+    src.y = (anim->currFrame / s->numFramesPerRow) * s->frameHeight;
     src.w = s->frameWidth;
     src.h = s->frameHeight;
     
