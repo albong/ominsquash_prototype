@@ -1,0 +1,18 @@
+Design Principles
+-----------------
+
+ -  Insofar as it is possible without herculean effort, the engine should be 
+    pure C.  This doesn't mean that other languages can't be used for building
+    or what have you, but the resulting code should be C.  This is to maximize
+    portability, and to enable ease of coding for others.
+    
+ -  When possible, memory allocation/freeing should only be done in between
+    areas, ie at loading screens.
+ 
+ -  Minimize use of external libraries as much as possible.  Give preference to
+    pure C libraries.
+    
+ -  Use size_t over int for indices.
+
+ -  Don't compute anything during the drawing phase of the game loop.  Do all
+    computation during the logic phase.
