@@ -169,19 +169,27 @@ SpriteAnimation *readSpriteAnimationFromFile(char *filename, SpriteAnimation *re
     
     //read in the given file to a cJSON object
     char *fileContents = readFileToCharStar(filename);
-    cJSON *root = cJSON_Parse(fileContents);
-    
-    //if the initial parsing failed, or the detailed parsing failed, print an error and free/NULL result
-    //otherwise free the cJSON root correctly
-    if (!root || !fillSpriteAnimationFromJson(root, result)){
-        printf("%s: Error before: %s\n", filename, cJSON_GetErrorPtr());
+    if (fileContents == NULL){
+        printf("Animation not found: %s\n", filename);
         fflush(stdout);
         free(result);
         result = NULL;
-    } else {
-        cJSON_Delete(root);
+    } else {   
+        //parse the file
+        cJSON *root = cJSON_Parse(fileContents);
+        
+        //if the initial parsing failed, or the detailed parsing failed, print an error and free/NULL result
+        //otherwise free the cJSON root correctly
+        if (!root || !fillSpriteAnimationFromJson(root, result)){
+            printf("%s: Error before: %s\n", filename, cJSON_GetErrorPtr());
+            fflush(stdout);
+            free(result);
+            result = NULL;
+        } else {
+            cJSON_Delete(root);
+        }
     }
-    
+        
     //free the read file and return
     free(fileContents);
     return result;
@@ -340,7 +348,7 @@ int fillEntityFromJson(cJSON *root, Entity *result){
     
     //load the sprite and animation
     char dataFilename[80];
-    int spriteId = cJSON_GetObjectItem(root, "new sprite")->valueint;
+    int spriteId = cJSON_GetObjectItem(root, "sprite")->valueint;
     sprintf(dataFilename, "data/sprites/%05d.sprite", spriteId);
     result->sprite = readSpriteFromFile(dataFilename, malloc(sizeof(Sprite)));
     sprintf(dataFilename, "data/animations/%05d.animation", spriteId);

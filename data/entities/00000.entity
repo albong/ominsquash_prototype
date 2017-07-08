@@ -6,9 +6,7 @@
     "milliseconds per frame" : 0,
     "number of frames" : 0,
     
-    "sprite" : "gfx/skull.png",
-    "sprite width" : 16,
-    "new sprite" : 1,
+    "sprite" : 1,
     
     "collision type" : "NONE",
     "has movement hitbox" : false,

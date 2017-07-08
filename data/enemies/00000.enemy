@@ -7,7 +7,7 @@
         "milliseconds per frame" : 200,
         "number of frames" : 2,
         
-        "new sprite" : 0,
+        "sprite" : 0,
         
         "collision type" : "ENEMY",
         "has movement hitbox" : true,
