@@ -6,6 +6,7 @@
 #include "weapon_creator.h"
 #include "inventory.h"
 #include "data_reader.h"
+#include "hitbox.h"
 
 #include <stdio.h>
 
@@ -38,28 +39,31 @@ void initPlayer(){
     _player.e.type = PLAYER;
     
     _player.e.currHitBox = 0;
+    _player.e.hitboxes = malloc(sizeof(Hitboxes));
     
     //movement hitbox
-    _player.e.hasMoveHitBox = 1;
-    _player.e.moveHitBox = malloc(sizeof(HitBox) * 1);
-    _player.e.moveHitBox[0].numCircle = 0;
-    _player.e.moveHitBox[0].numRect = 1;
-    _player.e.moveHitBox[0].rects = malloc(sizeof(CollRect) * 1);
-    _player.e.moveHitBox[0].rects[0].x = 4;
-    _player.e.moveHitBox[0].rects[0].y = 5;
-    _player.e.moveHitBox[0].rects[0].w = _player.e.w-8;
-    _player.e.moveHitBox[0].rects[0].h = _player.e.h - 5-2;
+    _player.e.hitboxes->numMovement = 1;
+    // _player.e.hasMoveHitBox = 1;
+    _player.e.hitboxes->movement = malloc(sizeof(HitBox) * 1);
+    _player.e.hitboxes->movement[0].numCircle = 0;
+    _player.e.hitboxes->movement[0].numRect = 1;
+    _player.e.hitboxes->movement[0].rects = malloc(sizeof(CollRect) * 1);
+    _player.e.hitboxes->movement[0].rects[0].x = 4;
+    _player.e.hitboxes->movement[0].rects[0].y = 5;
+    _player.e.hitboxes->movement[0].rects[0].w = _player.e.w-8;
+    _player.e.hitboxes->movement[0].rects[0].h = _player.e.h - 5-2;
     
     //interaction hitbox
-    _player.e.hasInteractHitBox = 1;
-    _player.e.interactHitBox = malloc(sizeof(HitBox) * 1);
-    _player.e.interactHitBox[0].numCircle = 0;
-    _player.e.interactHitBox[0].numRect = 1;
-    _player.e.interactHitBox[0].rects = malloc(sizeof(CollRect) * 1);
-    _player.e.interactHitBox[0].rects[0].x = -3;
-    _player.e.interactHitBox[0].rects[0].y = -3;
-    _player.e.interactHitBox[0].rects[0].w = 22;
-    _player.e.interactHitBox[0].rects[0].h = 24;
+    _player.e.hitboxes->numInteract = 1;
+    // _player.e.hasInteractHitBox = 1;
+    _player.e.hitboxes->interact = malloc(sizeof(HitBox) * 1);
+    _player.e.hitboxes->interact[0].numCircle = 0;
+    _player.e.hitboxes->interact[0].numRect = 1;
+    _player.e.hitboxes->interact[0].rects = malloc(sizeof(CollRect) * 1);
+    _player.e.hitboxes->interact[0].rects[0].x = -3;
+    _player.e.hitboxes->interact[0].rects[0].y = -3;
+    _player.e.hitboxes->interact[0].rects[0].w = 22;
+    _player.e.hitboxes->interact[0].rects[0].h = 24;
         
     _player.health = 12;
     _player.shields = 14;

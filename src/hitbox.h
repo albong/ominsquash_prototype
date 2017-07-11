@@ -16,4 +16,11 @@ typedef struct HitBox{
     CollCircle *circles;
 } HitBox;
 
+typedef struct Hitboxes { 
+    int numMovement;
+    int numInteract;
+    HitBox *movement; //array
+    HitBox *interact; //array
+} Hitboxes;
+
 #endif

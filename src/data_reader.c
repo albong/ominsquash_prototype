@@ -292,57 +292,56 @@ int fillEntityFromJson(cJSON *root, Entity *result){
 	result->milliPerFrame = cJSON_GetObjectItem(root, "milliseconds per frame")->valueint;
 	result->numFrames = cJSON_GetObjectItem(root, "number of frames")->valueint;
     // result->type = <switch statement to choose correct enum based on string>;
-	result->hasMoveHitBox = (cJSON_GetObjectItem(root, "has movement hitbox")->type == cJSON_True);
-	result->hasInteractHitBox = (cJSON_GetObjectItem(root, "has interact hitbox")->type == cJSON_True);
+	// result->hasMoveHitBox = (cJSON_GetObjectItem(root, "has movement hitbox")->type == cJSON_True);
+	// result->hasInteractHitBox = (cJSON_GetObjectItem(root, "has interact hitbox")->type == cJSON_True);
     result->interactable = (cJSON_GetObjectItem(root, "interactable")->type == cJSON_True);
     
     //if there is a particular kind of hitbox, read it in
     cJSON *hitboxArr, *shapeArr, *hitboxJson, *shapeJson;
     size_t numHitboxes, numShapes;
     size_t i, j;
-    if (result->hasMoveHitBox){
-        hitboxArr = cJSON_GetObjectItem(root, "movement hitboxes");
-        numHitboxes = cJSON_GetArraySize(hitboxArr);
-        result->moveHitBox = malloc(sizeof(HitBox) * numHitboxes);
-        for (i = 0; i < numHitboxes; i++){
-            hitboxJson = cJSON_GetArrayItem(hitboxArr, i);
-            result->moveHitBox[i].numCircle = 0;
-            result->moveHitBox[i].circles = NULL;
-            
-            shapeArr = cJSON_GetObjectItem(hitboxJson, "rectangles");
-            numShapes = cJSON_GetArraySize(shapeArr);
-            result->moveHitBox[i].numRect = numShapes;
-            result->moveHitBox[i].rects = malloc(sizeof(CollRect) * numShapes);
-            for (j = 0; j < numShapes; j++){
-                shapeJson = cJSON_GetArrayItem(shapeArr, j);
-                result->moveHitBox[i].rects[j].x = cJSON_GetObjectItem(shapeJson, "x")->valueint;
-                result->moveHitBox[i].rects[j].y = cJSON_GetObjectItem(shapeJson, "y")->valueint;
-                result->moveHitBox[i].rects[j].w = cJSON_GetObjectItem(shapeJson, "width")->valueint;
-                result->moveHitBox[i].rects[j].h = cJSON_GetObjectItem(shapeJson, "height")->valueint;
-            }
+    
+    hitboxArr = cJSON_GetObjectItem(root, "movement hitboxes");
+    numHitboxes = cJSON_GetArraySize(hitboxArr);
+    result->hitboxes->numMovement = numHitboxes;
+    result->hitboxes->movement = malloc(sizeof(HitBox) * numHitboxes);
+    for (i = 0; i < numHitboxes; i++){
+        hitboxJson = cJSON_GetArrayItem(hitboxArr, i);
+        result->hitboxes->movement[i].numCircle = 0;
+        result->hitboxes->movement[i].circles = NULL;
+        
+        shapeArr = cJSON_GetObjectItem(hitboxJson, "rectangles");
+        numShapes = cJSON_GetArraySize(shapeArr);
+        result->hitboxes->movement[i].numRect = numShapes;
+        result->hitboxes->movement[i].rects = malloc(sizeof(CollRect) * numShapes);
+        for (j = 0; j < numShapes; j++){
+            shapeJson = cJSON_GetArrayItem(shapeArr, j);
+            result->hitboxes->movement[i].rects[j].x = cJSON_GetObjectItem(shapeJson, "x")->valueint;
+            result->hitboxes->movement[i].rects[j].y = cJSON_GetObjectItem(shapeJson, "y")->valueint;
+            result->hitboxes->movement[i].rects[j].w = cJSON_GetObjectItem(shapeJson, "width")->valueint;
+            result->hitboxes->movement[i].rects[j].h = cJSON_GetObjectItem(shapeJson, "height")->valueint;
         }
     }
     
-    if (result->hasInteractHitBox){
-        hitboxArr = cJSON_GetObjectItem(root, "interact hitboxes");
-        numHitboxes = cJSON_GetArraySize(hitboxArr);
-        result->interactHitBox = malloc(sizeof(HitBox) * numHitboxes);
-        for (i = 0; i < numHitboxes; i++){
-            hitboxJson = cJSON_GetArrayItem(hitboxArr, i);
-            result->interactHitBox[i].numCircle = 0;
-            result->interactHitBox[i].circles = NULL;
-            
-            shapeArr = cJSON_GetObjectItem(hitboxJson, "rectangles");
-            numShapes = cJSON_GetArraySize(shapeArr);
-            result->interactHitBox[i].numRect = numShapes;
-            result->interactHitBox[i].rects = malloc(sizeof(CollRect) * numShapes);
-            for (j = 0; j < numShapes; j++){
-                shapeJson = cJSON_GetArrayItem(shapeArr, j);
-                result->interactHitBox[i].rects[j].x = cJSON_GetObjectItem(shapeJson, "x")->valueint;
-                result->interactHitBox[i].rects[j].y = cJSON_GetObjectItem(shapeJson, "y")->valueint;
-                result->interactHitBox[i].rects[j].w = cJSON_GetObjectItem(shapeJson, "width")->valueint;
-                result->interactHitBox[i].rects[j].h = cJSON_GetObjectItem(shapeJson, "height")->valueint;
-            }
+    hitboxArr = cJSON_GetObjectItem(root, "interact hitboxes");
+    numHitboxes = cJSON_GetArraySize(hitboxArr);
+    result->hitboxes->numInteract = numHitboxes;
+    result->hitboxes->interact = malloc(sizeof(HitBox) * numHitboxes);
+    for (i = 0; i < numHitboxes; i++){
+        hitboxJson = cJSON_GetArrayItem(hitboxArr, i);
+        result->hitboxes->interact[i].numCircle = 0;
+        result->hitboxes->interact[i].circles = NULL;
+        
+        shapeArr = cJSON_GetObjectItem(hitboxJson, "rectangles");
+        numShapes = cJSON_GetArraySize(shapeArr);
+        result->hitboxes->interact[i].numRect = numShapes;
+        result->hitboxes->interact[i].rects = malloc(sizeof(CollRect) * numShapes);
+        for (j = 0; j < numShapes; j++){
+            shapeJson = cJSON_GetArrayItem(shapeArr, j);
+            result->hitboxes->interact[i].rects[j].x = cJSON_GetObjectItem(shapeJson, "x")->valueint;
+            result->hitboxes->interact[i].rects[j].y = cJSON_GetObjectItem(shapeJson, "y")->valueint;
+            result->hitboxes->interact[i].rects[j].w = cJSON_GetObjectItem(shapeJson, "width")->valueint;
+            result->hitboxes->interact[i].rects[j].h = cJSON_GetObjectItem(shapeJson, "height")->valueint;
         }
     }
     

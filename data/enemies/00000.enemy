@@ -10,8 +10,6 @@
         "sprite" : 0,
         
         "collision type" : "ENEMY",
-        "has movement hitbox" : true,
-        "has interact hitbox" : true,
         "interactable" : true,
         
         "movement hitboxes" : [

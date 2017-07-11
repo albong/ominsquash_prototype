@@ -72,21 +72,21 @@ void doWallCollisions(){
     //check the player first
     CollRect temp;
     int hitFrame = _player.e.currHitBox;
-    for (j = 0; j < _player.e.moveHitBox[hitFrame].numRect; j++){
+    for (j = 0; j < _player.e.hitboxes->movement[hitFrame].numRect; j++){
         for (k = 0; k < walls.numRect; k++){
-            temp.x = _player.e.x + _player.e.changeX + _player.e.moveHitBox[hitFrame].rects[j].x;
-            temp.y = _player.e.y + _player.e.moveHitBox[hitFrame].rects[j].y;
-            temp.w = _player.e.moveHitBox[hitFrame].rects[j].w;
-            temp.h = _player.e.moveHitBox[hitFrame].rects[j].h;
+            temp.x = _player.e.x + _player.e.changeX + _player.e.hitboxes->movement[hitFrame].rects[j].x;
+            temp.y = _player.e.y + _player.e.hitboxes->movement[hitFrame].rects[j].y;
+            temp.w = _player.e.hitboxes->movement[hitFrame].rects[j].w;
+            temp.h = _player.e.hitboxes->movement[hitFrame].rects[j].h;
             collCode = rectangleCollide(walls.rects[k], temp);
             if (collCode){
                 collideWithWallX(walls.rects[k], &_player.e, temp, collCode);
             }
             
-            temp.x = _player.e.x + _player.e.moveHitBox[hitFrame].rects[j].x;
-            temp.y = _player.e.y + _player.e.changeY + _player.e.moveHitBox[hitFrame].rects[j].y;
-            temp.w = _player.e.moveHitBox[hitFrame].rects[j].w;
-            temp.h = _player.e.moveHitBox[hitFrame].rects[j].h;
+            temp.x = _player.e.x + _player.e.hitboxes->movement[hitFrame].rects[j].x;
+            temp.y = _player.e.y + _player.e.changeY + _player.e.hitboxes->movement[hitFrame].rects[j].y;
+            temp.w = _player.e.hitboxes->movement[hitFrame].rects[j].w;
+            temp.h = _player.e.hitboxes->movement[hitFrame].rects[j].h;
             collCode = rectangleCollide(walls.rects[k], temp);
             if (collCode){
                 collideWithWallY(walls.rects[k], &_player.e, temp, collCode);
@@ -137,17 +137,17 @@ void doDoorCollisions(){
     
     //player first
     for (i = 0; i < numDoors; i++){
-        for (j = 0; j < doorList[i]->e.interactHitBox->numRect; j++){
-            temp.x = doorList[i]->e.x + /*doorList[i]->e.changeX +*/ doorList[i]->e.interactHitBox->rects[j].x;
-            temp.y = doorList[i]->e.y + /*doorList[i]->e.changeY +*/ doorList[i]->e.interactHitBox->rects[j].y;
-            temp.w = doorList[i]->e.interactHitBox->rects[j].w;
-            temp.h = doorList[i]->e.interactHitBox->rects[j].h;
+        for (j = 0; j < doorList[i]->e.hitboxes->interact->numRect; j++){
+            temp.x = doorList[i]->e.x + /*doorList[i]->e.changeX +*/ doorList[i]->e.hitboxes->interact->rects[j].x;
+            temp.y = doorList[i]->e.y + /*doorList[i]->e.changeY +*/ doorList[i]->e.hitboxes->interact->rects[j].y;
+            temp.w = doorList[i]->e.hitboxes->interact->rects[j].w;
+            temp.h = doorList[i]->e.hitboxes->interact->rects[j].h;
                 
-            for (k = 0; k < _player.e.interactHitBox->numRect; k++){
-                playerTemp.x = _player.e.x + _player.e.changeX + _player.e.interactHitBox[0].rects[k].x;
-                playerTemp.y = _player.e.y + _player.e.changeY + _player.e.interactHitBox[0].rects[k].y;
-                playerTemp.w = _player.e.interactHitBox->rects[k].w;
-                playerTemp.h = _player.e.interactHitBox->rects[k].h;
+            for (k = 0; k < _player.e.hitboxes->interact->numRect; k++){
+                playerTemp.x = _player.e.x + _player.e.changeX + _player.e.hitboxes->interact[0].rects[k].x;
+                playerTemp.y = _player.e.y + _player.e.changeY + _player.e.hitboxes->interact[0].rects[k].y;
+                playerTemp.w = _player.e.hitboxes->interact->rects[k].w;
+                playerTemp.h = _player.e.hitboxes->interact->rects[k].h;
 
                 collCode = rectangleCollide(playerTemp, temp);
                 if (collCode && !doorList[i]->isLocked && !doorList[i]->isOpen){
@@ -191,17 +191,17 @@ void doEntityCollisions(){
             continue;
         }
         
-        for (j = 0; j < entityList[i]->interactHitBox->numRect; j++){
-            temp.x = entityList[i]->x + entityList[i]->changeX + entityList[i]->interactHitBox->rects[j].x;
-            temp.y = entityList[i]->y + entityList[i]->changeY + entityList[i]->interactHitBox->rects[j].y;
-            temp.w = entityList[i]->interactHitBox->rects[j].w;
-            temp.h = entityList[i]->interactHitBox->rects[j].h;
+        for (j = 0; j < entityList[i]->hitboxes->interact->numRect; j++){
+            temp.x = entityList[i]->x + entityList[i]->changeX + entityList[i]->hitboxes->interact->rects[j].x;
+            temp.y = entityList[i]->y + entityList[i]->changeY + entityList[i]->hitboxes->interact->rects[j].y;
+            temp.w = entityList[i]->hitboxes->interact->rects[j].w;
+            temp.h = entityList[i]->hitboxes->interact->rects[j].h;
                 
-            for (k = 0; k < _player.e.interactHitBox->numRect; k++){
-                playerTemp.x = _player.e.x + _player.e.changeX + _player.e.interactHitBox[0].rects[k].x;
-                playerTemp.y = _player.e.y + _player.e.changeY + _player.e.interactHitBox[0].rects[k].y;
-                playerTemp.w = _player.e.interactHitBox->rects[k].w;
-                playerTemp.h = _player.e.interactHitBox->rects[k].h;
+            for (k = 0; k < _player.e.hitboxes->interact->numRect; k++){
+                playerTemp.x = _player.e.x + _player.e.changeX + _player.e.hitboxes->interact[0].rects[k].x;
+                playerTemp.y = _player.e.y + _player.e.changeY + _player.e.hitboxes->interact[0].rects[k].y;
+                playerTemp.w = _player.e.hitboxes->interact->rects[k].w;
+                playerTemp.h = _player.e.hitboxes->interact->rects[k].h;
                 
                 collCode = rectangleCollide(playerTemp, temp);
                 if (collCode && entityList[i]->interact != NULL){
@@ -220,12 +220,12 @@ void doWeaponCollisions(){
     Player will (likely) only ever have 2 weapons, so that might make sense...
     ********************************************************/
     if (_player.equippedAInd != -1){
-        if (_player_weapons.weapons[_player.equippedAInd]->e.active && _player_weapons.weapons[_player.equippedAInd]->e.hasInteractHitBox){
+        if (_player_weapons.weapons[_player.equippedAInd]->e.active && _player_weapons.weapons[_player.equippedAInd]->e.hitboxes->numInteract > 0){
             enemiesCollideWithWeapon(_player_weapons.weapons[_player.equippedAInd]);
         }
     }
     if (_player.equippedBInd != -1){
-       if (_player_weapons.weapons[_player.equippedBInd]->e.active && _player_weapons.weapons[_player.equippedBInd]->e.hasInteractHitBox){
+       if (_player_weapons.weapons[_player.equippedBInd]->e.active && _player_weapons.weapons[_player.equippedBInd]->e.hitboxes->numInteract > 0){
             enemiesCollideWithWeapon(_player_weapons.weapons[_player.equippedBInd]);
         }
     }
@@ -250,17 +250,17 @@ void enemiesCollideWithWeapon(Weapon *w){
         if (!enemyList[i]->e.active){
             continue;
         }
-        for (j = 0; j < enemyList[i]->e.interactHitBox->numRect; j++){
-            temp.x = enemyList[i]->e.x + enemyList[i]->e.changeX + enemyList[i]->e.interactHitBox->rects[j].x;
-            temp.y = enemyList[i]->e.y + enemyList[i]->e.interactHitBox->rects[j].y;
-            temp.w = enemyList[i]->e.interactHitBox->rects[j].w;
-            temp.h = enemyList[i]->e.interactHitBox->rects[j].h;
+        for (j = 0; j < enemyList[i]->e.hitboxes->interact->numRect; j++){
+            temp.x = enemyList[i]->e.x + enemyList[i]->e.changeX + enemyList[i]->e.hitboxes->interact->rects[j].x;
+            temp.y = enemyList[i]->e.y + enemyList[i]->e.hitboxes->interact->rects[j].y;
+            temp.w = enemyList[i]->e.hitboxes->interact->rects[j].w;
+            temp.h = enemyList[i]->e.hitboxes->interact->rects[j].h;
                 
-            for (k = 0; k < _player.e.interactHitBox->numRect; k++){
-                weaponTemp.x = w->e.x + w->e.changeX + w->e.interactHitBox[w->e.currHitBox].rects[k].x;
-                weaponTemp.y = w->e.y + w->e.changeY + w->e.interactHitBox[w->e.currHitBox].rects[k].y;
-                weaponTemp.w = w->e.interactHitBox[w->e.currHitBox].rects[k].w;
-                weaponTemp.h = w->e.interactHitBox[w->e.currHitBox].rects[k].h;
+            for (k = 0; k < _player.e.hitboxes->interact->numRect; k++){
+                weaponTemp.x = w->e.x + w->e.changeX + w->e.hitboxes->interact[w->e.currHitBox].rects[k].x;
+                weaponTemp.y = w->e.y + w->e.changeY + w->e.hitboxes->interact[w->e.currHitBox].rects[k].y;
+                weaponTemp.w = w->e.hitboxes->interact[w->e.currHitBox].rects[k].w;
+                weaponTemp.h = w->e.hitboxes->interact[w->e.currHitBox].rects[k].h;
                 
                 collCode = rectangleCollide(weaponTemp, temp);
                 if (collCode){
@@ -290,17 +290,17 @@ void doEnemyCollisions(){
             continue;
         }
         
-        for (j = 0; j < enemyList[i]->e.interactHitBox->numRect; j++){
-            temp.x = enemyList[i]->e.x + enemyList[i]->e.changeX + enemyList[i]->e.interactHitBox->rects[j].x;
-            temp.y = enemyList[i]->e.y + enemyList[i]->e.changeY + enemyList[i]->e.interactHitBox->rects[j].y;
-            temp.w = enemyList[i]->e.interactHitBox->rects[j].w;
-            temp.h = enemyList[i]->e.interactHitBox->rects[j].h;
+        for (j = 0; j < enemyList[i]->e.hitboxes->interact->numRect; j++){
+            temp.x = enemyList[i]->e.x + enemyList[i]->e.changeX + enemyList[i]->e.hitboxes->interact->rects[j].x;
+            temp.y = enemyList[i]->e.y + enemyList[i]->e.changeY + enemyList[i]->e.hitboxes->interact->rects[j].y;
+            temp.w = enemyList[i]->e.hitboxes->interact->rects[j].w;
+            temp.h = enemyList[i]->e.hitboxes->interact->rects[j].h;
                 
-            for (k = 0; k < _player.e.interactHitBox->numRect; k++){
-                playerTemp.x = _player.e.x + _player.e.changeX + _player.e.interactHitBox[0].rects[k].x;
-                playerTemp.y = _player.e.y + _player.e.changeY + _player.e.interactHitBox[0].rects[k].y;
-                playerTemp.w = _player.e.interactHitBox->rects[k].w;
-                playerTemp.h = _player.e.interactHitBox->rects[k].h;
+            for (k = 0; k < _player.e.hitboxes->interact->numRect; k++){
+                playerTemp.x = _player.e.x + _player.e.changeX + _player.e.hitboxes->interact[0].rects[k].x;
+                playerTemp.y = _player.e.y + _player.e.changeY + _player.e.hitboxes->interact[0].rects[k].y;
+                playerTemp.w = _player.e.hitboxes->interact->rects[k].w;
+                playerTemp.h = _player.e.hitboxes->interact->rects[k].h;
                 
                 collCode = rectangleCollide(playerTemp, temp);
                 if (collCode && enemyList[i]->collidePlayer != NULL){

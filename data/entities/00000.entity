@@ -9,10 +9,9 @@
     "sprite" : 1,
     
     "collision type" : "NONE",
-    "has movement hitbox" : false,
-    "has interact hitbox" : true,
     "interactable" : true,
     
+    "movement hitboxes" : [],
     "interact hitboxes" : [
         {
             "circles" : [],
