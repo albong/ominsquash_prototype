@@ -7,16 +7,16 @@
 
 static int numToDraw = 5;
 static Sprite *healthIcons;
-static SpriteAnimation *healthIconsAnim[MAX_SHIELD_SLOTS];
+static Animation *healthIconsAnim[MAX_SHIELD_SLOTS];
 
 void initInterface(){
     healthIcons = readSpriteFromFile("data/sprites/00005.sprite", malloc(sizeof(Sprite)));
     
-    SpriteAnimation *healthAnim = readSpriteAnimationFromFile("data/animations/00005.animation", malloc(sizeof(SpriteAnimation)));
+    Animation *healthAnim = readAnimationFromFile("data/animations/00005.animation", malloc(sizeof(Animation)));
     healthIconsAnim[0] = healthAnim;
     size_t i;
     for (i = 1; i < MAX_SHIELD_SLOTS; i++){
-        healthIconsAnim[i] = shallowCopySpriteAnimation(healthAnim);
+        healthIconsAnim[i] = shallowCopyAnimation(healthAnim);
     }
 }
 

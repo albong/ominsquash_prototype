@@ -90,7 +90,7 @@ Sprite *init_Sprite(Sprite *self){
     return self;
 }
 
-SpriteAnimation *init_SpriteAnimation(SpriteAnimation *self){
+Animation *init_Animation(Animation *self){
     if (self == NULL){
         return NULL;
     }
@@ -182,24 +182,24 @@ Image *loadImage(char *name){
     return result;
 }
 
-SpriteAnimation *shallowCopySpriteAnimation(SpriteAnimation *original){
+Animation *shallowCopyAnimation(Animation *original){
     if (original == NULL){
         return NULL;
     }
     
     //copy the memory
-    SpriteAnimation *result = malloc(sizeof(SpriteAnimation));
-    copySpriteAnimation(original, result);
+    Animation *result = malloc(sizeof(Animation));
+    copyAnimation(original, result);
     
     return result;
 }
 
-SpriteAnimation *copySpriteAnimation(SpriteAnimation *source, SpriteAnimation *dest){
+Animation *copyAnimation(Animation *source, Animation *dest){
     if (source == NULL || dest == NULL){
         return NULL;
     }
     
-    memcpy(dest, source, sizeof(SpriteAnimation));
+    memcpy(dest, source, sizeof(Animation));
     
     //we can keep pointers to the loops and data, we just need to have different counters
     dest->currLoop = 0;
@@ -213,7 +213,7 @@ SpriteAnimation *copySpriteAnimation(SpriteAnimation *source, SpriteAnimation *d
 /////////////////////////////////////////////////
 // Animation Management
 /////////////////////////////////////////////////
-void updateAnimation(SpriteAnimation *self, int delta){
+void updateAnimation(Animation *self, int delta){
     if (self == NULL || delta < 0){
         return;
     }
@@ -241,7 +241,7 @@ void updateAnimation(SpriteAnimation *self, int delta){
     self->currFrame = self->frameNumber[currLoop][i-1];
 }
 
-void setAnimationLoop(SpriteAnimation *self, int loop, int forceRestart){
+void setAnimationLoop(Animation *self, int loop, int forceRestart){
     if (self == NULL || loop < 0){
         return;
     }
@@ -380,7 +380,7 @@ void drawUnfilledRect_T(int x, int y, int w, int h, int r, int g, int b){
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
 }
 
-void drawAnimation(Sprite *s, SpriteAnimation *anim, int x, int y){
+void drawAnimation(Sprite *s, Animation *anim, int x, int y){
     //if no animation data given, just draw the image contained in the sprite
     if (anim == NULL){
         drawImage(s->image, x, y);

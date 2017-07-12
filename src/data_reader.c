@@ -19,7 +19,7 @@ static int fillAreaFromJson(cJSON *root, Area *result);
 static int fillEntityFromJson(cJSON *root, Entity *result);
 static int fillEnemyFromJson(cJSON *root, Enemy *result);
 static int fillSpriteFromJson(cJSON *root, Sprite *result);
-static int fillSpriteAnimationFromJson(cJSON *root, SpriteAnimation *result);
+static int fillAnimationFromJson(cJSON *root, Animation *result);
 
 //read in a JSON file to a cJSON object
 char *readFileToCharStar(char *filename){
@@ -160,12 +160,12 @@ Sprite *readSpriteFromFile(char *filename, Sprite *result){
     return result;
 }
 
-SpriteAnimation *readSpriteAnimationFromFile(char *filename, SpriteAnimation *result){
+Animation *readAnimationFromFile(char *filename, Animation *result){
     //init the animation
     if (result == NULL){
-        result = malloc(sizeof(SpriteAnimation));
+        result = malloc(sizeof(Animation));
     }
-    init_SpriteAnimation(result);
+    init_Animation(result);
     
     //read in the given file to a cJSON object
     char *fileContents = readFileToCharStar(filename);
@@ -180,7 +180,7 @@ SpriteAnimation *readSpriteAnimationFromFile(char *filename, SpriteAnimation *re
         
         //if the initial parsing failed, or the detailed parsing failed, print an error and free/NULL result
         //otherwise free the cJSON root correctly
-        if (!root || !fillSpriteAnimationFromJson(root, result)){
+        if (!root || !fillAnimationFromJson(root, result)){
             printf("%s: Error before: %s\n", filename, cJSON_GetErrorPtr());
             fflush(stdout);
             free(result);
@@ -351,11 +351,11 @@ int fillEntityFromJson(cJSON *root, Entity *result){
     sprintf(dataFilename, "data/sprites/%05d.sprite", spriteId);
     result->sprite = readSpriteFromFile(dataFilename, malloc(sizeof(Sprite)));
     sprintf(dataFilename, "data/animations/%05d.animation", spriteId);
-    result->animation = readSpriteAnimationFromFile(dataFilename, malloc(sizeof(SpriteAnimation)));
+    result->animation = readAnimationFromFile(dataFilename, malloc(sizeof(Animation)));
     
     //if there is no associated animation file, then just load the one for a static animation
     if (result->animation == NULL){
-        result->animation = readSpriteAnimationFromFile("data/animations/no_animation.animation", malloc(sizeof(SpriteAnimation)));
+        result->animation = readAnimationFromFile("data/animations/no_animation.animation", malloc(sizeof(Animation)));
     }
     
     return 1;
@@ -402,7 +402,7 @@ int fillSpriteFromJson(cJSON *root, Sprite *result){
     return 1;
 }
 
-int fillSpriteAnimationFromJson(cJSON *root, SpriteAnimation *result){
+int fillAnimationFromJson(cJSON *root, Animation *result){
     //count loops and allocate
     //PIZZA - should verify that this number and size of lengths array agrees
     int numLoops = cJSON_GetObjectItem(root, "number of loops")->valueint;

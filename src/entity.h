@@ -37,7 +37,7 @@ typedef struct Entity {
 	int numFrames;
 	int invertSprite;
     Sprite *sprite;
-    SpriteAnimation *animation;
+    Animation *animation;
 	Orientation orientation;
 	void (*action)(void *, int); //probs should be Entity *, but whatevs?
 	void (*draw)(struct Entity *, double shiftX, double shiftY);

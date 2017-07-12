@@ -31,7 +31,7 @@ Entity *createEntityById(size_t id){
         if (loadedEntitiesIds[i] == id){
             result = malloc(sizeof(Entity));
             memcpy(result, loadedEntities[i], sizeof(Entity));
-            result->animation = shallowCopySpriteAnimation(loadedEntities[i]->animation);
+            result->animation = shallowCopyAnimation(loadedEntities[i]->animation);
         }
     }
     

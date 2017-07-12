@@ -20,7 +20,7 @@ static const hitstunMilli = 1000;
 /////////////////////////////////////////////////
 void initPlayer(){
     _player.e.sprite = readSpriteFromFile("data/sprites/00004.sprite", NULL);
-    _player.e.animation = readSpriteAnimationFromFile("data/animations/00004.animation", NULL);
+    _player.e.animation = readAnimationFromFile("data/animations/00004.animation", NULL);
     _player.e.orientation = DOWN;    
     
     _player.e.x = SCREEN_WIDTH / 2;

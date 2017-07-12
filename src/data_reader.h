@@ -9,6 +9,6 @@ Area *readAreaFromFile(char *filename, Area *result);
 Entity *readEntityFromFile(char *filename, Entity *result);
 Enemy *readEnemyFromFile(char *filename, Enemy *result);
 Sprite *readSpriteFromFile(char *filename, Sprite *result);
-SpriteAnimation *readSpriteAnimationFromFile(char *filename, SpriteAnimation *result);
+Animation *readAnimationFromFile(char *filename, Animation *result);
 
 #endif

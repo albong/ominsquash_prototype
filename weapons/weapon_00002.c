@@ -17,7 +17,7 @@ Weapon *weapon_create_00002(){
     
     w->e.action = &doWeapon;
     w->e.sprite = readSpriteFromFile("data/sprites/00006.sprite", NULL);
-    w->e.animation = readSpriteAnimationFromFile("data/animations/00006.animation", NULL);
+    w->e.animation = readAnimationFromFile("data/animations/00006.animation", NULL);
     
     w->e.pixelsPerMilli = 500;
 //    double changeX, changeY;

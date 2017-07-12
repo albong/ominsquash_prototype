@@ -34,7 +34,7 @@ Enemy *createEnemyById(size_t id){
         if (loadedEnemiesIds[i] == id){
             result = malloc(sizeof(Enemy));
             memcpy(result, loadedEnemies[i], sizeof(Enemy));
-            result->e.animation = shallowCopySpriteAnimation(loadedEnemies[i]->e.animation);
+            result->e.animation = shallowCopyAnimation(loadedEnemies[i]->e.animation);
         }
     }
     

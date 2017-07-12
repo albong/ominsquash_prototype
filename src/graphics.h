@@ -30,7 +30,7 @@ typedef struct Sprite{
 } Sprite;
 
 //perhaps we ought have an animation list per room to simplify logic?  then you just increment the milliPassed there?
-typedef struct SpriteAnimation{
+typedef struct Animation{
     int currLoop;
     int numLoops;
     int milliPassed;
@@ -40,7 +40,7 @@ typedef struct SpriteAnimation{
     int *repeatLoop;
     int **frameNumber;
     int **frameStartTime;
-} SpriteAnimation;
+} Animation;
 
 // Globals
 // static SDL_Surface *screen;
@@ -52,17 +52,17 @@ void stopSDL();
 
 // Init
 Sprite *init_Sprite(Sprite *self);
-SpriteAnimation *init_SpriteAnimation(SpriteAnimation *self);
+Animation *init_Animation(Animation *self);
 
 // Loading
 Image *getEmptyImage(int width, int height);
 Image *loadImage(char *name);
-SpriteAnimation *shallowCopySpriteAnimation(SpriteAnimation *original);
-SpriteAnimation *copySpriteAnimation(SpriteAnimation *source, SpriteAnimation *dest);
+Animation *shallowCopyAnimation(Animation *original);
+Animation *copyAnimation(Animation *source, Animation *dest);
 
 // Animation Management
-void updateAnimation(SpriteAnimation *self, int delta);
-void setAnimationLoop(SpriteAnimation *self, int loop, int forceRestart);
+void updateAnimation(Animation *self, int delta);
+void setAnimationLoop(Animation *self, int loop, int forceRestart);
 
 // Draw
 void drawImage(Image *image, int x, int y);
@@ -70,7 +70,7 @@ void drawImageToImage(Image *src, Image *dst, ImageRect *srcRect, ImageRect *dst
 void drawImageSrcDst(Image *image, ImageRect *srcRect, ImageRect *dstRect);
 void drawUnfilledRect_S(int x, int y, int w, int h, int r, int g, int b);
 void drawUnfilledRect_T(int x, int y, int w, int h, int r, int g, int b);
-void drawAnimation(Sprite *s, SpriteAnimation *anim, int x, int y);
+void drawAnimation(Sprite *s, Animation *anim, int x, int y);
 
 // Screen Management
 void clearScreen();
