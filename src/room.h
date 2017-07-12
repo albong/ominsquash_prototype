@@ -8,11 +8,11 @@
 #include "door.h"
 
 //ROOMF_IMPASSABLE is for walls, maybe rename?
-#define ROOMF_IMPASSABLE 0
-#define ROOMF_UL_ANGLED 1
-#define ROOMF_UR_ANGLED 2
-#define ROOMF_DL_ANGLED 3
-#define ROOMF_DR_ANGLED 4
+#define ROOMF_IMPASSABLE 1
+#define ROOMF_UL_ANGLED 2
+#define ROOMF_UR_ANGLED 3
+#define ROOMF_DL_ANGLED 4
+#define ROOMF_DR_ANGLED 5
 
 // Structs
 typedef struct Room {

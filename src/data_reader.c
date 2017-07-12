@@ -261,8 +261,10 @@ int fillAreaFromJson(cJSON *root, Area *result){
         jsonRoom = cJSON_GetArrayItem(roomList, k);
         
         //allocate for the arrays of tiles and flags
-        currRoom->tileIndices = (int *) malloc(sizeof(int) * ROOM_HEIGHT * ROOM_WIDTH);
-        currRoom->flags = (uint32_t *) malloc(sizeof(uint32_t) * ROOM_HEIGHT * ROOM_WIDTH);
+        // currRoom->tileIndices = (int *) malloc(sizeof(int) * ROOM_HEIGHT * ROOM_WIDTH);
+        currRoom->tileIndices = (int *) calloc(ROOM_HEIGHT * ROOM_WIDTH, sizeof(int));
+        // currRoom->flags = (uint32_t *) malloc(sizeof(uint32_t) * ROOM_HEIGHT * ROOM_WIDTH);
+        currRoom->flags = (uint32_t *) calloc(ROOM_HEIGHT * ROOM_WIDTH, sizeof(uint32_t));
         
         //set the connecting rooms
         currRoom->connectingRooms[ROOM_UP] = cJSON_GetObjectItem(jsonRoom, "up connecting room")->valueint;
@@ -284,7 +286,7 @@ int fillAreaFromJson(cJSON *root, Area *result){
         for (j = 0; j < cJSON_GetArraySize(arrY); j++){
             arrX = cJSON_GetArrayItem(arrY, j);
             for (i = 0; i < cJSON_GetArraySize(arrX); i++){
-                if (cJSON_GetArrayItem(arrX, i)->valueint){
+                if (cJSON_GetArrayItem(arrX, i)->valueint == ROOMF_IMPASSABLE){
                     setFlag(currRoom, i + (j * ROOM_WIDTH), ROOMF_IMPASSABLE);
                 }
             }
