@@ -39,8 +39,6 @@ void initPlayer(){
     
     _player.e.type = PLAYER;
     
-    _player.e.currHitbox = 0;
-            
     _player.health = 12;
     _player.shields = 14;
     _player.milliHitstun = 0;

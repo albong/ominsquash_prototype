@@ -34,7 +34,7 @@ Door *createDoor(Orientation direction, double x, double y){
     // // result->e.interactHitbox[0].rects[0].w = sprite->width * 3;
     // // result->e.interactHitbox[0].rects[0].h = sprite->width * 3;
     
-    result->e.currHitbox = 0;
+    // result->e.currHitbox = 0;
     
     result->e.numFrames = 3;
     result->e.milliPerFrame = 75;

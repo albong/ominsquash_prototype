@@ -41,7 +41,6 @@ Entity *init_Entity(Entity *self){
 	self->action = &defaultActionEntity;
 	self->draw = &defaultDrawEntity;
     self->type = NONE;
-	self->currHitbox = 0;
     init_Hitboxes(&(self->hitboxes));
     self->interactable = 0;
 	self->interact = NULL;

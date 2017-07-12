@@ -44,7 +44,6 @@ Weapon *weapon_create_00000(){
 }
 
 static void createHitboxes(Weapon *w){
-    w->e.currHitbox = 0;
     w->e.hitboxes.numMovement = 0;
 	w->e.hitboxes.numInteract = 12;
 	w->e.hitboxes.interact = malloc(sizeof(Hitbox) * 12);
@@ -166,7 +165,6 @@ static void doSword(void *w, int delta){
         self->e.currFrame = frameNum + 6;
         self->e.y -= self->owner->h;
     }
-    self->e.currHitbox = self->e.currFrame;
 }
 
 void collideWithSword(Weapon *self, void *o, int collCode, CollisionType t){

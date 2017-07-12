@@ -45,7 +45,6 @@ Weapon *weapon_create_00002(){
 }
 
 void createHitboxes(Weapon *w){
-    w->e.currHitbox = 0;
     w->e.hitboxes.numMovement = 0;
 	w->e.hitboxes.numInteract = 1;
 	w->e.hitboxes.interact = malloc(sizeof(Hitbox) * 2);
