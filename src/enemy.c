@@ -2,11 +2,6 @@
 #include "player.h"
 #include "data_reader.h"
 
-static Sprite *defaultDeathSprite = NULL;
-static SpriteAnimation *defaultDeathAnimation = NULL;
-
-static Sprite *getDefaultDeathSprite();
-static SpriteAnimation *getDefaultDeathAnimation();
 static void defaultDrawEnemy(Entity *self, double shiftX, double shiftY);
 static void defaultCollidePlayer(Enemy *self, int collCode);
 /////////////////////////////////////////////////
@@ -20,8 +15,6 @@ Enemy *init_Enemy(Enemy *self){
     init_Entity((Entity *)self);
     self->health = 0;
     self->milliHitstun = 0;
-    self->deathSprite = getDefaultDeathSprite();
-    self->deathAnimation = getDefaultDeathAnimation();
     self->deathEntity = NULL;
     self->touchDamage = 0;
     self->takeDamage = NULL;
@@ -34,25 +27,9 @@ Enemy *init_Enemy(Enemy *self){
     return self;
 }
 
-Sprite *getDefaultDeathSprite(){
-    if (defaultDeathSprite == NULL){
-        defaultDeathSprite = readSpriteFromFile("data/sprites/00003.sprite", NULL);
-    }
-    return defaultDeathSprite;
-}
-
-SpriteAnimation *getDefaultDeathAnimation(){
-    if (defaultDeathAnimation == NULL){
-        defaultDeathAnimation = readSpriteAnimationFromFile("data/animations/00003.animation", NULL);
-    }
-    return defaultDeathAnimation;
-}
-
 void defaultDrawEnemy(Entity *self, double shiftX, double shiftY){
     if (((Enemy *)self)->health > 0 && self->sprite != NULL){
         drawAnimation(self->sprite, self->animation, self->x + 0.5 + shiftX, self->y + 0.5 + shiftY);
-    } else if (((Enemy *)self)->deathSprite != NULL){
-        drawAnimation(((Enemy *)self)->deathSprite, ((Enemy *)self)->deathAnimation, self->x + 0.5 + shiftX, self->y + 0.5 + shiftY);
     }
 }
 

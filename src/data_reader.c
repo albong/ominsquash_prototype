@@ -371,19 +371,8 @@ int fillEnemyFromJson(cJSON *root, Enemy *result){
     //set the damage the player receives for touching
     result->touchDamage = cJSON_GetObjectItem(root, "damage for touching")->valueint;
     
-    //load the death sprite and animation
+    //load the death entity
     char dataFilename[80];
-    int spriteId = cJSON_GetObjectItem(root, "death sprite")->valueint;
-    sprintf(dataFilename, "data/sprites/%05d.sprite", spriteId);
-    result->deathSprite = readSpriteFromFile(dataFilename, malloc(sizeof(Sprite)));
-    sprintf(dataFilename, "data/animations/%05d.animation", spriteId);
-    result->deathAnimation = readSpriteAnimationFromFile(dataFilename, malloc(sizeof(SpriteAnimation)));
-    
-    //if there is no associated animation file, then just load the one for a static animation
-    if (result->deathAnimation == NULL){
-        result->deathAnimation = readSpriteAnimationFromFile("data/animations/no_animation.animation", malloc(sizeof(SpriteAnimation)));
-    }
-    
     int entityId = cJSON_GetObjectItem(root, "death entity")->valueint;
     sprintf(dataFilename, "data/entities/%05d.entity", entityId);
     result->deathEntity = readEntityFromFile(dataFilename, malloc(sizeof(Entity)));

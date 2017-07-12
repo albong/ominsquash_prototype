@@ -43,6 +43,5 @@
     
     "health" : 8,
     "damage for touching" : 2,
-    "death sprite" : 3,
     "death entity" : 1
 }

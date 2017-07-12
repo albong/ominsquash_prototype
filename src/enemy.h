@@ -11,8 +11,6 @@ typedef struct Enemy {
     Entity e;
     int health;
     int milliHitstun;
-    Sprite *deathSprite;
-    SpriteAnimation *deathAnimation;
     Entity *deathEntity;
     int touchDamage;
     int (*takeDamage)(struct Enemy *self, int amount);
