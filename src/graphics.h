@@ -61,7 +61,7 @@ Animation *shallowCopyAnimation(Animation *original);
 Animation *copyAnimation(Animation *source, Animation *dest);
 
 // Animation Management
-void updateAnimation(Animation *self, int delta);
+int updateAnimation(Animation *self, int delta);
 void setAnimationLoop(Animation *self, int loop, int forceRestart);
 
 // Draw

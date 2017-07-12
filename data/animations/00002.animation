@@ -1,0 +1,26 @@
+{
+    "number of loops" : 4,
+    "loop lengths" : [3, 3, 3, 3],
+    "loops" : [
+        {
+            "frame numbers" : [0, 1, 2],
+            "durations" : [25, 20, 1],
+            "repeat" : false
+        },
+        {
+            "frame numbers" : [3, 4, 5],
+            "durations" : [25, 20, 1],
+            "repeat" : false
+        },
+        {
+            "frame numbers" : [6, 7, 8],
+            "durations" : [25, 20, 1],
+            "repeat" : false
+        },
+        {
+            "frame numbers" : [9, 10, 11],
+            "durations" : [25, 20, 1],
+            "repeat" : false
+        }
+    ]
+}

@@ -6,8 +6,8 @@
 
 void entity_action_00001(void *e, int delta){
     Entity *self = (Entity *)e;
-    updateAnimation(self->animation, delta);
-    if (self->animation->currFrame == -1){
+    
+    if (updateAnimation(self->animation, delta) == 2){
         self->active = 0;
     }
 }

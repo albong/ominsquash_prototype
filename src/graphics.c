@@ -213,25 +213,22 @@ Animation *copyAnimation(Animation *source, Animation *dest){
 /////////////////////////////////////////////////
 // Animation Management
 /////////////////////////////////////////////////
-void updateAnimation(Animation *self, int delta){
+int updateAnimation(Animation *self, int delta){
+    //return 1 on invalid input, 0 on success, 2 if the loop has ended
     if (self == NULL || delta < 0){
-        return;
+        return 1;
     }
     
     //increase our counter of time passed
     self->milliPassed += delta;
     
-    //if we run over the total length of this loop, either mod to restart the count, or set to max time
+    //if we run over the total length of this loop, and the loop repeats, mod to restart the count
     int currLoop = self->currLoop;
-    if (self->repeatLoop[currLoop]){
+    if (self->repeatLoop[currLoop] && self->milliPassed >= self->loopTotalDuration[currLoop]){
         self->milliPassed %= self->loopTotalDuration[currLoop];
-    } else if (self->milliPassed >= self->loopTotalDuration[currLoop]) { //if we've played the loop, then stop
-        self->milliPassed = self->loopTotalDuration[currLoop];
-        self->currFrame = -1;
-        return;
     }
     
-    //go through the frames for this loop until we hit the last one that we 
+    //go through the frames for this loop until we get to the last one, or find the one that starts after our current time
     size_t i;
     for (i = 0; i < self->loopLength[currLoop]; i++){
         if (self->frameStartTime[currLoop][i] > self->milliPassed){
@@ -239,6 +236,14 @@ void updateAnimation(Animation *self, int delta){
         }
     }
     self->currFrame = self->frameNumber[currLoop][i-1];
+    
+    //if the loop doesn't repeat, then reset milliPassed
+    if (!self->repeatLoop[currLoop] && self->milliPassed >= self->loopTotalDuration[currLoop]) {
+        self->milliPassed = self->loopTotalDuration[currLoop];
+        return 2;
+    } else {
+        return 0;
+    }
 }
 
 void setAnimationLoop(Animation *self, int loop, int forceRestart){

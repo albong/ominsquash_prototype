@@ -6,6 +6,7 @@
 #include "../src/weapon.h"
 #include "../src/enemy.h"
 #include "../src/door.h"
+#include <stdio.h>
 
 static void drawMoveHitboxes();
 static void drawInteractHitboxes();
