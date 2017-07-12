@@ -292,8 +292,8 @@ int fillEntityFromJson(cJSON *root, Entity *result){
 	result->milliPerFrame = cJSON_GetObjectItem(root, "milliseconds per frame")->valueint;
 	result->numFrames = cJSON_GetObjectItem(root, "number of frames")->valueint;
     // result->type = <switch statement to choose correct enum based on string>;
-	// result->hasMoveHitBox = (cJSON_GetObjectItem(root, "has movement hitbox")->type == cJSON_True);
-	// result->hasInteractHitBox = (cJSON_GetObjectItem(root, "has interact hitbox")->type == cJSON_True);
+	// result->hasMoveHitbox = (cJSON_GetObjectItem(root, "has movement hitbox")->type == cJSON_True);
+	// result->hasInteractHitbox = (cJSON_GetObjectItem(root, "has interact hitbox")->type == cJSON_True);
     result->interactable = (cJSON_GetObjectItem(root, "interactable")->type == cJSON_True);
     
     //if there is a particular kind of hitbox, read it in
@@ -304,7 +304,7 @@ int fillEntityFromJson(cJSON *root, Entity *result){
     hitboxArr = cJSON_GetObjectItem(root, "movement hitboxes");
     numHitboxes = cJSON_GetArraySize(hitboxArr);
     result->hitboxes.numMovement = numHitboxes;
-    result->hitboxes.movement = malloc(sizeof(HitBox) * numHitboxes);
+    result->hitboxes.movement = malloc(sizeof(Hitbox) * numHitboxes);
     for (i = 0; i < numHitboxes; i++){
         hitboxJson = cJSON_GetArrayItem(hitboxArr, i);
         result->hitboxes.movement[i].numCircle = 0;
@@ -326,7 +326,7 @@ int fillEntityFromJson(cJSON *root, Entity *result){
     hitboxArr = cJSON_GetObjectItem(root, "interact hitboxes");
     numHitboxes = cJSON_GetArraySize(hitboxArr);
     result->hitboxes.numInteract = numHitboxes;
-    result->hitboxes.interact = malloc(sizeof(HitBox) * numHitboxes);
+    result->hitboxes.interact = malloc(sizeof(Hitbox) * numHitboxes);
     for (i = 0; i < numHitboxes; i++){
         hitboxJson = cJSON_GetArrayItem(hitboxArr, i);
         result->hitboxes.interact[i].numCircle = 0;

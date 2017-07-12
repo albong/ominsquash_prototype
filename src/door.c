@@ -14,27 +14,27 @@ Door *createDoor(Orientation direction, double x, double y){
     result->e.x = x;
     result->e.y = y;
     
-    // result->e.hasMoveHitBox = 1;
-    // result->e.moveHitBox = malloc(sizeof(HitBox) * 1);
-    // result->e.moveHitBox[0].numCircle = 0;
-    // result->e.moveHitBox[0].numRect = 1;
-    // result->e.moveHitBox[0].rects = malloc(sizeof(CollRect) * 1);
-    // result->e.moveHitBox[0].rects[0].x = 0;
-    // result->e.moveHitBox[0].rects[0].y = 0;
-    // // result->e.moveHitBox[0].rects[0].w = sprite->width;
-    // // result->e.moveHitBox[0].rects[0].h = sprite->height;
+    // result->e.hasMoveHitbox = 1;
+    // result->e.moveHitbox = malloc(sizeof(Hitbox) * 1);
+    // result->e.moveHitbox[0].numCircle = 0;
+    // result->e.moveHitbox[0].numRect = 1;
+    // result->e.moveHitbox[0].rects = malloc(sizeof(CollRect) * 1);
+    // result->e.moveHitbox[0].rects[0].x = 0;
+    // result->e.moveHitbox[0].rects[0].y = 0;
+    // // result->e.moveHitbox[0].rects[0].w = sprite->width;
+    // // result->e.moveHitbox[0].rects[0].h = sprite->height;
     
-    // result->e.hasInteractHitBox = 1;
-    // result->e.interactHitBox = malloc(sizeof(HitBox) * 1);
-    // result->e.interactHitBox[0].numCircle = 0;
-    // result->e.interactHitBox[0].numRect = 1;
-    // result->e.interactHitBox[0].rects = malloc(sizeof(CollRect) * 1);
-    // // result->e.interactHitBox[0].rects[0].x = -1 * sprite->width;
-    // // result->e.interactHitBox[0].rects[0].y = -1 * sprite->width;
-    // // result->e.interactHitBox[0].rects[0].w = sprite->width * 3;
-    // // result->e.interactHitBox[0].rects[0].h = sprite->width * 3;
+    // result->e.hasInteractHitbox = 1;
+    // result->e.interactHitbox = malloc(sizeof(Hitbox) * 1);
+    // result->e.interactHitbox[0].numCircle = 0;
+    // result->e.interactHitbox[0].numRect = 1;
+    // result->e.interactHitbox[0].rects = malloc(sizeof(CollRect) * 1);
+    // // result->e.interactHitbox[0].rects[0].x = -1 * sprite->width;
+    // // result->e.interactHitbox[0].rects[0].y = -1 * sprite->width;
+    // // result->e.interactHitbox[0].rects[0].w = sprite->width * 3;
+    // // result->e.interactHitbox[0].rects[0].h = sprite->width * 3;
     
-    result->e.currHitBox = 0;
+    result->e.currHitbox = 0;
     
     result->e.numFrames = 3;
     result->e.milliPerFrame = 75;

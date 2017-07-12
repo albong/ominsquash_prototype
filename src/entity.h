@@ -43,7 +43,7 @@ typedef struct Entity {
 	void (*draw)(struct Entity *, double shiftX, double shiftY);
 //	void (*collide)(void *);
 	CollisionType type;
-	int currHitBox;
+	int currHitbox;
     Hitboxes hitboxes;
 	int interactable; //when we move to single hitboxes and collision groups, this will be replaced by hasInteractHitbox
 	void (*interact)(struct Entity *self);

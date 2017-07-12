@@ -23,7 +23,7 @@ typedef struct Room {
     int *transitionToRoom; //UNUSED?
     Image *buffer;
     int connectingRooms[4]; //left right up down
-    HitBox walls;
+    Hitbox walls;
     
     size_t numEntities;
     Entity **entities;//array

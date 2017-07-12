@@ -66,12 +66,12 @@ void doCollisions(){
 }
 
 void doWallCollisions(){
-    HitBox walls = getCurrentWalls();
+    Hitbox walls = getCurrentWalls();
     int i, j, k, collCode;
 
     //check the player first
     CollRect temp;
-    int hitFrame = _player.e.currHitBox;
+    int hitFrame = _player.e.currHitbox;
     for (j = 0; j < _player.e.hitboxes.movement[hitFrame].numRect; j++){
         for (k = 0; k < walls.numRect; k++){
             temp.x = _player.e.x + _player.e.changeX + _player.e.hitboxes.movement[hitFrame].rects[j].x;
@@ -97,25 +97,25 @@ void doWallCollisions(){
     //now check all entitites
 //    Entity **entityList = getRoomEntityList();
 //    for (i = 0; i < getNumRoomEntities(); i++){
-//        if (!entityList[i]->active || !entityList[i]->hasMoveHitBox){
+//        if (!entityList[i]->active || !entityList[i]->hasMoveHitbox){
 //            continue;
 //        }
-//        hitFrame = entityList[i]->currHitBox;
-//        for (j = 0; j < entityList[i]->moveHitBox[hitFrame].numRect; j++){
+//        hitFrame = entityList[i]->currHitbox;
+//        for (j = 0; j < entityList[i]->moveHitbox[hitFrame].numRect; j++){
 //            for (k = 0; k < walls.numRect; k++){
-//                temp.x = entityList[i]->x + entityList[i]->changeX + entityList[i]->moveHitBox[hitFrame].rects[j].x;
-//                temp.y = entityList[i]->y + entityList[i]->moveHitBox[hitFrame].rects[j].y;
-//                temp.w = entityList[i]->moveHitBox[hitFrame].rects[j].w;
-//                temp.h = entityList[i]->moveHitBox[hitFrame].rects[j].h;
+//                temp.x = entityList[i]->x + entityList[i]->changeX + entityList[i]->moveHitbox[hitFrame].rects[j].x;
+//                temp.y = entityList[i]->y + entityList[i]->moveHitbox[hitFrame].rects[j].y;
+//                temp.w = entityList[i]->moveHitbox[hitFrame].rects[j].w;
+//                temp.h = entityList[i]->moveHitbox[hitFrame].rects[j].h;
 //                collCode = rectangleCollide(walls.rects[k], temp);
 //                if (collCode){
 //                    collideWithWallX(walls.rects[k], entityList[i], temp, collCode);
 //                }
 //                
-//                temp.x = entityList[i]->x + entityList[i]->moveHitBox[hitFrame].rects[j].x;
-//                temp.y = entityList[i]->y + entityList[i]->changeY + entityList[i]->moveHitBox[hitFrame].rects[j].y;
-//                temp.w = entityList[i]->moveHitBox[hitFrame].rects[j].w;
-//                temp.h = entityList[i]->moveHitBox[hitFrame].rects[j].h;
+//                temp.x = entityList[i]->x + entityList[i]->moveHitbox[hitFrame].rects[j].x;
+//                temp.y = entityList[i]->y + entityList[i]->changeY + entityList[i]->moveHitbox[hitFrame].rects[j].y;
+//                temp.w = entityList[i]->moveHitbox[hitFrame].rects[j].w;
+//                temp.h = entityList[i]->moveHitbox[hitFrame].rects[j].h;
 //                collCode = rectangleCollide(walls.rects[k], temp);
 //                if (collCode){
 //                    collideWithWallY(walls.rects[k], entityList[i], temp, collCode);
@@ -257,10 +257,10 @@ void enemiesCollideWithWeapon(Weapon *w){
             temp.h = enemyList[i]->e.hitboxes.interact->rects[j].h;
                 
             for (k = 0; k < _player.e.hitboxes.interact->numRect; k++){
-                weaponTemp.x = w->e.x + w->e.changeX + w->e.hitboxes.interact[w->e.currHitBox].rects[k].x;
-                weaponTemp.y = w->e.y + w->e.changeY + w->e.hitboxes.interact[w->e.currHitBox].rects[k].y;
-                weaponTemp.w = w->e.hitboxes.interact[w->e.currHitBox].rects[k].w;
-                weaponTemp.h = w->e.hitboxes.interact[w->e.currHitBox].rects[k].h;
+                weaponTemp.x = w->e.x + w->e.changeX + w->e.hitboxes.interact[w->e.currHitbox].rects[k].x;
+                weaponTemp.y = w->e.y + w->e.changeY + w->e.hitboxes.interact[w->e.currHitbox].rects[k].y;
+                weaponTemp.w = w->e.hitboxes.interact[w->e.currHitbox].rects[k].w;
+                weaponTemp.h = w->e.hitboxes.interact[w->e.currHitbox].rects[k].h;
                 
                 collCode = rectangleCollide(weaponTemp, temp);
                 if (collCode){

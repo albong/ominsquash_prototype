@@ -38,11 +38,11 @@ void initPlayer(){
     
     _player.e.type = PLAYER;
     
-    _player.e.currHitBox = 0;
+    _player.e.currHitbox = 0;
     
     //movement hitbox
     _player.e.hitboxes.numMovement = 1;
-    _player.e.hitboxes.movement = malloc(sizeof(HitBox) * 1);
+    _player.e.hitboxes.movement = malloc(sizeof(Hitbox) * 1);
     _player.e.hitboxes.movement[0].numCircle = 0;
     _player.e.hitboxes.movement[0].numRect = 1;
     _player.e.hitboxes.movement[0].rects = malloc(sizeof(CollRect) * 1);
@@ -53,7 +53,7 @@ void initPlayer(){
     
     //interaction hitbox
     _player.e.hitboxes.numInteract = 1;
-    _player.e.hitboxes.interact = malloc(sizeof(HitBox) * 1);
+    _player.e.hitboxes.interact = malloc(sizeof(Hitbox) * 1);
     _player.e.hitboxes.interact[0].numCircle = 0;
     _player.e.hitboxes.interact[0].numRect = 1;
     _player.e.hitboxes.interact[0].rects = malloc(sizeof(CollRect) * 1);

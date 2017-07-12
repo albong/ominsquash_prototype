@@ -45,7 +45,7 @@ void moveTemporaryEntities();
 void drawCurrentRoom();
 
 // Access
-HitBox getCurrentWalls();
+Hitbox getCurrentWalls();
 int getNumRoomEntities();
 Entity **getRoomEntityList();
 int getNumRoomEnemies();

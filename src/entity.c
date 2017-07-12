@@ -41,7 +41,7 @@ Entity *init_Entity(Entity *self){
 	self->action = &defaultActionEntity;
 	self->draw = &defaultDrawEntity;
     self->type = NONE;
-	self->currHitBox = 0;
+	self->currHitbox = 0;
     self->hitboxes.numMovement = 0;
     self->hitboxes.numInteract = 0;
     self->hitboxes.movement = NULL;

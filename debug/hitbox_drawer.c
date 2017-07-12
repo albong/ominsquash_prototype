@@ -7,29 +7,29 @@
 #include "../src/enemy.h"
 #include "../src/door.h"
 
-static void drawMoveHitBoxes();
-static void drawInteractHitBoxes();
+static void drawMoveHitboxes();
+static void drawInteractHitboxes();
 
-void drawHitBoxes(int drawMove, int drawInteract){
+void drawHitboxes(int drawMove, int drawInteract){
     if (drawMove){
-        drawMoveHitBoxes();
+        drawMoveHitboxes();
     }
     if (drawInteract){
-        drawInteractHitBoxes();
+        drawInteractHitboxes();
     }
 }
 
-void drawMoveHitBoxes(){
+void drawMoveHitboxes(){
     int i, j, k;
     int x, y, w, h;
     
     //draw the player's movement box
     if (_player.e.hitboxes.numMovement > 0){
-        for (i = 0; i < _player.e.hitboxes.movement[_player.e.currHitBox].numRect; i++){
-            x = _player.e.x + _player.e.hitboxes.movement[_player.e.currHitBox].rects[i].x;
-            y = _player.e.y + _player.e.hitboxes.movement[_player.e.currHitBox].rects[i].y;
-            w = _player.e.hitboxes.movement[_player.e.currHitBox].rects[i].w;
-            h = _player.e.hitboxes.movement[_player.e.currHitBox].rects[i].h;
+        for (i = 0; i < _player.e.hitboxes.movement[_player.e.currHitbox].numRect; i++){
+            x = _player.e.x + _player.e.hitboxes.movement[_player.e.currHitbox].rects[i].x;
+            y = _player.e.y + _player.e.hitboxes.movement[_player.e.currHitbox].rects[i].y;
+            w = _player.e.hitboxes.movement[_player.e.currHitbox].rects[i].w;
+            h = _player.e.hitboxes.movement[_player.e.currHitbox].rects[i].h;
             drawUnfilledRect_T(x, y, w, h, 255, 0, 0);
         }
     }
@@ -39,11 +39,11 @@ void drawMoveHitBoxes(){
     if (_player.equippedAInd != -1){
         wep = _player_weapons.weapons[_player.equippedAInd];
         if (wep->e.hitboxes.numMovement > 0  && wep->e.active){
-            for (i = 0; i < wep->e.hitboxes.movement[wep->e.currHitBox].numRect; i++){
-                x = wep->e.x + wep->e.hitboxes.movement[wep->e.currHitBox].rects[i].x;
-                y = wep->e.y + wep->e.hitboxes.movement[wep->e.currHitBox].rects[i].y;
-                w = wep->e.hitboxes.movement[wep->e.currHitBox].rects[i].w;
-                h = wep->e.hitboxes.movement[wep->e.currHitBox].rects[i].h;
+            for (i = 0; i < wep->e.hitboxes.movement[wep->e.currHitbox].numRect; i++){
+                x = wep->e.x + wep->e.hitboxes.movement[wep->e.currHitbox].rects[i].x;
+                y = wep->e.y + wep->e.hitboxes.movement[wep->e.currHitbox].rects[i].y;
+                w = wep->e.hitboxes.movement[wep->e.currHitbox].rects[i].w;
+                h = wep->e.hitboxes.movement[wep->e.currHitbox].rects[i].h;
                 drawUnfilledRect_T(x, y, w, h, 255, 0, 0);
             }
         }
@@ -51,11 +51,11 @@ void drawMoveHitBoxes(){
     if (_player.equippedBInd != -1){
         wep = _player_weapons.weapons[_player.equippedBInd];
         if (wep->e.hitboxes.numMovement > 0  && wep->e.active){
-            for (i = 0; i < wep->e.hitboxes.movement[wep->e.currHitBox].numRect; i++){
-                x = wep->e.x + wep->e.hitboxes.movement[wep->e.currHitBox].rects[i].x;
-                y = wep->e.y + wep->e.hitboxes.movement[wep->e.currHitBox].rects[i].y;
-                w = wep->e.hitboxes.movement[wep->e.currHitBox].rects[i].w;
-                h = wep->e.hitboxes.movement[wep->e.currHitBox].rects[i].h;
+            for (i = 0; i < wep->e.hitboxes.movement[wep->e.currHitbox].numRect; i++){
+                x = wep->e.x + wep->e.hitboxes.movement[wep->e.currHitbox].rects[i].x;
+                y = wep->e.y + wep->e.hitboxes.movement[wep->e.currHitbox].rects[i].y;
+                w = wep->e.hitboxes.movement[wep->e.currHitbox].rects[i].w;
+                h = wep->e.hitboxes.movement[wep->e.currHitbox].rects[i].h;
                 drawUnfilledRect_T(x, y, w, h, 255, 0, 0);
             }
         }
@@ -71,12 +71,12 @@ void drawMoveHitBoxes(){
         }
         
         temp = entityList[j];
-        hitFrame = entityList[j]->currHitBox;
+        hitFrame = entityList[j]->currHitbox;
         for (i = 0; i < entityList[j]->hitboxes.movement[hitFrame].numRect; i++){
-            x = temp->x + temp->hitboxes.movement[temp->currHitBox].rects[i].x;
-            y = temp->y + temp->hitboxes.movement[temp->currHitBox].rects[i].y;
-            w = temp->hitboxes.movement[temp->currHitBox].rects[i].w;
-            h = temp->hitboxes.movement[temp->currHitBox].rects[i].h;
+            x = temp->x + temp->hitboxes.movement[temp->currHitbox].rects[i].x;
+            y = temp->y + temp->hitboxes.movement[temp->currHitbox].rects[i].y;
+            w = temp->hitboxes.movement[temp->currHitbox].rects[i].w;
+            h = temp->hitboxes.movement[temp->currHitbox].rects[i].h;
             drawUnfilledRect_T(x, y, w, h, 255, 0, 0);
         }
     }
@@ -89,12 +89,12 @@ void drawMoveHitBoxes(){
         }
         
         temp = (Entity *)enemyList[j];
-        hitFrame = temp->currHitBox;
+        hitFrame = temp->currHitbox;
         for (i = 0; i < temp->hitboxes.movement[hitFrame].numRect; i++){
-            x = temp->x + temp->hitboxes.movement[temp->currHitBox].rects[i].x;
-            y = temp->y + temp->hitboxes.movement[temp->currHitBox].rects[i].y;
-            w = temp->hitboxes.movement[temp->currHitBox].rects[i].w;
-            h = temp->hitboxes.movement[temp->currHitBox].rects[i].h;
+            x = temp->x + temp->hitboxes.movement[temp->currHitbox].rects[i].x;
+            y = temp->y + temp->hitboxes.movement[temp->currHitbox].rects[i].y;
+            w = temp->hitboxes.movement[temp->currHitbox].rects[i].w;
+            h = temp->hitboxes.movement[temp->currHitbox].rects[i].h;
             drawUnfilledRect_T(x, y, w, h, 255, 0, 0);
         }
     }
@@ -107,28 +107,28 @@ void drawMoveHitBoxes(){
         }
         
         temp = (Entity *)doorList[j];
-        hitFrame = temp->currHitBox;
+        hitFrame = temp->currHitbox;
         for (i = 0; i < temp->hitboxes.movement[hitFrame].numRect; i++){
-            x = temp->x + temp->hitboxes.movement[temp->currHitBox].rects[i].x;
-            y = temp->y + temp->hitboxes.movement[temp->currHitBox].rects[i].y;
-            w = temp->hitboxes.movement[temp->currHitBox].rects[i].w;
-            h = temp->hitboxes.movement[temp->currHitBox].rects[i].h;
+            x = temp->x + temp->hitboxes.movement[temp->currHitbox].rects[i].x;
+            y = temp->y + temp->hitboxes.movement[temp->currHitbox].rects[i].y;
+            w = temp->hitboxes.movement[temp->currHitbox].rects[i].w;
+            h = temp->hitboxes.movement[temp->currHitbox].rects[i].h;
             drawUnfilledRect_T(x, y, w, h, 255, 0, 0);
         }
     }
 }
 
-void drawInteractHitBoxes(){
+void drawInteractHitboxes(){
     int i, j, k;
     int x, y, w, h;
     
     //draw the player's interact box
     if (_player.e.hitboxes.numInteract > 0){
-        for (i = 0; i < _player.e.hitboxes.interact[_player.e.currHitBox].numRect; i++){
-            x = _player.e.x + _player.e.hitboxes.interact[_player.e.currHitBox].rects[i].x;
-            y = _player.e.y + _player.e.hitboxes.interact[_player.e.currHitBox].rects[i].y;
-            w = _player.e.hitboxes.interact[_player.e.currHitBox].rects[i].w;
-            h = _player.e.hitboxes.interact[_player.e.currHitBox].rects[i].h;
+        for (i = 0; i < _player.e.hitboxes.interact[_player.e.currHitbox].numRect; i++){
+            x = _player.e.x + _player.e.hitboxes.interact[_player.e.currHitbox].rects[i].x;
+            y = _player.e.y + _player.e.hitboxes.interact[_player.e.currHitbox].rects[i].y;
+            w = _player.e.hitboxes.interact[_player.e.currHitbox].rects[i].w;
+            h = _player.e.hitboxes.interact[_player.e.currHitbox].rects[i].h;
             drawUnfilledRect_T(x, y, w, h, 0, 0, 255);
         }
     }
@@ -138,11 +138,11 @@ void drawInteractHitBoxes(){
     if (_player.equippedAInd != -1){
         wep = _player_weapons.weapons[_player.equippedAInd];
         if (wep->e.hitboxes.numInteract > 0 && wep->e.active){
-            for (i = 0; i < wep->e.hitboxes.interact[wep->e.currHitBox].numRect; i++){
-                x = wep->e.x + wep->e.hitboxes.interact[wep->e.currHitBox].rects[i].x;
-                y = wep->e.y + wep->e.hitboxes.interact[wep->e.currHitBox].rects[i].y;
-                w = wep->e.hitboxes.interact[wep->e.currHitBox].rects[i].w;
-                h = wep->e.hitboxes.interact[wep->e.currHitBox].rects[i].h;
+            for (i = 0; i < wep->e.hitboxes.interact[wep->e.currHitbox].numRect; i++){
+                x = wep->e.x + wep->e.hitboxes.interact[wep->e.currHitbox].rects[i].x;
+                y = wep->e.y + wep->e.hitboxes.interact[wep->e.currHitbox].rects[i].y;
+                w = wep->e.hitboxes.interact[wep->e.currHitbox].rects[i].w;
+                h = wep->e.hitboxes.interact[wep->e.currHitbox].rects[i].h;
                 drawUnfilledRect_T(x, y, w, h, 0, 0, 255);
             }
         }
@@ -150,11 +150,11 @@ void drawInteractHitBoxes(){
     if (_player.equippedBInd != -1){
         wep = _player_weapons.weapons[_player.equippedBInd];
         if (wep->e.hitboxes.numInteract > 0 && wep->e.active){
-            for (i = 0; i < wep->e.hitboxes.interact[wep->e.currHitBox].numRect; i++){
-                x = wep->e.x + wep->e.hitboxes.interact[wep->e.currHitBox].rects[i].x;
-                y = wep->e.y + wep->e.hitboxes.interact[wep->e.currHitBox].rects[i].y;
-                w = wep->e.hitboxes.interact[wep->e.currHitBox].rects[i].w;
-                h = wep->e.hitboxes.interact[wep->e.currHitBox].rects[i].h;
+            for (i = 0; i < wep->e.hitboxes.interact[wep->e.currHitbox].numRect; i++){
+                x = wep->e.x + wep->e.hitboxes.interact[wep->e.currHitbox].rects[i].x;
+                y = wep->e.y + wep->e.hitboxes.interact[wep->e.currHitbox].rects[i].y;
+                w = wep->e.hitboxes.interact[wep->e.currHitbox].rects[i].w;
+                h = wep->e.hitboxes.interact[wep->e.currHitbox].rects[i].h;
                 drawUnfilledRect_T(x, y, w, h, 0, 0, 255);
             }
         }
@@ -170,12 +170,12 @@ void drawInteractHitBoxes(){
         }
         
         temp = entityList[j];
-        hitFrame = entityList[j]->currHitBox;
+        hitFrame = entityList[j]->currHitbox;
         for (i = 0; i < entityList[j]->hitboxes.interact[hitFrame].numRect; i++){
-            x = temp->x + temp->hitboxes.interact[temp->currHitBox].rects[i].x;
-            y = temp->y + temp->hitboxes.interact[temp->currHitBox].rects[i].y;
-            w = temp->hitboxes.interact[temp->currHitBox].rects[i].w;
-            h = temp->hitboxes.interact[temp->currHitBox].rects[i].h;
+            x = temp->x + temp->hitboxes.interact[temp->currHitbox].rects[i].x;
+            y = temp->y + temp->hitboxes.interact[temp->currHitbox].rects[i].y;
+            w = temp->hitboxes.interact[temp->currHitbox].rects[i].w;
+            h = temp->hitboxes.interact[temp->currHitbox].rects[i].h;
             drawUnfilledRect_T(x, y, w, h, 0, 0, 255);
         }
     }
@@ -188,12 +188,12 @@ void drawInteractHitBoxes(){
         }
         
         temp = (Entity *)enemyList[j];
-        hitFrame = temp->currHitBox;
+        hitFrame = temp->currHitbox;
         for (i = 0; i < temp->hitboxes.interact[hitFrame].numRect; i++){
-            x = temp->x + temp->hitboxes.interact[temp->currHitBox].rects[i].x;
-            y = temp->y + temp->hitboxes.interact[temp->currHitBox].rects[i].y;
-            w = temp->hitboxes.interact[temp->currHitBox].rects[i].w;
-            h = temp->hitboxes.interact[temp->currHitBox].rects[i].h;
+            x = temp->x + temp->hitboxes.interact[temp->currHitbox].rects[i].x;
+            y = temp->y + temp->hitboxes.interact[temp->currHitbox].rects[i].y;
+            w = temp->hitboxes.interact[temp->currHitbox].rects[i].w;
+            h = temp->hitboxes.interact[temp->currHitbox].rects[i].h;
             drawUnfilledRect_T(x, y, w, h, 0, 0, 255);
         }
     }
@@ -206,12 +206,12 @@ void drawInteractHitBoxes(){
         }
         
         temp = (Entity *)doorList[j];
-        hitFrame = temp->currHitBox;
+        hitFrame = temp->currHitbox;
         for (i = 0; i < temp->hitboxes.interact[hitFrame].numRect; i++){
-            x = temp->x + temp->hitboxes.interact[temp->currHitBox].rects[i].x;
-            y = temp->y + temp->hitboxes.interact[temp->currHitBox].rects[i].y;
-            w = temp->hitboxes.interact[temp->currHitBox].rects[i].w;
-            h = temp->hitboxes.interact[temp->currHitBox].rects[i].h;
+            x = temp->x + temp->hitboxes.interact[temp->currHitbox].rects[i].x;
+            y = temp->y + temp->hitboxes.interact[temp->currHitbox].rects[i].y;
+            w = temp->hitboxes.interact[temp->currHitbox].rects[i].w;
+            h = temp->hitboxes.interact[temp->currHitbox].rects[i].h;
             drawUnfilledRect_T(x, y, w, h, 0, 0, 255);
         }
     }

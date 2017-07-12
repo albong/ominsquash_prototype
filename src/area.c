@@ -518,7 +518,7 @@ void drawTempEntities(double shiftX, double shiftY){
 /////////////////////////////////////////////////
 // Access Functions
 /////////////////////////////////////////////////
-HitBox getCurrentWalls(){
+Hitbox getCurrentWalls(){
     return _current_area.currentRoom->walls;
 }
 

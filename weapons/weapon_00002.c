@@ -6,7 +6,7 @@
 
 static const int DAMAGE = 4;
 
-static void createHitBoxes(Weapon *w);
+static void createHitboxes(Weapon *w);
 static void doWeapon(void *self, int delta);
 static void collideWithSword(Weapon *self, void *o, int collCode, CollisionType t);
 
@@ -38,17 +38,17 @@ Weapon *weapon_create_00002(){
 //	w->totalDelta = 0;
 //	w->cancelled = 0;
        
-    createHitBoxes(w);
+    createHitboxes(w);
     w->collide = &collideWithSword;
     
     return w;
 }
 
-void createHitBoxes(Weapon *w){
-    w->e.currHitBox = 0;
+void createHitboxes(Weapon *w){
+    w->e.currHitbox = 0;
     w->e.hitboxes.numMovement = 0;
 	w->e.hitboxes.numInteract = 1;
-	w->e.hitboxes.interact = malloc(sizeof(HitBox) * 2);
+	w->e.hitboxes.interact = malloc(sizeof(Hitbox) * 2);
 	
 	w->e.hitboxes.interact[0].numRect = 1;
 	w->e.hitboxes.interact[0].rects = malloc(sizeof(CollRect));

@@ -9,18 +9,18 @@ typedef struct CollCircle {
     double cx, cy, r;
 } CollCircle;
 
-typedef struct HitBox{
+typedef struct Hitbox{
     int numRect;
     int numCircle;
     CollRect *rects;
     CollCircle *circles;
-} HitBox;
+} Hitbox;
 
 typedef struct Hitboxes { 
     int numMovement;
     int numInteract;
-    HitBox *movement; //array
-    HitBox *interact; //array
+    Hitbox *movement; //array
+    Hitbox *interact; //array
 } Hitboxes;
 
 #endif
