@@ -364,10 +364,10 @@ int checkForRoomChange(){
     /*
             THIS NEEDS TO BE MADE MORE GENERAL
     */
-    double left = _player.e.x + _player.e.hitboxes->movement[0].rects[0].x;
-    double right = _player.e.x + _player.e.hitboxes->movement[0].rects[0].x + _player.e.hitboxes->movement[0].rects[0].w;
-    double up = _player.e.y + _player.e.hitboxes->movement[0].rects[0].y;
-    double down = _player.e.y + _player.e.hitboxes->movement[0].rects[0].y + _player.e.hitboxes->movement[0].rects[0].h;
+    double left = _player.e.x + _player.e.hitboxes.movement[0].rects[0].x;
+    double right = _player.e.x + _player.e.hitboxes.movement[0].rects[0].x + _player.e.hitboxes.movement[0].rects[0].w;
+    double up = _player.e.y + _player.e.hitboxes.movement[0].rects[0].y;
+    double down = _player.e.y + _player.e.hitboxes.movement[0].rects[0].y + _player.e.hitboxes.movement[0].rects[0].h;
     
     int roomRight = _current_area.tilesheet.tileWidth * ROOM_WIDTH;
     int roomDown = _current_area.tilesheet.tileHeight * ROOM_HEIGHT;

@@ -45,96 +45,96 @@ Weapon *weapon_create_00000(){
 
 static void createHitBoxes(Weapon *w){
     w->e.currHitBox = 0;
-    w->e.hitboxes->numMovement = 0;
-	w->e.hitboxes->numInteract = 12;
-	w->e.hitboxes->interact = malloc(sizeof(HitBox) * 12);
+    w->e.hitboxes.numMovement = 0;
+	w->e.hitboxes.numInteract = 12;
+	w->e.hitboxes.interact = malloc(sizeof(HitBox) * 12);
 	
-	w->e.hitboxes->interact[0].numRect = 1;
-	w->e.hitboxes->interact[0].rects = malloc(sizeof(CollRect));
-	w->e.hitboxes->interact[0].rects[0].x = 1;
-	w->e.hitboxes->interact[0].rects[0].y = 10;
-	w->e.hitboxes->interact[0].rects[0].w = 15;
-	w->e.hitboxes->interact[0].rects[0].h = 4;
+	w->e.hitboxes.interact[0].numRect = 1;
+	w->e.hitboxes.interact[0].rects = malloc(sizeof(CollRect));
+	w->e.hitboxes.interact[0].rects[0].x = 1;
+	w->e.hitboxes.interact[0].rects[0].y = 10;
+	w->e.hitboxes.interact[0].rects[0].w = 15;
+	w->e.hitboxes.interact[0].rects[0].h = 4;
 	
-	w->e.hitboxes->interact[1].numRect = 1;
-	w->e.hitboxes->interact[1].rects = malloc(sizeof(CollRect));
-	w->e.hitboxes->interact[1].rects[0].x = 4;
-	w->e.hitboxes->interact[1].rects[0].y = 16;
-	w->e.hitboxes->interact[1].rects[0].w = 15;
-	w->e.hitboxes->interact[1].rects[0].h = 15;
+	w->e.hitboxes.interact[1].numRect = 1;
+	w->e.hitboxes.interact[1].rects = malloc(sizeof(CollRect));
+	w->e.hitboxes.interact[1].rects[0].x = 4;
+	w->e.hitboxes.interact[1].rects[0].y = 16;
+	w->e.hitboxes.interact[1].rects[0].w = 15;
+	w->e.hitboxes.interact[1].rects[0].h = 15;
 	
-	w->e.hitboxes->interact[2].numRect = 1;
-	w->e.hitboxes->interact[2].rects = malloc(sizeof(CollRect));
-	w->e.hitboxes->interact[2].rects[0].x = 25;
-	w->e.hitboxes->interact[2].rects[0].y = 17;
-	w->e.hitboxes->interact[2].rects[0].w = 4;
-	w->e.hitboxes->interact[2].rects[0].h = 15;
-	
-	
-	w->e.hitboxes->interact[3].numRect = 1;
-	w->e.hitboxes->interact[3].rects = malloc(sizeof(CollRect));
-	w->e.hitboxes->interact[3].rects[0].x = 21;
-	w->e.hitboxes->interact[3].rects[0].y = 1;
-	w->e.hitboxes->interact[3].rects[0].w = 4;
-	w->e.hitboxes->interact[3].rects[0].h = 15;
-	
-	w->e.hitboxes->interact[4].numRect = 1;
-	w->e.hitboxes->interact[4].rects = malloc(sizeof(CollRect));
-	w->e.hitboxes->interact[4].rects[0].x = 4;
-	w->e.hitboxes->interact[4].rects[0].y = 4;
-	w->e.hitboxes->interact[4].rects[0].w = 15;
-	w->e.hitboxes->interact[4].rects[0].h = 15;
-	
-	w->e.hitboxes->interact[5].numRect = 1;
-	w->e.hitboxes->interact[5].rects = malloc(sizeof(CollRect));
-	w->e.hitboxes->interact[5].rects[0].x = 1;
-	w->e.hitboxes->interact[5].rects[0].y = 26;
-	w->e.hitboxes->interact[5].rects[0].w = 15;
-	w->e.hitboxes->interact[5].rects[0].h = 4;
+	w->e.hitboxes.interact[2].numRect = 1;
+	w->e.hitboxes.interact[2].rects = malloc(sizeof(CollRect));
+	w->e.hitboxes.interact[2].rects[0].x = 25;
+	w->e.hitboxes.interact[2].rects[0].y = 17;
+	w->e.hitboxes.interact[2].rects[0].w = 4;
+	w->e.hitboxes.interact[2].rects[0].h = 15;
 	
 	
-    w->e.hitboxes->interact[6].numRect = 1;
-	w->e.hitboxes->interact[6].rects = malloc(sizeof(CollRect));
-	w->e.hitboxes->interact[6].rects[0].x = 6;
-	w->e.hitboxes->interact[6].rects[0].y = 1;
-	w->e.hitboxes->interact[6].rects[0].w = 4;
-	w->e.hitboxes->interact[6].rects[0].h = 15;
+	w->e.hitboxes.interact[3].numRect = 1;
+	w->e.hitboxes.interact[3].rects = malloc(sizeof(CollRect));
+	w->e.hitboxes.interact[3].rects[0].x = 21;
+	w->e.hitboxes.interact[3].rects[0].y = 1;
+	w->e.hitboxes.interact[3].rects[0].w = 4;
+	w->e.hitboxes.interact[3].rects[0].h = 15;
 	
-	w->e.hitboxes->interact[7].numRect = 1;
-	w->e.hitboxes->interact[7].rects = malloc(sizeof(CollRect));
-	w->e.hitboxes->interact[7].rects[0].x = 12;
-	w->e.hitboxes->interact[7].rects[0].y = 4;
-	w->e.hitboxes->interact[7].rects[0].w = 15;
-	w->e.hitboxes->interact[7].rects[0].h = 15;
+	w->e.hitboxes.interact[4].numRect = 1;
+	w->e.hitboxes.interact[4].rects = malloc(sizeof(CollRect));
+	w->e.hitboxes.interact[4].rects[0].x = 4;
+	w->e.hitboxes.interact[4].rects[0].y = 4;
+	w->e.hitboxes.interact[4].rects[0].w = 15;
+	w->e.hitboxes.interact[4].rects[0].h = 15;
 	
-	w->e.hitboxes->interact[8].numRect = 1;
-	w->e.hitboxes->interact[8].rects = malloc(sizeof(CollRect));
-	w->e.hitboxes->interact[8].rects[0].x = 15;
-	w->e.hitboxes->interact[8].rects[0].y = 26;
-	w->e.hitboxes->interact[8].rects[0].w = 15;
-	w->e.hitboxes->interact[8].rects[0].h = 4;
+	w->e.hitboxes.interact[5].numRect = 1;
+	w->e.hitboxes.interact[5].rects = malloc(sizeof(CollRect));
+	w->e.hitboxes.interact[5].rects[0].x = 1;
+	w->e.hitboxes.interact[5].rects[0].y = 26;
+	w->e.hitboxes.interact[5].rects[0].w = 15;
+	w->e.hitboxes.interact[5].rects[0].h = 4;
 	
 	
-	w->e.hitboxes->interact[9].numRect = 1;
-	w->e.hitboxes->interact[9].rects = malloc(sizeof(CollRect));
-	w->e.hitboxes->interact[9].rects[0].x = 15;
-	w->e.hitboxes->interact[9].rects[0].y = 22;
-	w->e.hitboxes->interact[9].rects[0].w = 15;
-	w->e.hitboxes->interact[9].rects[0].h = 4;
+    w->e.hitboxes.interact[6].numRect = 1;
+	w->e.hitboxes.interact[6].rects = malloc(sizeof(CollRect));
+	w->e.hitboxes.interact[6].rects[0].x = 6;
+	w->e.hitboxes.interact[6].rects[0].y = 1;
+	w->e.hitboxes.interact[6].rects[0].w = 4;
+	w->e.hitboxes.interact[6].rects[0].h = 15;
 	
-	w->e.hitboxes->interact[10].numRect = 1;
-	w->e.hitboxes->interact[10].rects = malloc(sizeof(CollRect));
-	w->e.hitboxes->interact[10].rects[0].x = 12;
-	w->e.hitboxes->interact[10].rects[0].y = 4;
-	w->e.hitboxes->interact[10].rects[0].w = 15;
-	w->e.hitboxes->interact[10].rects[0].h = 15;
+	w->e.hitboxes.interact[7].numRect = 1;
+	w->e.hitboxes.interact[7].rects = malloc(sizeof(CollRect));
+	w->e.hitboxes.interact[7].rects[0].x = 12;
+	w->e.hitboxes.interact[7].rects[0].y = 4;
+	w->e.hitboxes.interact[7].rects[0].w = 15;
+	w->e.hitboxes.interact[7].rects[0].h = 15;
 	
-	w->e.hitboxes->interact[11].numRect = 1;
-	w->e.hitboxes->interact[11].rects = malloc(sizeof(CollRect));
-	w->e.hitboxes->interact[11].rects[0].x = 1;
-	w->e.hitboxes->interact[11].rects[0].y = 2;
-	w->e.hitboxes->interact[11].rects[0].w = 4;
-	w->e.hitboxes->interact[11].rects[0].h = 15;
+	w->e.hitboxes.interact[8].numRect = 1;
+	w->e.hitboxes.interact[8].rects = malloc(sizeof(CollRect));
+	w->e.hitboxes.interact[8].rects[0].x = 15;
+	w->e.hitboxes.interact[8].rects[0].y = 26;
+	w->e.hitboxes.interact[8].rects[0].w = 15;
+	w->e.hitboxes.interact[8].rects[0].h = 4;
+	
+	
+	w->e.hitboxes.interact[9].numRect = 1;
+	w->e.hitboxes.interact[9].rects = malloc(sizeof(CollRect));
+	w->e.hitboxes.interact[9].rects[0].x = 15;
+	w->e.hitboxes.interact[9].rects[0].y = 22;
+	w->e.hitboxes.interact[9].rects[0].w = 15;
+	w->e.hitboxes.interact[9].rects[0].h = 4;
+	
+	w->e.hitboxes.interact[10].numRect = 1;
+	w->e.hitboxes.interact[10].rects = malloc(sizeof(CollRect));
+	w->e.hitboxes.interact[10].rects[0].x = 12;
+	w->e.hitboxes.interact[10].rects[0].y = 4;
+	w->e.hitboxes.interact[10].rects[0].w = 15;
+	w->e.hitboxes.interact[10].rects[0].h = 15;
+	
+	w->e.hitboxes.interact[11].numRect = 1;
+	w->e.hitboxes.interact[11].rects = malloc(sizeof(CollRect));
+	w->e.hitboxes.interact[11].rects[0].x = 1;
+	w->e.hitboxes.interact[11].rects[0].y = 2;
+	w->e.hitboxes.interact[11].rects[0].w = 4;
+	w->e.hitboxes.interact[11].rects[0].h = 15;
 }
 
 static void doSword(void *w, int delta){

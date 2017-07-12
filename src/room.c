@@ -137,11 +137,11 @@ void setDoorStates(Room *self, int direction){
     double x1, x2, y1, y2, dx1, dx2, dy1, dy2;
     Orientation orientation;
     size_t i, j;
-    for (j = 0; j < _player.e.hitboxes->movement[_player.e.currHitBox].numRect; j++){
-        x1 = _player.e.x + _player.e.hitboxes->movement[_player.e.currHitBox].rects[j].x;
-        x2 = x1 + _player.e.hitboxes->movement[_player.e.currHitBox].rects[j].w;
-        y1 = _player.e.y + _player.e.hitboxes->movement[_player.e.currHitBox].rects[j].y;
-        y2 = y1 + _player.e.hitboxes->movement[_player.e.currHitBox].rects[j].h;
+    for (j = 0; j < _player.e.hitboxes.movement[_player.e.currHitBox].numRect; j++){
+        x1 = _player.e.x + _player.e.hitboxes.movement[_player.e.currHitBox].rects[j].x;
+        x2 = x1 + _player.e.hitboxes.movement[_player.e.currHitBox].rects[j].w;
+        y1 = _player.e.y + _player.e.hitboxes.movement[_player.e.currHitBox].rects[j].y;
+        y2 = y1 + _player.e.hitboxes.movement[_player.e.currHitBox].rects[j].h;
         
         for (i = 0; i < self->numDoors; i++){
             //set door closed to enable correct hitboxes?
@@ -149,10 +149,10 @@ void setDoorStates(Room *self, int direction){
             
             //determine if door needs to be opened - assumes only 1 movement hitbox for now
             orientation = self->doors[i]->e.orientation;
-            dx1 = self->doors[i]->e.x + self->doors[i]->e.hitboxes->movement[self->doors[i]->e.currHitBox].rects[0].x;
-            dx2 = dx1 + self->doors[i]->e.hitboxes->movement[self->doors[i]->e.currHitBox].rects[0].w;
-            dy1 = self->doors[i]->e.y + self->doors[i]->e.hitboxes->movement[self->doors[i]->e.currHitBox].rects[0].y;
-            dy2 = dy1 + self->doors[i]->e.hitboxes->movement[self->doors[i]->e.currHitBox].rects[0].h;
+            dx1 = self->doors[i]->e.x + self->doors[i]->e.hitboxes.movement[self->doors[i]->e.currHitBox].rects[0].x;
+            dx2 = dx1 + self->doors[i]->e.hitboxes.movement[self->doors[i]->e.currHitBox].rects[0].w;
+            dy1 = self->doors[i]->e.y + self->doors[i]->e.hitboxes.movement[self->doors[i]->e.currHitBox].rects[0].y;
+            dy2 = dy1 + self->doors[i]->e.hitboxes.movement[self->doors[i]->e.currHitBox].rects[0].h;
             
             // r1.x+r1.w <= r2.x || r2.x+r2.w <= r1.x || r1.y+r1.h <= r2.y || r2.y+r2.h <= r1.y
             if ((((direction == ROOM_UP && orientation == DOWN) || (direction == ROOM_DOWN && orientation == UP)) && 

@@ -303,45 +303,45 @@ int fillEntityFromJson(cJSON *root, Entity *result){
     
     hitboxArr = cJSON_GetObjectItem(root, "movement hitboxes");
     numHitboxes = cJSON_GetArraySize(hitboxArr);
-    result->hitboxes->numMovement = numHitboxes;
-    result->hitboxes->movement = malloc(sizeof(HitBox) * numHitboxes);
+    result->hitboxes.numMovement = numHitboxes;
+    result->hitboxes.movement = malloc(sizeof(HitBox) * numHitboxes);
     for (i = 0; i < numHitboxes; i++){
         hitboxJson = cJSON_GetArrayItem(hitboxArr, i);
-        result->hitboxes->movement[i].numCircle = 0;
-        result->hitboxes->movement[i].circles = NULL;
+        result->hitboxes.movement[i].numCircle = 0;
+        result->hitboxes.movement[i].circles = NULL;
         
         shapeArr = cJSON_GetObjectItem(hitboxJson, "rectangles");
         numShapes = cJSON_GetArraySize(shapeArr);
-        result->hitboxes->movement[i].numRect = numShapes;
-        result->hitboxes->movement[i].rects = malloc(sizeof(CollRect) * numShapes);
+        result->hitboxes.movement[i].numRect = numShapes;
+        result->hitboxes.movement[i].rects = malloc(sizeof(CollRect) * numShapes);
         for (j = 0; j < numShapes; j++){
             shapeJson = cJSON_GetArrayItem(shapeArr, j);
-            result->hitboxes->movement[i].rects[j].x = cJSON_GetObjectItem(shapeJson, "x")->valueint;
-            result->hitboxes->movement[i].rects[j].y = cJSON_GetObjectItem(shapeJson, "y")->valueint;
-            result->hitboxes->movement[i].rects[j].w = cJSON_GetObjectItem(shapeJson, "width")->valueint;
-            result->hitboxes->movement[i].rects[j].h = cJSON_GetObjectItem(shapeJson, "height")->valueint;
+            result->hitboxes.movement[i].rects[j].x = cJSON_GetObjectItem(shapeJson, "x")->valueint;
+            result->hitboxes.movement[i].rects[j].y = cJSON_GetObjectItem(shapeJson, "y")->valueint;
+            result->hitboxes.movement[i].rects[j].w = cJSON_GetObjectItem(shapeJson, "width")->valueint;
+            result->hitboxes.movement[i].rects[j].h = cJSON_GetObjectItem(shapeJson, "height")->valueint;
         }
     }
     
     hitboxArr = cJSON_GetObjectItem(root, "interact hitboxes");
     numHitboxes = cJSON_GetArraySize(hitboxArr);
-    result->hitboxes->numInteract = numHitboxes;
-    result->hitboxes->interact = malloc(sizeof(HitBox) * numHitboxes);
+    result->hitboxes.numInteract = numHitboxes;
+    result->hitboxes.interact = malloc(sizeof(HitBox) * numHitboxes);
     for (i = 0; i < numHitboxes; i++){
         hitboxJson = cJSON_GetArrayItem(hitboxArr, i);
-        result->hitboxes->interact[i].numCircle = 0;
-        result->hitboxes->interact[i].circles = NULL;
+        result->hitboxes.interact[i].numCircle = 0;
+        result->hitboxes.interact[i].circles = NULL;
         
         shapeArr = cJSON_GetObjectItem(hitboxJson, "rectangles");
         numShapes = cJSON_GetArraySize(shapeArr);
-        result->hitboxes->interact[i].numRect = numShapes;
-        result->hitboxes->interact[i].rects = malloc(sizeof(CollRect) * numShapes);
+        result->hitboxes.interact[i].numRect = numShapes;
+        result->hitboxes.interact[i].rects = malloc(sizeof(CollRect) * numShapes);
         for (j = 0; j < numShapes; j++){
             shapeJson = cJSON_GetArrayItem(shapeArr, j);
-            result->hitboxes->interact[i].rects[j].x = cJSON_GetObjectItem(shapeJson, "x")->valueint;
-            result->hitboxes->interact[i].rects[j].y = cJSON_GetObjectItem(shapeJson, "y")->valueint;
-            result->hitboxes->interact[i].rects[j].w = cJSON_GetObjectItem(shapeJson, "width")->valueint;
-            result->hitboxes->interact[i].rects[j].h = cJSON_GetObjectItem(shapeJson, "height")->valueint;
+            result->hitboxes.interact[i].rects[j].x = cJSON_GetObjectItem(shapeJson, "x")->valueint;
+            result->hitboxes.interact[i].rects[j].y = cJSON_GetObjectItem(shapeJson, "y")->valueint;
+            result->hitboxes.interact[i].rects[j].w = cJSON_GetObjectItem(shapeJson, "width")->valueint;
+            result->hitboxes.interact[i].rects[j].h = cJSON_GetObjectItem(shapeJson, "height")->valueint;
         }
     }
     

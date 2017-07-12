@@ -46,23 +46,23 @@ Weapon *weapon_create_00002(){
 
 void createHitBoxes(Weapon *w){
     w->e.currHitBox = 0;
-    w->e.hitboxes->numMovement = 0;
-	w->e.hitboxes->numInteract = 1;
-	w->e.hitboxes->interact = malloc(sizeof(HitBox) * 2);
+    w->e.hitboxes.numMovement = 0;
+	w->e.hitboxes.numInteract = 1;
+	w->e.hitboxes.interact = malloc(sizeof(HitBox) * 2);
 	
-	w->e.hitboxes->interact[0].numRect = 1;
-	w->e.hitboxes->interact[0].rects = malloc(sizeof(CollRect));
-	w->e.hitboxes->interact[0].rects[0].x = 1;
-	w->e.hitboxes->interact[0].rects[0].y = 2;
-	w->e.hitboxes->interact[0].rects[0].w = 6;
-	w->e.hitboxes->interact[0].rects[0].h = 4;
+	w->e.hitboxes.interact[0].numRect = 1;
+	w->e.hitboxes.interact[0].rects = malloc(sizeof(CollRect));
+	w->e.hitboxes.interact[0].rects[0].x = 1;
+	w->e.hitboxes.interact[0].rects[0].y = 2;
+	w->e.hitboxes.interact[0].rects[0].w = 6;
+	w->e.hitboxes.interact[0].rects[0].h = 4;
 	
-	w->e.hitboxes->interact[1].numRect = 1;
-	w->e.hitboxes->interact[1].rects = malloc(sizeof(CollRect));
-	w->e.hitboxes->interact[1].rects[0].x = 2;
-	w->e.hitboxes->interact[1].rects[0].y = 1;
-	w->e.hitboxes->interact[1].rects[0].w = 4;
-	w->e.hitboxes->interact[1].rects[0].h = 6;
+	w->e.hitboxes.interact[1].numRect = 1;
+	w->e.hitboxes.interact[1].rects = malloc(sizeof(CollRect));
+	w->e.hitboxes.interact[1].rects[0].x = 2;
+	w->e.hitboxes.interact[1].rects[0].y = 1;
+	w->e.hitboxes.interact[1].rects[0].w = 4;
+	w->e.hitboxes.interact[1].rects[0].h = 6;
 	
 }
 

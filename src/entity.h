@@ -44,11 +44,7 @@ typedef struct Entity {
 //	void (*collide)(void *);
 	CollisionType type;
 	int currHitBox;
-	// int hasMoveHitBox;//boolean
-	// int hasInteractHitBox;//boolean
-	// HitBox *moveHitBox;//array
-	// HitBox *interactHitBox;//array
-    Hitboxes *hitboxes;
+    Hitboxes hitboxes;
 	int interactable; //when we move to single hitboxes and collision groups, this will be replaced by hasInteractHitbox
 	void (*interact)(struct Entity *self);
 } Entity;
