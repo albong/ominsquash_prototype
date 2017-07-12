@@ -187,7 +187,7 @@ void doEntityCollisions(){
     
     //player first
     for (i = 0; i < numEntities; i++){
-        if (!entityList[i]->active || !entityList[i]->interactable){
+        if (!entityList[i]->active || !entityList[i]->interactable || !entityList[i]->hitboxes.numInteract > 0){
             continue;
         }
         

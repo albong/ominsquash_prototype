@@ -6,11 +6,8 @@
     "milliseconds per frame" : 0,
     "number of frames" : 0,
     
-    "sprite" : 3,
+    "animation" : 3,
     
     "collision type" : "NONE",
-    "interactable" : false,
-    
-    "movement hitboxes" : [],
-    "interact hitboxes" : []
+    "interactable" : false
 }

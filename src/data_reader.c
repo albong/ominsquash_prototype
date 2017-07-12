@@ -14,12 +14,14 @@
 //PIZZA - Needs to check for existence of all fields being read!
 
 static char *readFileToCharStar(char *filename);
+static Hitboxes *readHitboxesFromFile(char *filename, Hitboxes *result, int allowAllocate);
 //return 0 on failure
 static int fillAreaFromJson(cJSON *root, Area *result);
 static int fillEntityFromJson(cJSON *root, Entity *result);
 static int fillEnemyFromJson(cJSON *root, Enemy *result);
 static int fillSpriteFromJson(cJSON *root, Sprite *result);
 static int fillAnimationFromJson(cJSON *root, Animation *result);
+static int fillHitboxesFromJson(cJSON *root, Hitboxes *result);
 
 //read in a JSON file to a cJSON object
 char *readFileToCharStar(char *filename){
@@ -170,7 +172,7 @@ Animation *readAnimationFromFile(char *filename, Animation *result){
     //read in the given file to a cJSON object
     char *fileContents = readFileToCharStar(filename);
     if (fileContents == NULL){
-        printf("Animation not found: %s\n", filename);
+        printf("Not found: %s\n", filename);
         fflush(stdout);
         free(result);
         result = NULL;
@@ -190,6 +192,50 @@ Animation *readAnimationFromFile(char *filename, Animation *result){
         }
     }
         
+    //free the read file and return
+    free(fileContents);
+    return result;
+}
+
+Hitboxes *readHitboxesFromFile(char *filename, Hitboxes *result, int allowAllocate){
+    //the expectation here is that the hitboxes are actually part of the memory for Entities
+    //as a result, you DON'T want to malloc or free the pointer passed in, as you're
+    //either going to allocate something that gets lost after returning (so a leak)
+    //or you're freeing a subset of something else's memory (which is bad)
+    //Therefore, if you really just want to allocate hitboxes, there's an optional
+    //flag allowing for that.
+    
+    if (result == NULL && allowAllocate){
+        result = malloc(sizeof(Hitboxes));
+    } else if (result == NULL && !allowAllocate){
+        return NULL;
+    }
+    init_Hitboxes(result);
+    
+    //read in file, convert to cJSON and parse
+    char *fileContents = readFileToCharStar(filename);
+    if (fileContents == NULL){
+        printf("Not found: %s\n", filename);
+        fflush(stdout);
+    } else {
+        //parse the file
+        cJSON *root = cJSON_Parse(fileContents);
+    
+        //if the initial parsing failed, or the detailed parsing failed, print an error
+        //then then free and NULLify if that's okay, otherwise you're going to return a faulty struct
+        //otherwise free the cJSON root correctly
+        if (!root || !fillHitboxesFromJson(root, result)){
+            printf("%s: Error before: %s\n", filename, cJSON_GetErrorPtr());
+            fflush(stdout);
+            if (allowAllocate){
+                free(result);
+                result = NULL;
+            }
+        } else {
+            cJSON_Delete(root);
+        }
+    }
+    
     //free the read file and return
     free(fileContents);
     return result;
@@ -296,62 +342,15 @@ int fillEntityFromJson(cJSON *root, Entity *result){
 	// result->hasInteractHitbox = (cJSON_GetObjectItem(root, "has interact hitbox")->type == cJSON_True);
     result->interactable = (cJSON_GetObjectItem(root, "interactable")->type == cJSON_True);
     
-    //if there is a particular kind of hitbox, read it in
-    cJSON *hitboxArr, *shapeArr, *hitboxJson, *shapeJson;
-    size_t numHitboxes, numShapes;
-    size_t i, j;
-    
-    hitboxArr = cJSON_GetObjectItem(root, "movement hitboxes");
-    numHitboxes = cJSON_GetArraySize(hitboxArr);
-    result->hitboxes.numMovement = numHitboxes;
-    result->hitboxes.movement = malloc(sizeof(Hitbox) * numHitboxes);
-    for (i = 0; i < numHitboxes; i++){
-        hitboxJson = cJSON_GetArrayItem(hitboxArr, i);
-        result->hitboxes.movement[i].numCircle = 0;
-        result->hitboxes.movement[i].circles = NULL;
-        
-        shapeArr = cJSON_GetObjectItem(hitboxJson, "rectangles");
-        numShapes = cJSON_GetArraySize(shapeArr);
-        result->hitboxes.movement[i].numRect = numShapes;
-        result->hitboxes.movement[i].rects = malloc(sizeof(CollRect) * numShapes);
-        for (j = 0; j < numShapes; j++){
-            shapeJson = cJSON_GetArrayItem(shapeArr, j);
-            result->hitboxes.movement[i].rects[j].x = cJSON_GetObjectItem(shapeJson, "x")->valueint;
-            result->hitboxes.movement[i].rects[j].y = cJSON_GetObjectItem(shapeJson, "y")->valueint;
-            result->hitboxes.movement[i].rects[j].w = cJSON_GetObjectItem(shapeJson, "width")->valueint;
-            result->hitboxes.movement[i].rects[j].h = cJSON_GetObjectItem(shapeJson, "height")->valueint;
-        }
-    }
-    
-    hitboxArr = cJSON_GetObjectItem(root, "interact hitboxes");
-    numHitboxes = cJSON_GetArraySize(hitboxArr);
-    result->hitboxes.numInteract = numHitboxes;
-    result->hitboxes.interact = malloc(sizeof(Hitbox) * numHitboxes);
-    for (i = 0; i < numHitboxes; i++){
-        hitboxJson = cJSON_GetArrayItem(hitboxArr, i);
-        result->hitboxes.interact[i].numCircle = 0;
-        result->hitboxes.interact[i].circles = NULL;
-        
-        shapeArr = cJSON_GetObjectItem(hitboxJson, "rectangles");
-        numShapes = cJSON_GetArraySize(shapeArr);
-        result->hitboxes.interact[i].numRect = numShapes;
-        result->hitboxes.interact[i].rects = malloc(sizeof(CollRect) * numShapes);
-        for (j = 0; j < numShapes; j++){
-            shapeJson = cJSON_GetArrayItem(shapeArr, j);
-            result->hitboxes.interact[i].rects[j].x = cJSON_GetObjectItem(shapeJson, "x")->valueint;
-            result->hitboxes.interact[i].rects[j].y = cJSON_GetObjectItem(shapeJson, "y")->valueint;
-            result->hitboxes.interact[i].rects[j].w = cJSON_GetObjectItem(shapeJson, "width")->valueint;
-            result->hitboxes.interact[i].rects[j].h = cJSON_GetObjectItem(shapeJson, "height")->valueint;
-        }
-    }
-    
-    //load the sprite and animation
+    //load the sprite and animation and hitboxes
     char dataFilename[80];
-    int spriteId = cJSON_GetObjectItem(root, "sprite")->valueint;
-    sprintf(dataFilename, "data/sprites/%05d.sprite", spriteId);
+    int animationId = cJSON_GetObjectItem(root, "animation")->valueint;
+    sprintf(dataFilename, "data/sprites/%05d.sprite", animationId);
     result->sprite = readSpriteFromFile(dataFilename, malloc(sizeof(Sprite)));
-    sprintf(dataFilename, "data/animations/%05d.animation", spriteId);
+    sprintf(dataFilename, "data/animations/%05d.animation", animationId);
     result->animation = readAnimationFromFile(dataFilename, malloc(sizeof(Animation)));
+    sprintf(dataFilename, "data/hitboxes/%05d.hitbox", animationId);
+    readHitboxesFromFile(dataFilename, &(result->hitboxes), 0);
     
     //if there is no associated animation file, then just load the one for a static animation
     if (result->animation == NULL){
@@ -441,3 +440,55 @@ int fillAnimationFromJson(cJSON *root, Animation *result){
     return 1;
 }
 
+int fillHitboxesFromJson(cJSON *root, Hitboxes *result){
+    size_t i, j, numHitboxes, numShapes;
+    cJSON *hitboxArr, *shapeArr, *hitboxJson, *shapeJson;
+    
+    //movement hitboxes
+    hitboxArr = cJSON_GetObjectItem(root, "movement");
+    numHitboxes = cJSON_GetArraySize(hitboxArr);
+    result->numMovement = numHitboxes;
+    result->movement = malloc(sizeof(Hitbox) * numHitboxes);
+    for (i = 0; i < numHitboxes; i++){
+        hitboxJson = cJSON_GetArrayItem(hitboxArr, i);
+        result->movement[i].numCircle = 0;
+        result->movement[i].circles = NULL;
+        
+        shapeArr = cJSON_GetObjectItem(hitboxJson, "rectangles");
+        numShapes = cJSON_GetArraySize(shapeArr);
+        result->movement[i].numRect = numShapes;
+        result->movement[i].rects = malloc(sizeof(CollRect) * numShapes);
+        for (j = 0; j < numShapes; j++){
+            shapeJson = cJSON_GetArrayItem(shapeArr, j);
+            result->movement[i].rects[j].x = cJSON_GetObjectItem(shapeJson, "x")->valueint;
+            result->movement[i].rects[j].y = cJSON_GetObjectItem(shapeJson, "y")->valueint;
+            result->movement[i].rects[j].w = cJSON_GetObjectItem(shapeJson, "width")->valueint;
+            result->movement[i].rects[j].h = cJSON_GetObjectItem(shapeJson, "height")->valueint;
+        }
+    }
+    
+    //interact hitboxes
+    hitboxArr = cJSON_GetObjectItem(root, "interact");
+    numHitboxes = cJSON_GetArraySize(hitboxArr);
+    result->numInteract = numHitboxes;
+    result->interact = malloc(sizeof(Hitbox) * numHitboxes);
+    for (i = 0; i < numHitboxes; i++){
+        hitboxJson = cJSON_GetArrayItem(hitboxArr, i);
+        result->interact[i].numCircle = 0;
+        result->interact[i].circles = NULL;
+        
+        shapeArr = cJSON_GetObjectItem(hitboxJson, "rectangles");
+        numShapes = cJSON_GetArraySize(shapeArr);
+        result->interact[i].numRect = numShapes;
+        result->interact[i].rects = malloc(sizeof(CollRect) * numShapes);
+        for (j = 0; j < numShapes; j++){
+            shapeJson = cJSON_GetArrayItem(shapeArr, j);
+            result->interact[i].rects[j].x = cJSON_GetObjectItem(shapeJson, "x")->valueint;
+            result->interact[i].rects[j].y = cJSON_GetObjectItem(shapeJson, "y")->valueint;
+            result->interact[i].rects[j].w = cJSON_GetObjectItem(shapeJson, "width")->valueint;
+            result->interact[i].rects[j].h = cJSON_GetObjectItem(shapeJson, "height")->valueint;
+        }
+    }
+    
+    return 1;
+}

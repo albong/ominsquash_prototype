@@ -23,4 +23,6 @@ typedef struct Hitboxes {
     Hitbox *interact; //array
 } Hitboxes;
 
+Hitboxes *init_Hitboxes(Hitboxes *self);
+
 #endif
