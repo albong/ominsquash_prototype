@@ -14,7 +14,6 @@
 //PIZZA - Needs to check for existence of all fields being read!
 
 static char *readFileToCharStar(char *filename);
-static Hitboxes *readHitboxesFromFile(char *filename, Hitboxes *result, int allowAllocate);
 //return 0 on failure
 static int fillAreaFromJson(cJSON *root, Area *result);
 static int fillEntityFromJson(cJSON *root, Entity *result);
@@ -350,7 +349,7 @@ int fillEntityFromJson(cJSON *root, Entity *result){
     sprintf(dataFilename, "data/animations/%05d.animation", animationId);
     result->animation = readAnimationFromFile(dataFilename, malloc(sizeof(Animation)));
     sprintf(dataFilename, "data/hitboxes/%05d.hitbox", animationId);
-    readHitboxesFromFile(dataFilename, &(result->hitboxes), 0);
+    result->hitboxes = *(readHitboxesFromFile(dataFilename, &(result->hitboxes), 0)); //dumb, but visually consistent
     
     //if there is no associated animation file, then just load the one for a static animation
     if (result->animation == NULL){

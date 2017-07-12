@@ -21,6 +21,7 @@ static const hitstunMilli = 1000;
 void initPlayer(){
     _player.e.sprite = readSpriteFromFile("data/sprites/00004.sprite", NULL);
     _player.e.animation = readAnimationFromFile("data/animations/00004.animation", NULL);
+    _player.e.hitboxes = *(readHitboxesFromFile("data/hitboxes/00004.hitbox", &(_player.e.hitboxes), 0)); //dumb, but visually consistent
     _player.e.orientation = DOWN;    
     
     _player.e.x = SCREEN_WIDTH / 2;
@@ -39,29 +40,7 @@ void initPlayer(){
     _player.e.type = PLAYER;
     
     _player.e.currHitbox = 0;
-    
-    //movement hitbox
-    _player.e.hitboxes.numMovement = 1;
-    _player.e.hitboxes.movement = malloc(sizeof(Hitbox) * 1);
-    _player.e.hitboxes.movement[0].numCircle = 0;
-    _player.e.hitboxes.movement[0].numRect = 1;
-    _player.e.hitboxes.movement[0].rects = malloc(sizeof(CollRect) * 1);
-    _player.e.hitboxes.movement[0].rects[0].x = 4;
-    _player.e.hitboxes.movement[0].rects[0].y = 5;
-    _player.e.hitboxes.movement[0].rects[0].w = _player.e.w-8;
-    _player.e.hitboxes.movement[0].rects[0].h = _player.e.h - 5-2;
-    
-    //interaction hitbox
-    _player.e.hitboxes.numInteract = 1;
-    _player.e.hitboxes.interact = malloc(sizeof(Hitbox) * 1);
-    _player.e.hitboxes.interact[0].numCircle = 0;
-    _player.e.hitboxes.interact[0].numRect = 1;
-    _player.e.hitboxes.interact[0].rects = malloc(sizeof(CollRect) * 1);
-    _player.e.hitboxes.interact[0].rects[0].x = -3;
-    _player.e.hitboxes.interact[0].rects[0].y = -3;
-    _player.e.hitboxes.interact[0].rects[0].w = 22;
-    _player.e.hitboxes.interact[0].rects[0].h = 24;
-        
+            
     _player.health = 12;
     _player.shields = 14;
     _player.milliHitstun = 0;
