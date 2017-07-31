@@ -52,11 +52,8 @@ int getNumRoomEnemies();
 Enemy **getRoomEnemyList();
 size_t getNumRoomDoors();
 Door **getRoomDoorList();
+size_t getNumRoomStairs();
+Stair **getRoomStairList();
 void addTempEntityToArea(Entity *e);
-
-// Demo
-static Room *createFirstDemoRoom();
-static Room *createSecondDemoRoom();
-static Room *createThirdDemoRoom();
 
 #endif

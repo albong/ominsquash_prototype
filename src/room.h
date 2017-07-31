@@ -2,10 +2,11 @@
 #define ROOM_H
 
 #include "hitbox.h"
-#include "stdint.h"
+#include <stdint.h>
 #include "entity.h"
 #include "enemy.h"
 #include "door.h"
+#include "stair.h"
 
 //ROOMF_IMPASSABLE is for walls, maybe rename?
 #define ROOMF_IMPASSABLE 1
@@ -39,6 +40,9 @@ typedef struct Room {
     
     size_t numDoors;
     Door **doors;
+    
+    size_t numStairs;
+    Stair **stairs; //array
 } Room;
 
 // Loading

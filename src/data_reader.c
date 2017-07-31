@@ -1,6 +1,7 @@
 #include "data_reader.h"
 #include "area.h"
 #include "room.h"
+#include "stair.h"
 #include "constants.h"
 #include "entity.h"
 #include "hitbox.h"
@@ -21,6 +22,7 @@ static int fillEnemyFromJson(cJSON *root, Enemy *result);
 static int fillSpriteFromJson(cJSON *root, Sprite *result);
 static int fillAnimationFromJson(cJSON *root, Animation *result);
 static int fillHitboxesFromJson(cJSON *root, Hitboxes *result);
+static int addAnimationToEntity(Entity *result, int animationId);
 
 //read in a JSON file to a cJSON object
 char *readFileToCharStar(char *filename){
@@ -252,9 +254,10 @@ int fillAreaFromJson(cJSON *root, Area *result){
     
     //init and fill in rooms
     Room *currRoom;
-    cJSON *arrY, *arrX, *jsonRoom, *jsonTemp;
+    Stair *tempStair;
+    cJSON *arrY, *arrX, *jsonRoom, *jsonTemp, *arrStair;
     size_t k;
-    int i, j;
+    int i, j, animationId;
     for (k = 0; k < result->numRooms; k++){
         result->roomList[k] = init_Room(malloc(sizeof(Room)));
         currRoom = result->roomList[k];
@@ -318,6 +321,29 @@ int fillAreaFromJson(cJSON *root, Area *result){
             currRoom->enemyInitialX[i] = cJSON_GetObjectItem(jsonTemp, "x")->valueint;
             currRoom->enemyInitialY[i] = cJSON_GetObjectItem(jsonTemp, "y")->valueint;
         }
+        
+        //allocate and load the stair lists
+        arrStair = cJSON_GetObjectItem(jsonRoom, "stairs");
+        currRoom->numStairs = (size_t)cJSON_GetArraySize(arrStair);
+        currRoom->stairs = malloc(sizeof(Stair *) * currRoom->numStairs);
+        for (i = 0; i < cJSON_GetArraySize(arrStair); i++){
+            jsonTemp = cJSON_GetArrayItem(arrStair, i);
+            tempStair = init_Stair(malloc(sizeof(Stair)));
+            
+            tempStair->e.active = 1;
+            tempStair->e.x = cJSON_GetObjectItem(jsonTemp, "x")->valueint;
+            tempStair->e.y = cJSON_GetObjectItem(jsonTemp, "y")->valueint;
+            
+            tempStair->sameArea = 1; //PIZZA - need to add passing of id to these methods so that you can check and correctly use this
+            tempStair->toArea = cJSON_GetObjectItem(jsonTemp, "to area")->valueint;;
+            tempStair->toRoom = cJSON_GetObjectItem(jsonTemp, "to room")->valueint;;
+            tempStair->toTileX = cJSON_GetObjectItem(jsonTemp, "to tile x")->valueint;;
+            tempStair->toTileY = cJSON_GetObjectItem(jsonTemp, "to tile y")->valueint;;
+            
+            animationId = cJSON_GetObjectItem(jsonTemp, "animation")->valueint;
+            addAnimationToEntity((Entity *)tempStair, animationId);
+            currRoom->stairs[i] = tempStair;
+        }
     }
     result->currentRoom = result->roomList[0];
     
@@ -344,19 +370,20 @@ int fillEntityFromJson(cJSON *root, Entity *result){
     result->interactable = (cJSON_GetObjectItem(root, "interactable")->type == cJSON_True);
     
     //load the sprite and animation and hitboxes
-    char dataFilename[80];
+    // char dataFilename[80];
     int animationId = cJSON_GetObjectItem(root, "animation")->valueint;
-    sprintf(dataFilename, "data/sprites/%05d.sprite", animationId);
-    result->sprite = readSpriteFromFile(dataFilename, malloc(sizeof(Sprite)));
-    sprintf(dataFilename, "data/animations/%05d.animation", animationId);
-    result->animation = readAnimationFromFile(dataFilename, malloc(sizeof(Animation)));
-    sprintf(dataFilename, "data/hitboxes/%05d.hitbox", animationId);
-    result->hitboxes = *(readHitboxesFromFile(dataFilename, &(result->hitboxes), 0)); //dumb, but visually consistent
+    // sprintf(dataFilename, "data/sprites/%05d.sprite", animationId);
+    // result->sprite = readSpriteFromFile(dataFilename, malloc(sizeof(Sprite)));
+    // sprintf(dataFilename, "data/animations/%05d.animation", animationId);
+    // result->animation = readAnimationFromFile(dataFilename, malloc(sizeof(Animation)));
+    // sprintf(dataFilename, "data/hitboxes/%05d.hitbox", animationId);
+    // result->hitboxes = *(readHitboxesFromFile(dataFilename, &(result->hitboxes), 0)); //dumb, but visually consistent
     
-    //if there is no associated animation file, then just load the one for a static animation
-    if (result->animation == NULL){
-        result->animation = readAnimationFromFile("data/animations/no_animation.animation", malloc(sizeof(Animation)));
-    }
+    // //if there is no associated animation file, then just load the one for a static animation
+    // if (result->animation == NULL){
+        // result->animation = readAnimationFromFile("data/animations/no_animation.animation", malloc(sizeof(Animation)));
+    // }
+    addAnimationToEntity(result, animationId);
     
     return 1;
 }
@@ -489,6 +516,23 @@ int fillHitboxesFromJson(cJSON *root, Hitboxes *result){
             result->interact[i].rects[j].w = cJSON_GetObjectItem(shapeJson, "width")->valueint;
             result->interact[i].rects[j].h = cJSON_GetObjectItem(shapeJson, "height")->valueint;
         }
+    }
+    
+    return 1;
+}
+
+int addAnimationToEntity(Entity *result, int animationId){
+    char dataFilename[80];
+    sprintf(dataFilename, "data/sprites/%05d.sprite", animationId);
+    result->sprite = readSpriteFromFile(dataFilename, malloc(sizeof(Sprite)));
+    sprintf(dataFilename, "data/animations/%05d.animation", animationId);
+    result->animation = readAnimationFromFile(dataFilename, malloc(sizeof(Animation)));
+    sprintf(dataFilename, "data/hitboxes/%05d.hitbox", animationId);
+    result->hitboxes = *(readHitboxesFromFile(dataFilename, &(result->hitboxes), 0)); //dumb, but visually consistent
+    
+    //if there is no associated animation file, then just load the one for a static animation
+    if (result->animation == NULL){
+        result->animation = readAnimationFromFile("data/animations/no_animation.animation", malloc(sizeof(Animation)));
     }
     
     return 1;

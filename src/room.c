@@ -1,4 +1,5 @@
 #include "room.h"
+#include "stair.h"
 #include "constants.h"
 #include "player.h"
 
@@ -39,6 +40,9 @@ Room *init_Room(Room *self){
     
     self->numDoors = 0;
     self->doors = NULL;
+    
+    self->numStairs = 0;
+    self->stairs = NULL;
     
     return self;
 }

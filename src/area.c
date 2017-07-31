@@ -44,6 +44,7 @@ static void removeTempEntities();
 static void drawRoomDoors(Room *room, double shiftX, double shiftY);
 static void drawRoomEntities(Room *room, double shiftX, double shiftY);
 static void drawRoomEnemies(Room *room, double shiftX, double shiftY);
+static void drawRoomStairs(Room *room, double shiftX, double shiftY);
 static void drawTempEntities(double shiftX, double shiftY);
 
 /////////////////////////////////////////////////
@@ -456,6 +457,7 @@ void drawCurrentRoom(){
     if (!changingRooms){
         drawImage(_current_area.currentRoom->buffer, 0, 0);
         drawRoomDoors(_current_area.currentRoom, 0, 0);
+        drawRoomStairs(_current_area.currentRoom, 0, 0);
         drawRoomEntities(_current_area.currentRoom, 0, 0);
         drawRoomEnemies(_current_area.currentRoom, 0, 0);
         drawTempEntities(0, 0);
@@ -465,6 +467,9 @@ void drawCurrentRoom(){
         
         drawRoomDoors(_current_area.currentRoom, room_transition.oldX, room_transition.oldY);
         drawRoomDoors(room_transition.newRoom, room_transition.newX, room_transition.newY);
+        
+        drawRoomStairs(_current_area.currentRoom, room_transition.oldX, room_transition.oldY);
+        drawRoomStairs(room_transition.newRoom, room_transition.newX, room_transition.newY);
         
         drawRoomEntities(_current_area.currentRoom, room_transition.oldX, room_transition.oldY);
         drawRoomEntities(room_transition.newRoom, room_transition.newX, room_transition.newY);
@@ -494,11 +499,18 @@ void drawRoomEntities(Room *room, double shiftX, double shiftY){
 }
 
 void drawRoomEnemies(Room *room, double shiftX, double shiftY){
-    int i;
+    size_t i;
     for (i = 0; i < room->numEnemies; i++){
         if (room->enemies[i]->e.active){
             room->enemies[i]->e.draw(&room->enemies[i]->e, shiftX, shiftY);
         }
+    }
+}
+
+void drawRoomStairs(Room *room, double shiftX, double shiftY){
+    size_t i;
+    for (i = 0; i < room->numStairs; i++){
+        room->stairs[i]->e.draw(&room->stairs[i]->e, shiftX, shiftY);
     }
 }
 
@@ -544,6 +556,14 @@ size_t getNumRoomDoors(){
 
 Door **getRoomDoorList(){
     return _current_area.currentRoom->doors;
+}
+
+size_t getNumRoomStairs(){
+    return _current_area.currentRoom->numStairs;
+}
+
+Stair **getRoomStairList(){
+    return _current_area.currentRoom->stairs;
 }
 
 void addTempEntityToArea(Entity *e){
