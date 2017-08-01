@@ -66,8 +66,8 @@
                     "y" : 60,
                     "to area" : 0,
                     "to room" : 2,
-                    "to tile x" : 10,
-                    "to tile y" : 10,
+                    "to tile x" : 15,
+                    "to tile y" : 15,
                     "animation" : 7
                 }
             ]
@@ -134,8 +134,8 @@
         },
         {
             "room number" : 2,
-            "up connecting room" : 1,
-            "down connecting room" : 0,
+            "up connecting room" : 2,
+            "down connecting room" : 2,
             "left connecting room" : 0,
             "right connecting room" : 0,
             "tile layout" : [
@@ -183,7 +183,6 @@
                     [1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1]
                 ],
             "entity positions" : [
-                    { "ID":0, "x":30, "y":30 }
                 ],
             "enemy positions" : [
                 ],

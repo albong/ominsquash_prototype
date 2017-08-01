@@ -4,10 +4,12 @@
 #include "constants.h"
 #include "area.h"
 #include "room.h"
+#include "stair.h"
 #include "graphics.h"
 #include "player.h"
 #include "entity.h"
 #include "enemy.h"
+#include "collisions.h"
 
 #include "data_reader.h"
 #include "entity_creator.h"
@@ -34,6 +36,8 @@ static void loadAreaEntityData(Area *self);
 static void createAreaEntities(Area *self);
 static void drawRoomBuffers(Room *room);
 
+static void shiftRoom(int roomIndex, int direction, int delta);
+static void jumpRoom();
 static int checkForRoomChange();
 static void doRoomEntities(int delta);
 static void doRoomEnemies(int delta);
@@ -270,16 +274,40 @@ void drawRoomBuffers(Room *room){
 // Logic
 /////////////////////////////////////////////////
 void doRoom(int delta){
+    int newRoom, stairIndex;
+    Stair *stair;
+    
     totalDelta += delta;
-    int newRoom;
+    
+    //if we're not in the middle of a transition, logic, otherwise transition
     if (!changingRooms){
         doRoomDoors(delta);
         doRoomEntities(delta);
         doRoomEnemies(delta);
         doTempEntities(delta);
         
+        //check if the player is leaving the room
+        stairIndex = checkPlayerCollideEntitiesMovement((Entity **)_current_area.currentRoom->stairs, _current_area.currentRoom->numStairs);
         newRoom = checkForRoomChange();
-        if (newRoom >= 0 && _current_area.currentRoom->connectingRooms[newRoom] != -1){
+        
+        //depending on how the player is leaving, set various flags, clear everything, and start the transition
+        if (stairIndex >= 0){
+            stair = _current_area.currentRoom->stairs[stairIndex];
+            
+            totalDelta = 0;
+            changingRooms = 2;
+            _current_area.changingRooms = 2;
+            room_transition.newRoom = _current_area.roomList[stair->toRoom];
+            resetEntityPositions(room_transition.newRoom);
+            resetEnemyPositions(room_transition.newRoom);
+            clearAndResetEnemies(room_transition.newRoom);
+            setDoorStates(room_transition.newRoom, stair->toRoom);
+            lockPlayer();
+            
+            room_transition.newX = TILE_SIZE * stair->toTileX;
+            room_transition.newY = TILE_SIZE * stair->toTileY;
+            
+        } else if (newRoom >= 0 && _current_area.currentRoom->connectingRooms[newRoom] != -1){
             totalDelta = 0;
             changingRooms = 1;
             _current_area.changingRooms = 1;
@@ -290,14 +318,16 @@ void doRoom(int delta){
             clearAndResetEnemies(room_transition.newRoom);
             setDoorStates(room_transition.newRoom, changingToRoom);
             setPlayerTransitioning(changingToRoom);
-            changeRoom(_current_area.currentRoom->connectingRooms[changingToRoom], changingToRoom, delta);
+            shiftRoom(_current_area.currentRoom->connectingRooms[changingToRoom], changingToRoom, delta);
         }
-    } else {
-        changeRoom(_current_area.currentRoom->connectingRooms[changingToRoom], changingToRoom, delta);
+    } else if (changingRooms == 1){
+        shiftRoom(_current_area.currentRoom->connectingRooms[changingToRoom], changingToRoom, delta);
+    } else { //changingRooms == 2
+        jumpRoom();
     }
 }
 
-void changeRoom(int roomIndex, int direction, int delta){
+void shiftRoom(int roomIndex, int direction, int delta){
     double transPercent = totalDelta / MILLI_PER_TRANSITION;
     
     switch (direction){
@@ -332,9 +362,27 @@ void changeRoom(int roomIndex, int direction, int delta){
     if (transPercent >= 1){
         changingRooms = 0;
         _current_area.changingRooms = 0;
-        _current_area.currentRoom = _current_area.roomList[_current_area.currentRoom->connectingRooms[direction]];
+        _current_area.currentRoom = room_transition.newRoom;
         removeTempEntities();
         stopPlayerTransitioning();
+        totalDelta = 0;
+    }
+}
+
+void jumpRoom(){
+    double transPercent = totalDelta / MILLI_PER_TRANSITION;
+    
+    if (transPercent >= 1 && transPercent < 2){
+        _current_area.currentRoom = room_transition.newRoom;
+        _player.e.x = room_transition.newX;
+        _player.e.y = room_transition.newY;
+        
+    } else if (transPercent >= 2){
+        changingRooms = 0;
+        _current_area.changingRooms = 0;
+        removeTempEntities();
+        unlockPlayer();
+        totalDelta = 0;
     }
 }
 
@@ -461,7 +509,7 @@ void drawCurrentRoom(){
         drawRoomEntities(_current_area.currentRoom, 0, 0);
         drawRoomEnemies(_current_area.currentRoom, 0, 0);
         drawTempEntities(0, 0);
-    } else {
+    } else if (changingRooms == 1){
         drawImage(_current_area.currentRoom->buffer, room_transition.oldX, room_transition.oldY);
         drawImage(room_transition.newRoom->buffer, room_transition.newX, room_transition.newY);
         
@@ -479,6 +527,13 @@ void drawCurrentRoom(){
         
         //new room won't have temp stuff yet
         drawTempEntities(room_transition.oldX, room_transition.oldY);
+    } else { //changinRooms == 2
+        drawImage(_current_area.currentRoom->buffer, 0, 0);
+        drawRoomDoors(_current_area.currentRoom, 0, 0);
+        drawRoomStairs(_current_area.currentRoom, 0, 0);
+        drawRoomEntities(_current_area.currentRoom, 0, 0);
+        drawRoomEnemies(_current_area.currentRoom, 0, 0);
+        drawTempEntities(0, 0);
     }
 }
 

@@ -155,6 +155,16 @@ void stopPlayerTransitioning(){
     totalDelta = 0;
 }
 
+void lockPlayer(){
+    _player.e.active = 0;
+    totalDelta = 0;
+}
+
+void unlockPlayer(){
+    _player.e.active = 1;
+    totalDelta = 0;
+}
+
 int playerTakeDamage(int amount){
     if (_player.milliHitstun == 0){
         printf("we hit\n");

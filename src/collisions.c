@@ -325,11 +325,54 @@ void doEnemyCollisions(){
     //other entites?
 }
 
+int checkPlayerCollideEntitiesMovement(Entity **entityList, size_t numEntities){
+    if (entityList == NULL || numEntities <= 0){
+        return -1;
+    }
+
+    CollRect temp, playerTemp;
+    size_t i, j, k; 
+    int collCode;
+    
+    //player first
+    int hitFrame = _player.e.animation->currFrame;
+    int entityHitFrame;
+    for (i = 0; i < numEntities; i++){
+        if (!entityList[i]->active || !(entityList[i]->hitboxes.numMovement > 0)){
+            continue;
+        }
+        
+        entityHitFrame = entityList[i]->animation->currFrame;
+        for (j = 0; j < entityList[i]->hitboxes.movement[entityHitFrame].numRect; j++){
+            temp.x = entityList[i]->x + entityList[i]->changeX + entityList[i]->hitboxes.movement[entityHitFrame].rects[j].x;
+            temp.y = entityList[i]->y + entityList[i]->changeY + entityList[i]->hitboxes.movement[entityHitFrame].rects[j].y;
+            temp.w = entityList[i]->hitboxes.movement[entityHitFrame].rects[j].w;
+            temp.h = entityList[i]->hitboxes.movement[entityHitFrame].rects[j].h;
+                
+            for (k = 0; k < _player.e.hitboxes.movement->numRect; k++){
+                playerTemp.x = _player.e.x + _player.e.changeX + _player.e.hitboxes.movement[hitFrame].rects[k].x;
+                playerTemp.y = _player.e.y + _player.e.changeY + _player.e.hitboxes.movement[hitFrame].rects[k].y;
+                playerTemp.w = _player.e.hitboxes.movement[hitFrame].rects[k].w;
+                playerTemp.h = _player.e.hitboxes.movement[hitFrame].rects[k].h;
+                
+                collCode = rectangleCollide(playerTemp, temp);
+                if (collCode){
+                    return i;
+                }
+            }
+        }
+    }
+    
+    //if the player didn't hit anything
+    return -1;
+}
 
 /////////////////////////////////////////////////
 // Collisions
 /////////////////////////////////////////////////
 static int rectangleCollide(CollRect r1, CollRect r2){
+    ///NOTE: sometimes you can get weird numbers returned, negatives and such; I think this occurs when rectangles are on top of each other.
+    
     //1 = left, 2, = right, 3 = up, 4 = down - these are for which side of r1 is hit by r2
     int result = 0;
     

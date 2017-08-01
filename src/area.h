@@ -36,7 +36,6 @@ void loadArea();
 
 // Logic
 void doRoom(int delta);
-void changeRoom(int roomIndex, int direction, int delta);
 void moveRoomEntities();
 void moveRoomEnemies();
 void moveTemporaryEntities();

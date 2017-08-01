@@ -24,6 +24,8 @@ void initPlayer();
 void doPlayer(int delta);
 void setPlayerTransitioning(int direction);
 void stopPlayerTransitioning();
+void lockPlayer();
+void unlockPlayer();
 void movePlayer();
 int playerTakeDamage(int amount);
 static void updatePlayerFrame(int delta);

@@ -1,0 +1,17 @@
+So here's my thought:
+
+We mimic the way in which we currently change rooms.  However, we rename all of
+the existing stuff to "shifting rooms" and all of the new stuff to "jumping rooms"
+to avoid confusion.  That or we set changingRooms to 1 for shifting, and 2 for 
+jumping.
+
+Second, we need to check if the player is colliding with stairs DURING the logic
+for the area.  That means we need to add a public method to collisions to do
+this check.  Maybe pass in the list of stairs and the length, and have it
+return the pointer/NULL for whatever was collided with?
+
+Thirdly, we don't have area jumping yet, but that's next on the list.  I'm not
+really sure how that'll fit, since that's a whole other layer of logic on top
+of the animation to wipe the room.  Perhaps it would be better to abstract the
+logic for halting input and animating room transitions, over the janky way it is
+currently done?  I dunno.

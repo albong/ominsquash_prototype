@@ -1,0 +1,68 @@
+There are three components - RawSprite, Sprite, and SpriteAnimation.
+RawSprite:
+    {
+        SDL_Texture
+        width
+        height
+    }
+Sprite:
+    {
+        Sprite
+        numFrames
+        frameArray: {
+            x
+            y
+            w
+            h
+        }
+    }
+Animation:
+    {
+        numLoops
+        loopLengthArray
+        loopArray: [
+            [
+                {
+                    frameNumber
+                    durationInMilli
+                }
+            ,...]
+        ,...]
+    }
+    
+The idea is that a RawSprite is just a raw texture - just a picture.  We can still
+draw segments of it at render time, but the intention is to draw the whole thing.
+A Sprite however is more like a tilesheet - it has frames of varying sizes and
+positions (not sure if this is good or if we ought just do rectangles - probably
+the latter, but this means that then we need to store the number of frames high/wide
+and frame sizes).  All of this data is stored in JSON, along with the graphic file
+to use.  So a RawSprite doesn't have an associated data file, but a Sprite does.
+An Animation is how you make sense of drawing a Sprite (removing this logic from
+the actual code).  An animation is a sequence of loops, where each loop is a list
+of frame numbers (using the list indices of Sprite) and a duration in milliseconds
+for each frame.  The advantage of this is that you can reuse animations (if needed)
+and it allows for correcting art errors without recompile (sometimes), since an animation is
+also stored in JSON, and in code all that will be required is setting what animation
+to play when.  Standing still is also an animation.
+
+Separate code for cutscenes will be required, but probably using this stuff underneath.
+
+-------
+
+Unrelated, but we can also fix the SDL spilling into area.c problems with https://wiki.libsdl.org/SDL_SetRenderTarget
+and the above.  Tilesheets are Sprites, and the noted method will let us render to
+a Texture.  See example: http://stackoverflow.com/questions/20730900/creating-a-new-texture-from-several-textures-sdl-2
+
+-------
+
+NOTE: We MOST DEF want animation to be a separate data file - it allows for easy correlating of hitboxes
+with animations.
+
+We'll add a True/False flag to entities/enemies, name it "no animation"; if its true then you load the 
+animation file no_animation.animation, which is just a loop of a single frame, otherwise you load the
+animation with the ID that matches the sprite number.
+You might think that if there's no animation, it should be an Image, but this way we can easily
+animate things that aren't animated, and since we intend to attach hitbox data, anything we build
+for that will work sans modification.
+
+-------
