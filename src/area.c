@@ -26,6 +26,7 @@ typedef struct Transition{
     double newX, newY;
     Room *newRoom;
     int direction;
+    int roomLoaded;
 } Transition;
 
 Transition room_transition;
@@ -304,8 +305,11 @@ void doRoom(int delta){
             setDoorStates(room_transition.newRoom, stair->toRoom);
             lockPlayer();
             
+            room_transition.oldX = _player.e.x + (_player.e.w / 2);
+            room_transition.oldY = _player.e.y + (_player.e.h / 2);
             room_transition.newX = TILE_SIZE * stair->toTileX;
             room_transition.newY = TILE_SIZE * stair->toTileY;
+            room_transition.roomLoaded = 0;
             
         } else if (newRoom >= 0 && _current_area.currentRoom->connectingRooms[newRoom] != -1){
             totalDelta = 0;
@@ -372,12 +376,14 @@ void shiftRoom(int roomIndex, int direction, int delta){
 void jumpRoom(){
     double transPercent = totalDelta / MILLI_PER_TRANSITION;
     
-    if (transPercent >= 1 && transPercent < 2){
+    if (transPercent >= 1 && !room_transition.roomLoaded){
         _current_area.currentRoom = room_transition.newRoom;
         _player.e.x = room_transition.newX;
         _player.e.y = room_transition.newY;
-        
-    } else if (transPercent >= 2){
+        room_transition.roomLoaded = 1;
+    }
+    
+    if (transPercent >= 2.2){
         changingRooms = 0;
         _current_area.changingRooms = 0;
         removeTempEntities();
@@ -534,6 +540,29 @@ void drawCurrentRoom(){
         drawRoomEntities(_current_area.currentRoom, 0, 0);
         drawRoomEnemies(_current_area.currentRoom, 0, 0);
         drawTempEntities(0, 0);
+    }
+}
+
+void drawCurrentRoomTopLayer(){
+    //can be used to create other depth effects as well
+    double transPercent = totalDelta / MILLI_PER_TRANSITION;
+    
+    if (changingRooms == 2){
+        //wipe inward or outward, depending on how far along, centered on the player
+        //using only SCREEN_WIDTH results in consistent wipe speeds
+        if (transPercent < 1){
+            drawFilledRect_T(room_transition.oldX - SCREEN_WIDTH, 0, SCREEN_WIDTH * transPercent, SCREEN_WIDTH, 0,0,0);
+            drawFilledRect_T(room_transition.oldX + (SCREEN_WIDTH * (1-transPercent)), 0, SCREEN_WIDTH, SCREEN_WIDTH, 0,0,0);
+            drawFilledRect_T(0, room_transition.oldY - SCREEN_WIDTH, SCREEN_WIDTH, SCREEN_WIDTH * transPercent, 0,0,0);
+            drawFilledRect_T(0, room_transition.oldY + (SCREEN_WIDTH * (1-transPercent)), SCREEN_WIDTH, SCREEN_WIDTH, 0,0,0);
+        } else if (transPercent >= 1 && transPercent < 1.2) {
+            drawFilledRect_T(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0,0,0);
+        } else {
+            drawFilledRect_T(room_transition.newX - SCREEN_WIDTH, 0, SCREEN_WIDTH * (2.2-transPercent), SCREEN_HEIGHT, 0,0,0);
+            drawFilledRect_T(room_transition.newX + (SCREEN_WIDTH * (transPercent-1.2)), 0, SCREEN_WIDTH, SCREEN_WIDTH, 0,0,0);
+            drawFilledRect_T(0, room_transition.newY - SCREEN_WIDTH, SCREEN_WIDTH, SCREEN_WIDTH * (2.2-transPercent), 0,0,0);
+            drawFilledRect_T(0, room_transition.newY + (SCREEN_WIDTH * (transPercent-1.2)), SCREEN_WIDTH, SCREEN_WIDTH, 0,0,0);
+        }
     }
 }
 

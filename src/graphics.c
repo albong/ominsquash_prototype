@@ -371,17 +371,16 @@ void drawUnfilledRect_S(int x, int y, int w, int h, int r, int g, int b){
 void drawUnfilledRect_T(int x, int y, int w, int h, int r, int g, int b){
     SDL_Rect temp;
     SDL_SetRenderDrawColor(renderer, r, g, b, SDL_ALPHA_OPAQUE);
-//    Uint32 color = SDL_MapRGB(screen->format, r, g, b);
-//    temp = (SDL_Rect){ x, y, 1, h };
-//    SDL_FillRect(screen, &temp, color);
-//    temp = (SDL_Rect){ x+w-1, y, 1, h };
-//    SDL_FillRect(screen, &temp, color);
-//    temp = (SDL_Rect){ x, y, w, 1 };
-//    SDL_FillRect(screen, &temp, color);
-//    temp = (SDL_Rect){ x, y+h-1, w, 1 };
-//    SDL_FillRect(screen, &temp, color);
     temp = (SDL_Rect){ x, y, w, h };
     SDL_RenderDrawRect(renderer, &temp);
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
+}
+
+void drawFilledRect_T(int x, int y, int w, int h, int r, int g, int b){
+    SDL_Rect temp;
+    SDL_SetRenderDrawColor(renderer, r, g, b, SDL_ALPHA_OPAQUE);
+    temp = (SDL_Rect){ x, y, w, h };
+    SDL_RenderFillRect(renderer, &temp);
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
 }
 

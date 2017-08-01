@@ -83,6 +83,7 @@ int gameFrameLogic(unsigned delta){
 void gameFrameDraw(){
     drawCurrentRoom();
     drawPlayer();
+    drawCurrentRoomTopLayer();
     drawHitboxes(DRAW_MOVE_HITBOX, DRAW_INTERACT_HITBOX);
     drawInterface();
 }

@@ -42,6 +42,7 @@ void moveTemporaryEntities();
 
 // Drawing
 void drawCurrentRoom();
+void drawCurrentRoomTopLayer();
 
 // Access
 Hitbox getCurrentWalls();

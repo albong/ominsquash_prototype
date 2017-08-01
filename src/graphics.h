@@ -70,6 +70,7 @@ void drawImageToImage(Image *src, Image *dst, ImageRect *srcRect, ImageRect *dst
 void drawImageSrcDst(Image *image, ImageRect *srcRect, ImageRect *dstRect);
 void drawUnfilledRect_S(int x, int y, int w, int h, int r, int g, int b);
 void drawUnfilledRect_T(int x, int y, int w, int h, int r, int g, int b);
+void drawFilledRect_T(int x, int y, int w, int h, int r, int g, int b);
 void drawAnimation(Sprite *s, Animation *anim, int x, int y);
 
 // Screen Management
