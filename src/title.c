@@ -9,24 +9,48 @@
 #include <stdio.h>
 
 static Entity *titleName;//this is the name of the game that is projected - really just need it for the sprite/positioning
+static size_t numButtons = 1;
+static size_t currButton = 0;
+static Entity buttons[10]; //PIZZA - hardcoded cause I don't see a way not to have the logic for the buttons hardcoded
 
 static int loadTitleData();
 
 void initTitle(){
     if (!loadTitleData()){
-        //an error I guess
+        printf("Error: failed to load title data\n");
+        fflush(stdout);
     }
+    
+    setAnimationLoop(buttons[0].animation, 1, 0);
 }
 
 int doTitle(unsigned delta){
+    size_t i;
+    
+    //update the animation loops
     titleName->action(titleName, delta);
+    for (i = 0; i < numButtons; i++){
+        buttons[i].action(buttons + i, delta);
+    }
+    
+    //manage input and change animation loops
     
     return 0;
 }
 
 void drawTitle(){
-    drawFilledRect_T(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0, 10);
+    size_t i;
+    
+    //draw a blank background
+    drawFilledRect_T(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 128, 128, 150);
+    
+    //draw the title of the game
     titleName->draw(titleName, 0, 0);
+    
+    //draw the buttons
+    for (i = 0; i < numButtons; i++){
+        buttons[i].draw(buttons + i, 0, 0);
+    }
 }
 
 int loadTitleData(){
@@ -34,13 +58,18 @@ int loadTitleData(){
     char *titleFilename = "data/title.data";
     char filename[80];
     int id;
+    size_t i, arrLen;
+    cJSON *root, *buttonsList, *temp;
     
-    //initialize the name of the game
+    //initialize stuff
     titleName = init_Entity(malloc(sizeof(Entity)));
+    for (i = 0; i < numButtons; i++){
+        init_Entity(buttons + i);
+    }
     
     //read in the data file for the title
     char *fileContents = readFileToCharStar(titleFilename);
-    cJSON *root = cJSON_Parse(fileContents);
+    root = cJSON_Parse(fileContents);
     
     //check that the file was read correctly, then parse the data
     if (!root){
@@ -55,6 +84,25 @@ int loadTitleData(){
         titleName->x = cJSON_GetObjectItem(root, "name x")->valueint;
         titleName->y = cJSON_GetObjectItem(root, "name y")->valueint;
         
+        //load in the buttons - if C and JSON number of buttons don't match, error
+        buttonsList = cJSON_GetObjectItem(root, "buttons");
+        arrLen = cJSON_GetArraySize(buttonsList);
+        if (arrLen != numButtons){
+            result = 0;
+            printf("Error in title.data: button quantities don't match.\n");
+            fflush(stdout);
+        } else {
+            for (i = 0; i < numButtons; i++){
+                temp = cJSON_GetArrayItem(buttonsList, i);
+                id = cJSON_GetObjectItem(temp, "entity")->valueint;
+                sprintf(filename, "data/entities/%05d.entity", id);
+                readEntityFromFile(filename, buttons + i);
+                buttons->x = cJSON_GetObjectItem(temp, "x")->valueint;
+                buttons->y = cJSON_GetObjectItem(temp, "y")->valueint;
+            }
+        }
+        
+        //free the csjon object
         cJSON_Delete(root);
     }
     

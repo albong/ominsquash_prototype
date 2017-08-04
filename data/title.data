@@ -1,5 +1,14 @@
 {
     "name entity" : 2,
     "name x" : 100,
-    "name y" : 50
+    "name y" : 50,
+
+    "buttons" : [
+        {
+            "entity" : 3,
+            "x" : 100,
+            "y" : 150
+        }
+    ]
+    
 }

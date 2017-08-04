@@ -1,0 +1,16 @@
+{
+    "number of loops" : 2,
+    "loop lengths" : [1,2],
+    "loops" : [
+        {
+            "frame numbers" : [0],
+            "durations" : [1],
+            "repeat" : true
+        },
+        {
+            "frame numbers" : [1,2],
+            "durations" : [723,723],
+            "repeat" : true
+        }
+    ]
+}
