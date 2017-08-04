@@ -11,9 +11,11 @@
 #include "interface.h"
 #include "entity_creator.h"
 #include "enemy_creator.h"
+#include "title/title.h"
 
 #include "../debug/hitbox_drawer.h"
 
+#include <stdio.h>
 
 //Refer to http://gamedev.stackexchange.com/a/132835 for changes
 
@@ -45,12 +47,13 @@ int main(int argc, char *argv[]){
     initInput();
     initTextbox();
     initInterface();
+    initTitle();
 
     initFrames();
     int newFrame;
     int currFrame = 0;
     int numFrames = 1;
-    Frame *frames[5];
+    Frame *frames[15]; //PIZZA - this is hardcoded, just increase to match number of possible frames?  Probably a small number
     frames[0] = _currentFrame;
     
     //dat main loop doe
@@ -61,28 +64,6 @@ int main(int argc, char *argv[]){
         delta = currMilliseconds - prevMilliseconds;
         
         getInput();
-
-        // //do logic, calculate next positions
-        // doPlayer(delta);
-        // doRoom(delta);
-        
-        // //do any collisions
-        // /*
-            // Do we need to skip if changing rooms?
-        // */
-        // doCollisions();
-
-        // //update positions
-        // movePlayer();
-        // moveRoomEntities();
-        // moveRoomEnemies();
-        
-        //draw
-        // clearScreen();
-        // drawCurrentRoom();
-        // drawPlayer();
-        // drawHitboxes(DRAW_MOVE_HITBOX, DRAW_INTERACT_HITBOX);
-        // bufferToScreen();
         
         newFrame = frames[currFrame]->logic(delta);
         if (newFrame == 1){
@@ -95,7 +76,11 @@ int main(int argc, char *argv[]){
         } else {
             clearScreen();
             for (i = 0; i < numFrames; i++){
-                frames[i]->draw();
+                if (i != numFrames-1 && !frames[i]->drawIfNotTop){
+                    continue;
+                } else {
+                    frames[i]->draw();
+                }
             }
             bufferToScreen();
         }

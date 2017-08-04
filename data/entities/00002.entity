@@ -1,0 +1,13 @@
+{
+    "active" : true,
+    "speed in pixelsPerMillisecond" : 0.0,
+    "width" : 0,
+    "height" : 0,
+    "milliseconds per frame" : 0,
+    "number of frames" : 0,
+    
+    "animation" : 8,
+    
+    "collision type" : "NONE",
+    "interactable" : false
+}

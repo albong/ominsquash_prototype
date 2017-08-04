@@ -1,4 +1,3 @@
-#include <stdlib.h>
 #include "frames.h"
 #include "input.h"
 #include "player.h"
@@ -9,11 +8,16 @@
 #include "../debug/hitbox_drawer.h"
 #include "menu.h"
 #include "textbox.h"
+#include "title.h"
+
+#include <stdlib.h>
+#include <stdio.h>
 
 //Variables
 static Frame *gameFrame;
 static Frame *menuFrame;
 static Frame *textboxFrame;
+static Frame *titleFrame;
 
 //methods
 static int gameFrameLogic(unsigned delta);
@@ -22,22 +26,32 @@ static int menuFrameLogic(unsigned delta);
 static void menuFrameDraw();
 static int textboxFrameLogic(unsigned delta);
 static void textboxFrameDraw();
+static int titleFrameLogic(unsigned delta);
+static void titleFrameDraw();
 
 
 void initFrames(){
     gameFrame = malloc(sizeof(Frame));
     gameFrame->logic = &gameFrameLogic;
     gameFrame->draw = &gameFrameDraw;
+    gameFrame->drawIfNotTop = 1;
     
     menuFrame = malloc(sizeof(Frame));
     menuFrame->logic = &menuFrameLogic;
     menuFrame->draw = &menuFrameDraw;
+    menuFrame->drawIfNotTop = 1;
     
     textboxFrame = malloc(sizeof(Frame));
     textboxFrame->logic = &textboxFrameLogic;
     textboxFrame->draw = &textboxFrameDraw;
+    textboxFrame->drawIfNotTop = 1;
     
-    _currentFrame = gameFrame;
+    titleFrame = malloc(sizeof(Frame));
+    titleFrame->logic = &titleFrameLogic;
+    titleFrame->draw = &titleFrameDraw;
+    titleFrame->drawIfNotTop = 0;
+    
+    _currentFrame = titleFrame;
 }
 
 int gameFrameLogic(unsigned delta){
@@ -115,3 +129,10 @@ void textboxFrameDraw(){
     drawTextbox();
 }
 
+int titleFrameLogic(unsigned delta){
+    doTitle(delta);
+}
+
+void titleFrameDraw(){
+    drawTitle();
+}

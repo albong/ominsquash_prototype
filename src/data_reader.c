@@ -1,4 +1,5 @@
 #include "data_reader.h"
+#include "file_reader.h"
 #include "area.h"
 #include "room.h"
 #include "stair.h"
@@ -14,7 +15,7 @@
 
 //PIZZA - Needs to check for existence of all fields being read!
 
-static char *readFileToCharStar(char *filename);
+
 //return 0 on failure
 static int fillAreaFromJson(cJSON *root, Area *result);
 static int fillEntityFromJson(cJSON *root, Entity *result);
@@ -23,36 +24,6 @@ static int fillSpriteFromJson(cJSON *root, Sprite *result);
 static int fillAnimationFromJson(cJSON *root, Animation *result);
 static int fillHitboxesFromJson(cJSON *root, Hitboxes *result);
 static int addAnimationToEntity(Entity *result, int animationId);
-
-//read in a JSON file to a cJSON object
-char *readFileToCharStar(char *filename){
-    //More or less copied and pasted from the cJSON examples
-    
-    // cJSON *result;
-    FILE *f;
-    long len;
-    char *data;
-
-    // open in read binary mode
-    f = fopen(filename,"rb");
-    if (f == NULL){
-        return NULL;
-    }
-    
-    // get the length
-    fseek(f, 0, SEEK_END);
-    len = ftell(f);
-    fseek(f, 0, SEEK_SET);
-
-    //allocate and read the data
-    data = (char*)malloc(len + 1);
-    fread(data, 1, len, f);
-    data[len] = '\0';
-    
-    fclose(f);
-    
-    return data;
-}
 
 Area *readAreaFromFile(char *filename, Area *result){
     //init the area
