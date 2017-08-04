@@ -26,6 +26,7 @@ void initTitle(){
 
 int doTitle(unsigned delta){
     size_t i;
+    int result = 0;
     
     //update the animation loops
     titleName->action(titleName, delta);
@@ -34,8 +35,36 @@ int doTitle(unsigned delta){
     }
     
     //manage input and change animation loops
+    if (_input.up && !_inputRead.up){
+        //set the current button's animation to the "up" state
+        setAnimationLoop(buttons[currButton].animation, 0, 0);
+        
+        //change the current button
+        currButton = (currButton - 1) % numButtons;
+        _inputRead.up = 1;
+        
+        //set the current button's animation to the "down" state
+        setAnimationLoop(buttons[currButton].animation, 1, 0);
+    } else if (_input.down && !_inputRead.down){
+        //set the current button's animation to the "up" state
+        setAnimationLoop(buttons[currButton].animation, 0, 0);
+        
+        //change the current button
+        currButton = (currButton + 1) % numButtons;
+        _inputRead.down = 1;
+        
+        //set the current button's animation to the "down" state
+        setAnimationLoop(buttons[currButton].animation, 1, 0);
+    }
     
-    return 0;
+    //PIZZA - hardcoded to start a new game, since that's the only button right now
+    //PIZZA - do we need to play some sweet animation here?
+    if (_input.start){
+        result = 1;
+        setInputAllRead();
+    }
+    
+    return result;
 }
 
 void drawTitle(){

@@ -130,7 +130,13 @@ void textboxFrameDraw(){
 }
 
 int titleFrameLogic(unsigned delta){
-    doTitle(delta);
+    if (doTitle(delta)){
+        setInputAllRead();
+        _currentFrame = gameFrame;
+        return 1;
+    } else {
+        return 0;
+    }
 }
 
 void titleFrameDraw(){
