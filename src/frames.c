@@ -9,6 +9,7 @@
 #include "menu.h"
 #include "textbox.h"
 #include "title.h"
+#include "load_screen.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -18,6 +19,7 @@ static Frame *gameFrame;
 static Frame *menuFrame;
 static Frame *textboxFrame;
 static Frame *titleFrame;
+static Frame *loadScreenFrame;
 
 //methods
 static int gameFrameLogic(unsigned delta);
@@ -28,7 +30,8 @@ static int textboxFrameLogic(unsigned delta);
 static void textboxFrameDraw();
 static int titleFrameLogic(unsigned delta);
 static void titleFrameDraw();
-
+static int loadScreenFrameLogic(unsigned delta);
+static void loadScreenFrameDraw();
 
 void initFrames(){
     gameFrame = malloc(sizeof(Frame));
@@ -50,6 +53,11 @@ void initFrames(){
     titleFrame->logic = &titleFrameLogic;
     titleFrame->draw = &titleFrameDraw;
     titleFrame->drawIfNotTop = 0;
+    
+    loadScreenFrame = malloc(sizeof(Frame));
+    loadScreenFrame->logic = loadScreenFrameLogic;
+    loadScreenFrame->draw = loadScreenFrameDraw;
+    loadScreenFrame->drawIfNotTop = 0;
     
     _currentFrame = titleFrame;
 }
@@ -132,7 +140,8 @@ void textboxFrameDraw(){
 int titleFrameLogic(unsigned delta){
     if (doTitle(delta)){
         setInputAllRead();
-        _currentFrame = gameFrame;
+        // _currentFrame = gameFrame;
+        _currentFrame = loadScreenFrame;
         return 1;
     } else {
         return 0;
@@ -141,4 +150,18 @@ int titleFrameLogic(unsigned delta){
 
 void titleFrameDraw(){
     drawTitle();
+}
+
+int loadScreenFrameLogic(unsigned delta){
+    if (doLoadScreen(delta)){
+        setInputAllRead();
+        _currentFrame = gameFrame;
+        return 1;
+    } else {
+        return 0;
+    }
+}
+
+void loadScreenFrameDraw(){
+    drawLoadScreen();
 }

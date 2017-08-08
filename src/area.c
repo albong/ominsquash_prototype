@@ -15,7 +15,8 @@
 #include "entity_creator.h"
 #include "enemy_creator.h"
 
-#include "stdint.h"
+#include <stdint.h>
+#include <string.h>
  
 static int changingRooms = 0;
 static int changingToRoom = -1;
@@ -77,14 +78,26 @@ Area *init_Area(Area *self){
         self->temporaryEntities[i] = NULL;
     }
     
+    self->id = 0;
+    
     return self;
 }
 
-void loadArea(){
+int loadAreaById(int id){
     size_t i;
+    char dataFilename[80];
+    Area *tempArea;
 
-    //remove the janky pointer bidness later so we can cache areas
-    readAreaFromFile("data/areas/0.area", &_current_area);
+    //load the data file - PIZZA, probably could replace _current_area with a pointer
+    sprintf(dataFilename, "data/areas/%05d.area", id);
+    tempArea = readAreaFromFile(dataFilename, malloc(sizeof(Area)));
+    if (tempArea == NULL){
+        return 0;
+    } else {
+        memcpy(&_current_area, tempArea, sizeof(Area));
+        _current_area.id = id;
+        free(tempArea);
+    }
     
     //load the tilesheet
     // _current_area.tilesetName = "gfx/area1tiles.png";
@@ -137,6 +150,8 @@ void loadArea(){
     }
     
     _current_area.changingRooms = 0;
+    
+    return 1;
 }
 
 void loadAreaEnemyData(Area *self){

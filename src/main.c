@@ -11,7 +11,8 @@
 #include "interface.h"
 #include "entity_creator.h"
 #include "enemy_creator.h"
-#include "title/title.h"
+#include "title.h"
+#include "load_screen.h"
 
 #include "../debug/hitbox_drawer.h"
 
@@ -40,7 +41,6 @@ int main(int argc, char *argv[]){
     initEnemyCreateTable();
     initWeaponCreateTable();
     initWeaponLists(); //creates the player's arrays, must be done before the area and player
-    loadArea(); // eventually this will be gone since the areas will be loaded from files
     initInventory(); //should be done before player
     initPlayer();
     initMenu();
@@ -48,6 +48,7 @@ int main(int argc, char *argv[]){
     initTextbox();
     initInterface();
     initTitle();
+    initLoadScreen();
 
     initFrames();
     int newFrame;

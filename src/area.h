@@ -24,6 +24,7 @@ typedef struct Area {
     int changingRooms;
     size_t numTemporaryEntities;
     Entity *temporaryEntities[NUM_AREA_TEMP_ENTITIES]; //array of pointers
+    int id;
 } Area;
 
 // Globals
@@ -31,7 +32,7 @@ Area _current_area;
 
 // Loading
 Area *init_Area(Area *self);
-void loadArea();
+int loadAreaById(int id);
 //static void loadEntitySprites();
 
 // Logic
