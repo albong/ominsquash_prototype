@@ -59,7 +59,7 @@ int doTitle(unsigned delta){
     
     //PIZZA - hardcoded to start a new game, since that's the only button right now
     //PIZZA - do we need to play some sweet animation here?
-    if (_input.start){
+    if (_input.start || DEBUG_START_GAME){
         result = 1;
         setInputAllRead();
     }
