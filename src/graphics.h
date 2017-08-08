@@ -54,6 +54,9 @@ void stopSDL();
 Sprite *init_Sprite(Sprite *self);
 Animation *init_Animation(Animation *self);
 
+// Free
+free_Image(Image *self);
+
 // Loading
 Image *getEmptyImage(int width, int height);
 Image *loadImage(char *name);

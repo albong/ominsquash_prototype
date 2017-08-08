@@ -109,6 +109,23 @@ Animation *init_Animation(Animation *self){
 
 
 /////////////////////////////////////////////////
+// Free
+/////////////////////////////////////////////////
+free_Image(Image *self){
+    if (self == NULL){
+        return;
+    }
+    
+    SDL_FreeSurface(self->surface); //safe to pass NULL
+    if (self->isTexture){
+        SDL_DestroyTexture(self->texture); //not safe to pass NULL
+    }
+    
+    free(self);
+}
+
+
+/////////////////////////////////////////////////
 // Loading
 /////////////////////////////////////////////////
 SDL_Surface *loadSurface(char *name){
