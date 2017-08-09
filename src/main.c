@@ -12,7 +12,7 @@
 #include "interface.h"
 #include "entity_creator.h"
 #include "enemy_creator.h"
-#include "title.h"
+#include "title_screen.h"
 #include "load_screen.h"
 
 #include "../debug/hitbox_drawer.h"
@@ -114,7 +114,7 @@ void initializeOmnisquash(){
     initInput();
     initTextbox();
     initInterface();
-    initTitle();
+    initTitleScreen();
     initLoadScreen();
 
     initFrames();
@@ -134,7 +134,7 @@ void terminateOmnisquash(){
     //nothing to terminate with input
     termTextbox();
     termInterface();
-    termTitle();
+    termTitleScreen();
     termLoadScreen();
     
     termFrames();

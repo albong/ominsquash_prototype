@@ -1,4 +1,4 @@
-#include "title.h"
+#include "title_screen.h"
 #include "graphics.h"
 #include "input.h"
 #include "constants.h"
@@ -17,10 +17,10 @@ static Entity buttons[NUM_BUTTONS_TITLE]; //PIZZA - hardcoded cause I don't see 
 
 static int seenTitleOnce = 0; //If the flag to skip the title screen at load is on, you need this so that you can return to the title screen
 
-static int loadTitleData();
+static int loadTitleScreenData();
 
-void initTitle(){
-    if (!loadTitleData()){
+void initTitleScreen(){
+    if (!loadTitleScreenData()){
         printf("Error: failed to load title data\n");
         fflush(stdout);
     }
@@ -28,7 +28,7 @@ void initTitle(){
     setAnimationLoop(buttons[0].animation, 1, 0);
 }
 
-void termTitle(){
+void termTitleScreen(){
     free_Entity(titleName);
     
     size_t i;
@@ -37,7 +37,7 @@ void termTitle(){
     }
 }
 
-int doTitle(unsigned delta){
+int doTitleScreen(unsigned delta){
     size_t i;
     int result = 0;
     
@@ -83,7 +83,7 @@ int doTitle(unsigned delta){
     return result;
 }
 
-void drawTitle(){
+void drawTitleScreen(){
     size_t i;
     
     //draw a blank background
@@ -98,7 +98,7 @@ void drawTitle(){
     }
 }
 
-int loadTitleData(){
+int loadTitleScreenData(){
     int result = 1;
     char *titleFilename = "data/title.data";
     char filename[80];

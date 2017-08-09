@@ -8,7 +8,7 @@
 #include "../debug/hitbox_drawer.h"
 #include "menu.h"
 #include "textbox.h"
-#include "title.h"
+#include "title_screen.h"
 #include "load_screen.h"
 
 #include <stdlib.h>
@@ -18,7 +18,7 @@
 static Frame *gameFrame;
 static Frame *menuFrame;
 static Frame *textboxFrame;
-static Frame *titleFrame;
+static Frame *titleScreenFrame;
 static Frame *loadScreenFrame;
 
 //methods
@@ -28,8 +28,8 @@ static int menuFrameLogic(unsigned delta);
 static void menuFrameDraw();
 static int textboxFrameLogic(unsigned delta);
 static void textboxFrameDraw();
-static int titleFrameLogic(unsigned delta);
-static void titleFrameDraw();
+static int titleScreenFrameLogic(unsigned delta);
+static void titleScreenFrameDraw();
 static int loadScreenFrameLogic(unsigned delta);
 static void loadScreenFrameDraw();
 
@@ -49,24 +49,24 @@ void initFrames(){
     textboxFrame->draw = &textboxFrameDraw;
     textboxFrame->drawIfNotTop = 1;
     
-    titleFrame = malloc(sizeof(Frame));
-    titleFrame->logic = &titleFrameLogic;
-    titleFrame->draw = &titleFrameDraw;
-    titleFrame->drawIfNotTop = 0;
+    titleScreenFrame = malloc(sizeof(Frame));
+    titleScreenFrame->logic = &titleScreenFrameLogic;
+    titleScreenFrame->draw = &titleScreenFrameDraw;
+    titleScreenFrame->drawIfNotTop = 0;
     
     loadScreenFrame = malloc(sizeof(Frame));
     loadScreenFrame->logic = loadScreenFrameLogic;
     loadScreenFrame->draw = loadScreenFrameDraw;
     loadScreenFrame->drawIfNotTop = 0;
     
-    _currentFrame = titleFrame;
+    _currentFrame = titleScreenFrame;
 }
 
 void termFrames(){
     free(gameFrame);
     free(menuFrame);
     free(textboxFrame);
-    free(titleFrame);
+    free(titleScreenFrame);
     free(loadScreenFrame);
 }
 
@@ -149,8 +149,8 @@ void textboxFrameDraw(){
     drawTextbox();
 }
 
-int titleFrameLogic(unsigned delta){
-    int status = doTitle(delta);
+int titleScreenFrameLogic(unsigned delta){
+    int status = doTitleScreen(delta);
     
     if (status == 1){
         setInputAllRead();
@@ -166,8 +166,8 @@ int titleFrameLogic(unsigned delta){
     }
 }
 
-void titleFrameDraw(){
-    drawTitle();
+void titleScreenFrameDraw(){
+    drawTitleScreen();
 }
 
 int loadScreenFrameLogic(unsigned delta){
