@@ -22,6 +22,12 @@ void initEntityCreateTable(){
     fillEntityTables(&entityActionTable, &entityDrawTable, &entityInteractTable, &entityTableSize);
 }
 
+void termEntityCreateTable(){
+    free(entityActionTable);
+    free(entityDrawTable);
+    free(entityInteractTable);
+}
+
 Entity *createEntityById(size_t id){
     Entity *result = NULL;
     size_t i;

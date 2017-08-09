@@ -8,10 +8,12 @@
 #include "../lib/cJSON/cJSON.h"
 #include <stdio.h>
 
+#define NUM_BUTTONS_TITLE 10
+
 static Entity *titleName;//this is the name of the game that is projected - really just need it for the sprite/positioning
 static size_t numButtons = 1;
 static size_t currButton = 0;
-static Entity buttons[10]; //PIZZA - hardcoded cause I don't see a way not to have the logic for the buttons hardcoded
+static Entity buttons[NUM_BUTTONS_TITLE]; //PIZZA - hardcoded cause I don't see a way not to have the logic for the buttons hardcoded
 
 static int seenTitleOnce = 0; //If the flag to skip the title screen at load is on, you need this so that you can return to the title screen
 
@@ -24,6 +26,15 @@ void initTitle(){
     }
     
     setAnimationLoop(buttons[0].animation, 1, 0);
+}
+
+void termTitle(){
+    free_Entity(titleName);
+    
+    size_t i;
+    for (i = 0; i < numButtons; i++){
+        term_Entity(buttons + i);
+    }
 }
 
 int doTitle(unsigned delta){
@@ -65,7 +76,7 @@ int doTitle(unsigned delta){
         seenTitleOnce = 1;
         result = 1;
         setInputAllRead();
-    } else if (_input.escape){
+    } else if (_input.escape && !_inputRead.escape){
         result = -1;
     }
     

@@ -9,6 +9,10 @@ void initMenu(){
     menuImage = loadImage("gfx/menu_placeholder.png");
 }
 
+void termMenu(){
+    free_Image(menuImage);
+}
+
 void drawMenu(){
     drawImage(menuImage, (SCREEN_WIDTH / 2) - (menuImage->width / 2), (SCREEN_HEIGHT / 2) - (menuImage->height / 2));
 }

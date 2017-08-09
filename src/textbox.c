@@ -28,6 +28,13 @@ void initTextbox(){
     currLine = 0;
 }
 
+void termTextbox(){
+    free_Image(textboxImage);
+    free_Image(alphabetSheet);
+    
+    //this stuff isn't finalized, and the text is freed elsewhere
+}
+
 //return 0 for not finished, 1 if finished and frame should be popped
 int doTextbox(unsigned delta){
     //use delta to make text not just appear but seemingly get typed - later
@@ -173,6 +180,7 @@ void cleanupText(){
     int i;
     for (i = 0; i < numLines; i++){
         free(lines[i]);
+        lines[i] = NULL;
     }
     free(lines);
     currLine = 0;

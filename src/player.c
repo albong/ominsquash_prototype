@@ -16,7 +16,7 @@ static unsigned totalDelta = 0;
 static const hitstunMilli = 1000;
 
 /////////////////////////////////////////////////
-// Loading
+// Loading / Unloading
 /////////////////////////////////////////////////
 void initPlayer(){
     init_Entity(&(_player.e));
@@ -46,6 +46,7 @@ void initPlayer(){
     _player.shields = 14;
     _player.milliHitstun = 0;
     
+    //this will be removed later when this stuff is dynamically set
     //weapon
     // Weapon *sword = createSword();
     Weapon *sword = createWeaponById(0);
@@ -59,6 +60,10 @@ void initPlayer(){
     addPlayerWeapon(gun);
     addWeaponToInventory(gun);
     _player.equippedBInd = 1;
+}
+
+void termPlayer(){
+    term_Entity((Entity *)&_player);
 }
 
 

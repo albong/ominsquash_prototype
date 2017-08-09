@@ -33,9 +33,10 @@ typedef struct WeaponList {
 WeaponList _player_weapons;
 WeaponList _enemy_weapons;
 
-// Loading
+// Loading/Unloading
 Weapon *init_Weapon(Weapon *self);
 void initWeaponLists();
+void termWeaponLists();
 
 // Access
 void addPlayerWeapon(Weapon *w);

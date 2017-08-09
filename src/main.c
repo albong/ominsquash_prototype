@@ -1,11 +1,12 @@
 #include "SDL2/SDL.h"
+#include "graphics.h"
 #include "input.h"
 #include "player.h"
 // #include "collisions.h"
 #include "area.h"
 #include "weapon.h"
 #include "frames.h"
-// #include "constants.h"
+#include "constants.h"
 #include "textbox.h"
 #include "inventory.h"
 #include "interface.h"
@@ -20,44 +21,27 @@
 
 //Refer to http://gamedev.stackexchange.com/a/132835 for changes
 
+static void initializeOmnisquash();
+static void terminateOmnisquash();
+
 int main(int argc, char *argv[]){
 //    unsigned int frameLimit = SDL_GetTicks() + 16;
     unsigned currMilliseconds = 0;
     unsigned prevMilliseconds = 0;
     int delta;
     int go = 1;
-    int i;
+    size_t i;
     
-    //start the reactor
-    initSDL();
-//	freopen( "CON", "w", stdout );
-//    freopen( "CON", "w", stderr );
-    
-    //when the program exits, clean everything up
-    atexit(stopSDL);
-    
-    //initialization stuff
-    initEntityCreateTable();
-    initEnemyCreateTable();
-    initWeaponCreateTable();
-    initWeaponLists(); //creates the player's arrays, must be done before the area and player
-    initInventory(); //should be done before player
-    initPlayer();
-    initMenu();
-    initInput();
-    initTextbox();
-    initInterface();
-    initTitle();
-    initLoadScreen();
-
-    initFrames();
     int newFrame;
     int currFrame = 0;
     int numFrames = 1;
     Frame *frames[15]; //PIZZA - this is hardcoded, just increase to match number of possible frames?  Probably a small number
-    frames[0] = _currentFrame;
+    
+    //start the reactor
+    initializeOmnisquash();
     
     //dat main loop doe
+    frames[0] = _currentFrame;
     while (go){
         //calculate the time delta
         prevMilliseconds = currMilliseconds;
@@ -66,6 +50,7 @@ int main(int argc, char *argv[]){
         
         getInput();
         
+        //do the logic for the current frame, then push, pop, or nothing depending, then draw the frame stack
         newFrame = frames[currFrame]->logic(delta);
         if (newFrame == 1){
             numFrames++;
@@ -74,6 +59,12 @@ int main(int argc, char *argv[]){
         } else if (newFrame == -1){
             numFrames--;
             currFrame--;
+            
+            //if we've popped all frames, teardown and break out of the loop
+            if (currFrame < 0){
+                terminateOmnisquash();
+                break;
+            }
         } else {
             clearScreen();
             for (i = 0; i < numFrames; i++){
@@ -104,8 +95,47 @@ at 30fps less than at 60fps), though for preventing clipping into walls/items I'
 not sure how to solve that yet.
 */
 
-/*
-Probs ought to move a ton of this junk into configuration files after we get a semi-stable
-"engine" setup going on eg
-player health/items/velocity, player sprites, animated sprite details (num frames, frame width), enemy sprites/sprite indices
-*/
+void initializeOmnisquash(){
+    initSDL();
+//	freopen( "CON", "w", stdout );
+//    freopen( "CON", "w", stderr );
+    
+    //when the program exits, clean everything up
+    atexit(stopSDL);
+    
+    //initialization stuff
+    initEntityCreateTable();
+    initEnemyCreateTable();
+    initWeaponCreateTable();
+    initWeaponLists(); //creates the player's arrays, must be done before the area and player
+    initInventory(); //should be done before player
+    initPlayer();
+    initMenu();
+    initInput();
+    initTextbox();
+    initInterface();
+    initTitle();
+    initLoadScreen();
+
+    initFrames();
+}
+
+void terminateOmnisquash(){
+    clearScreen();
+    
+    //free everything left
+    termEntityCreateTable();
+    termEnemyCreateTable();
+    termWeaponCreateTable();
+    termWeaponLists();
+    termInventory();
+    termPlayer();
+    termMenu();
+    //nothing to terminate with input
+    termTextbox();
+    termInterface();
+    termTitle();
+    termLoadScreen();
+    
+    termFrames();
+}

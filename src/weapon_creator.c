@@ -21,6 +21,11 @@ void initWeaponCreateTable(){
     fillWeaponTables(&weaponCreateTable, &weaponCollideTable, &weaponTableSize);
 }
 
+void termWeaponCreateTable(){
+    free(weaponCreateTable);
+    free(weaponCollideTable);
+}
+
 Weapon *createWeaponById(size_t id){
     if (id >= weaponTableSize){
         return NULL;

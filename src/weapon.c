@@ -2,7 +2,7 @@
 #include <stdlib.h>
 
 /////////////////////////////////////////////////
-// Loading
+// Loading / Unloading
 /////////////////////////////////////////////////
 Weapon *init_Weapon(Weapon *self){
     if (self == NULL){
@@ -24,6 +24,20 @@ void initWeaponLists(){
     
     _player_weapons.weapons = malloc(0);
     _enemy_weapons.weapons = malloc(0);
+}
+
+void termWeaponLists(){
+    size_t i;
+    
+    for (i = 0; i < _player_weapons.num; i++){
+        free_Entity((Entity *)_player_weapons.weapons[i]);
+    }
+    free(_player_weapons.weapons);
+    
+    for (i = 0; i < _enemy_weapons.num; i++){
+        free_Entity((Entity *)_enemy_weapons.weapons[i]);
+    }
+    free(_enemy_weapons.weapons);
 }
 
 

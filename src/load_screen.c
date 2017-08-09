@@ -20,6 +20,10 @@ void initLoadScreen(){
     loadingIcon->y = 290;
 }
 
+void termLoadScreen(){
+    free_Entity(loadingIcon);
+}
+
 int doLoadScreen(unsigned delta){
     int result = 0;
     

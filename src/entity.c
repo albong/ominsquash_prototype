@@ -47,7 +47,7 @@ Entity *init_Entity(Entity *self){
     return self;
 }
 
-void free_Entity(Entity *self){
+void term_Entity(Entity *self){
     if (self == NULL){
         return;
     }
@@ -61,6 +61,14 @@ void free_Entity(Entity *self){
     
     term_Hitboxes(&(self->hitboxes));
     
+}
+
+void free_Entity(Entity *self){
+    if (self == NULL){
+        return;
+    }
+    
+    term_Entity(self);
     free(self);
 }
 

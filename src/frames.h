@@ -11,5 +11,6 @@ typedef struct Frame{
 Frame *_currentFrame;
 
 void initFrames();
+void termFrames();
 
 #endif

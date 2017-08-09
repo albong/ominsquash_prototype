@@ -17,8 +17,9 @@ typedef struct Player {
 //Globals
 Player _player;
 
-// Loading
+// Loading / Unloading
 void initPlayer();
+void termPlayer();
 
 // Logic
 void doPlayer(int delta);

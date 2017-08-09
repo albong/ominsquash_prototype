@@ -4,6 +4,7 @@
 #include "enemy.h"
 
 void initEnemyCreateTable();
+void termEnemyCreateTable();
 Enemy *createEnemyById(size_t id);
 
 //PIZZA - should change this to loadEntityData(...), load and pass off the data files, and from these

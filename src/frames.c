@@ -62,6 +62,14 @@ void initFrames(){
     _currentFrame = titleFrame;
 }
 
+void termFrames(){
+    free(gameFrame);
+    free(menuFrame);
+    free(textboxFrame);
+    free(titleFrame);
+    free(loadScreenFrame);
+}
+
 int gameFrameLogic(unsigned delta){
     if (_input.start && !_inputRead.start){
         _currentFrame = menuFrame;
@@ -151,7 +159,8 @@ int titleFrameLogic(unsigned delta){
         setAreaIdToLoad(0);
         return 1;
     } else if (status == -1){
-        exit(0);
+        setInputAllRead();
+        return -1; // will cause game to exit, better to have the exit stuff in main.c I think
     } else {
         return 0;
     }

@@ -16,11 +16,16 @@ static Weapon **weaponList;
 // Item ** itemList;
 
 /////////////////////////////////////////////////
-// Initialization
+// Loading / Unloading
 /////////////////////////////////////////////////
 void initInventory(){
     numWeapons = 0;
     weaponList = NULL;
+}
+
+void termInventory(){
+    //the weapons themselves ought already have been freed
+    free(weaponList);
 }
 
 

@@ -25,6 +25,15 @@ void initEnemyCreateTable(){
     fillEnemyTables(&eActionTable, &drawTable, &interactTable, &takeDamageTable, &collidePlayerTable, &actionTable, &enemyTableSize);
 }
 
+void termEnemyCreateTable(){
+    free(eActionTable);
+    free(drawTable);
+    free(interactTable);
+    free(takeDamageTable);
+    free(collidePlayerTable);
+    free(actionTable);    
+}
+
 Enemy *createEnemyById(size_t id){
     Enemy *result = NULL;
     size_t i;

@@ -50,6 +50,7 @@ typedef struct Entity {
 
 // Loading/Unloading
 Entity *init_Entity(Entity *self);
+void term_Entity(Entity *self);
 void free_Entity(Entity *self);
 
 // Logic

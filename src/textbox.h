@@ -2,6 +2,7 @@
 #define TEXTBOX_H
 
 void initTextbox();
+void termTextbox();
 int doTextbox(unsigned delta);
 void drawTextbox();
 void addTextToTextbox(const char *text);

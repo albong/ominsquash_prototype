@@ -4,6 +4,7 @@
 #include "entity.h"
 
 void initEntityCreateTable();
+void termEntityCreateTable();
 Entity *createEntityById(size_t id);
 Entity *assignEntityFunctionsById(size_t id, Entity *e);
 

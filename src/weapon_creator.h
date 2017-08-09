@@ -4,6 +4,7 @@
 #include "weapon.h"
 
 void initWeaponCreateTable();
+void termWeaponCreateTable();
 Weapon *createWeaponById(size_t id);
 
 //PIZZA - should change this to loadEntityData(...), load and pass off the data files, and from these

@@ -20,6 +20,16 @@ void initInterface(){
     }
 }
 
+void termInterface(){
+    free_Sprite(healthIcons);
+    
+    size_t i;
+    for (i = 1; i < MAX_SHIELD_SLOTS; i++){
+        free(healthIconsAnim[i]);
+    }
+    free_Animation(healthIconsAnim[0]);//frees the first animation and the member pointers
+}
+
 void updateInterface(int delta){
     //number to draw is the max over the shields/health
     numToDraw = (_player.health < _player.shields) ? _player.shields : _player.health;
