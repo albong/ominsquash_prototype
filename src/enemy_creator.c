@@ -77,5 +77,14 @@ void loadEnemyData(size_t *ids, size_t count){
 }
 
 void unloadEnemyData(){
-    //PIZZA - Implement me!
+    size_t i;
+    for (i = 0; i < numLoadedEnemies; i++){
+        free_Enemy(loadedEnemies[i]);
+        loadedEnemies[i] = NULL;
+    }
+    free(loadedEnemies);
+    free(loadedEnemiesIds);
+    loadedEnemiesIds = NULL;
+    loadedEnemies = NULL;
+    numLoadedEnemies = 0;
 }

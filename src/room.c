@@ -99,7 +99,8 @@ void term_Room(Room *self){
     
     //stairs
     for (i = 0; i < self->numStairs; i++){
-        free(self->stairs[i]);
+        // free(self->stairs[i]);
+        free_Entity((Entity *)self->stairs[i]);
         self->stairs[i] = NULL;
     }
     free(self->stairs);

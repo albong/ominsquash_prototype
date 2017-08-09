@@ -5,7 +5,7 @@
 static void defaultDrawEnemy(Entity *self, double shiftX, double shiftY);
 static void defaultCollidePlayer(Enemy *self, int collCode);
 /////////////////////////////////////////////////
-// Loading
+// Loading / Unloading
 /////////////////////////////////////////////////
 Enemy *init_Enemy(Enemy *self){
     if (self == NULL){
@@ -27,6 +27,21 @@ Enemy *init_Enemy(Enemy *self){
     return self;
 }
 
+void free_Enemy(Enemy *self){
+    if (self == NULL){
+        return;
+    }
+    
+    free_Entity(self->deathEntity);
+    self->deathEntity = NULL;
+    
+    free_Entity((Entity *)self);
+}
+
+
+/////////////////////////////////////////////////
+// Default methods
+/////////////////////////////////////////////////
 void defaultDrawEnemy(Entity *self, double shiftX, double shiftY){
     if (((Enemy *)self)->health > 0 && self->sprite != NULL){
         drawAnimation(self->sprite, self->animation, self->x + 0.5 + shiftX, self->y + 0.5 + shiftY);

@@ -111,19 +111,6 @@ int loadAreaById(int id){
         drawRoomBuffers(_current_area.roomList[i]);
     }
     
-    //PIZZA - enemy loading not written yet since enemy loading not overhauled
-    Room *TEMP_ROOM = _current_area.roomList[1];
-    TEMP_ROOM->numEnemies = 1;
-//    TEMP_ROOM->enemies = malloc(sizeof(Enemy) * TEMP_ROOM->numEnemies);
-    TEMP_ROOM->enemyIds = malloc(sizeof(size_t) * TEMP_ROOM->numEnemies);
-    TEMP_ROOM->enemyInitialX = malloc(sizeof(double) * TEMP_ROOM->numEnemies);
-    TEMP_ROOM->enemyInitialY = malloc(sizeof(double) * TEMP_ROOM->numEnemies);
-//    TEMP_ROOM->enemies[0] = createOctorok(_current_area.sprites[0]);
-//    TEMP_ROOM->enemies[0] = createOctorok();
-    TEMP_ROOM->enemyIds[0] = 0;
-    TEMP_ROOM->enemyInitialX[0] = 1;
-    TEMP_ROOM->enemyInitialY[0] = 1;
-    
     //load the enemies for all of the rooms, set their positions
     // loadAreaEnemySprites(&_current_area);
     loadAreaEnemyData(&_current_area);
@@ -136,6 +123,7 @@ int loadAreaById(int id){
     
     //PIZZA remove this later
     //PIZZA - doors need to be reworked, but they're using the old graphics code
+    Room *TEMP_ROOM = _current_area.roomList[1];
     TEMP_ROOM = _current_area.roomList[0];
     // Sprite *doorSprite = loadAnimatedSprite("gfx/door1.png", TILE_SIZE);
     TEMP_ROOM->numDoors = 0;

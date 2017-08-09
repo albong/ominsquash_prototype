@@ -18,7 +18,8 @@ typedef struct Enemy {
     void (*action)(struct Enemy *self, int delta);
 } Enemy;
 
-// Loading
+// Loading/Unloading
 Enemy *init_Enemy(Enemy *self);
+void free_Enemy(Enemy *self);
 
 #endif
