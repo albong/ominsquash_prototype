@@ -16,3 +16,15 @@ Design Principles
 
  -  Don't compute anything during the drawing phase of the game loop.  Do all
     computation during the logic phase.
+
+ -  Objects should have (up to) three methods: init_Object, term_Object, and
+    free_Object.  The first initializes all struct members, pointers are set to
+    NULL, or may (though they may not) be set to defaults for function
+    pointers.  If an object subclasses something, it should call 
+    init_SuperObject in init_Object.  The remaining two are for freeing objects,
+    with the distinction that term_Object (for terminate) will free all members,
+    but not free the object itself, whilst free_Object will free all members,
+    and free the object itself.  For more fine tuned teardown, write methods as
+    usual.
+
+ -  Try to set pointers to NULL after freeing them.

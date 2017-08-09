@@ -111,7 +111,7 @@ Animation *init_Animation(Animation *self){
 /////////////////////////////////////////////////
 // Free
 /////////////////////////////////////////////////
-free_Image(Image *self){
+void free_Image(Image *self){
     if (self == NULL){
         return;
     }
@@ -120,6 +120,50 @@ free_Image(Image *self){
     if (self->isTexture){
         SDL_DestroyTexture(self->texture); //not safe to pass NULL
     }
+    
+    free(self);
+}
+
+void free_Sprite(Sprite *self){
+    if (self == NULL){
+        return;
+    }
+    
+    free_Image(self->image);
+    self->image = NULL;
+    self->frameWidth = 0;
+    self->frameHeight = 0;
+    self->numFramesPerRow = 0;
+    free(self);
+}
+
+void free_Animation(Animation *self){
+    if (self == NULL){
+        return;
+    }
+
+    size_t i;
+    for (i = 0; i < self->numLoops; i++){
+        free(self->frameNumber[i]);
+        free(self->frameStartTime[i]);
+        self->frameNumber[i] = NULL;
+        self->frameStartTime[i] = NULL;
+    }
+    free(self->loopLength);
+    free(self->loopTotalDuration);
+    free(self->repeatLoop);
+    free(self->frameNumber);
+    free(self->frameStartTime);
+    self->loopLength = NULL;
+    self->loopTotalDuration = NULL;
+    self->repeatLoop = NULL;
+    self->frameNumber = NULL;
+    self->frameStartTime = NULL;
+    
+    self->currLoop = 0;
+    self->numLoops = 0;
+    self->milliPassed = 0;
+    self->currFrame = 0;
     
     free(self);
 }

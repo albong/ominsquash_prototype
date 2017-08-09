@@ -24,5 +24,7 @@ typedef struct Hitboxes {
 } Hitboxes;
 
 Hitboxes *init_Hitboxes(Hitboxes *self);
+void term_Hitbox(Hitbox *self);
+void term_Hitboxes(Hitboxes *self);
 
 #endif

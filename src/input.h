@@ -17,6 +17,7 @@ typedef struct Control {
     int y; 
     int start; 
     int select;
+    int escape;
 } Control;
 
 // Globals

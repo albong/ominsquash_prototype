@@ -30,10 +30,11 @@ typedef struct Area {
 // Globals
 Area _current_area;
 
-// Loading
+// Loading/Unloading
 Area *init_Area(Area *self);
 int loadAreaById(int id);
-//static void loadEntitySprites();
+void term_Area(Area *self);
+void unloadCurrentArea();
 
 // Logic
 void doRoom(int delta);

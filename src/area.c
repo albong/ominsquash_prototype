@@ -285,6 +285,39 @@ void drawRoomBuffers(Room *room){
     }
 }
 
+void term_Area(Area *self){
+    size_t i;
+    
+    //free the graphics things
+    free(self->tilesetName);
+    free_Image(self->tilesheet.sheet);
+    self->tilesetName = NULL;
+    self->tilesheet.sheet = NULL;
+    
+    //free room stuff - shallow free only?  need to free the animations inside of the entities
+    for (i = 0; i < self->numRooms; i++){
+        term_Room(self->roomList[i]);
+        free(self->roomList[i]);
+        self->roomList[i] = NULL;
+    }
+    free(self->roomList);
+    self->roomList = NULL;
+    self->numRooms = 0;
+    
+    //unload the enemies/entities from the creators - this should deep free
+    unloadEntityData();
+    unloadEnemyData();
+    
+    //where are the temp entities loaded from?
+    for (i = 0; i < NUM_AREA_TEMP_ENTITIES; i++){
+        _current_area.temporaryEntities[i] = NULL;
+    }
+}
+
+void unloadCurrentArea(){
+    term_Area(&_current_area);
+}
+
 
 /////////////////////////////////////////////////
 // Logic

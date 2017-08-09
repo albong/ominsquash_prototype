@@ -9,7 +9,7 @@ static void defaultActionEntity(void *e, int delta);
 static void defaultDrawEntity(Entity *self, double shiftX, double shiftY);
 
 /////////////////////////////////////////////////
-// Loading
+// Loading / Unloading
 /////////////////////////////////////////////////
 Entity *init_Entity(Entity *self){
     if (self == NULL){
@@ -45,6 +45,23 @@ Entity *init_Entity(Entity *self){
     self->interactable = 0;
 	self->interact = NULL;
     return self;
+}
+
+void free_Entity(Entity *self){
+    if (self == NULL){
+        return;
+    }
+    
+    free(self->externalMove);
+    self->externalMove = NULL;
+    self->numExternalMove = 0;
+    
+    free_Sprite(self->sprite);
+    free_Animation(self->animation);
+    
+    term_Hitboxes(&(self->hitboxes));
+    
+    free(self);
 }
 
 

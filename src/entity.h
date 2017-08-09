@@ -48,8 +48,9 @@ typedef struct Entity {
 	void (*interact)(struct Entity *self);
 } Entity;
 
-// Loading
+// Loading/Unloading
 Entity *init_Entity(Entity *self);
+void free_Entity(Entity *self);
 
 // Logic
 void moveEntity(Entity *e);

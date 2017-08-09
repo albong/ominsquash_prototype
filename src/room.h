@@ -7,6 +7,7 @@
 #include "enemy.h"
 #include "door.h"
 #include "stair.h"
+#include "graphics.h"
 
 //ROOMF_IMPASSABLE is for walls, maybe rename?
 #define ROOMF_IMPASSABLE 1
@@ -45,8 +46,9 @@ typedef struct Room {
     Stair **stairs; //array
 } Room;
 
-// Loading
+// Loading/Unloading
 Room *init_Room(Room *self);
+void term_Room(Room *self);
 
 // Access
 int getFlag(Room *room, int index, int flagNum);

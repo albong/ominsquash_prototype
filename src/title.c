@@ -13,6 +13,8 @@ static size_t numButtons = 1;
 static size_t currButton = 0;
 static Entity buttons[10]; //PIZZA - hardcoded cause I don't see a way not to have the logic for the buttons hardcoded
 
+static int seenTitleOnce = 0; //If the flag to skip the title screen at load is on, you need this so that you can return to the title screen
+
 static int loadTitleData();
 
 void initTitle(){
@@ -59,9 +61,12 @@ int doTitle(unsigned delta){
     
     //PIZZA - hardcoded to start a new game, since that's the only button right now
     //PIZZA - do we need to play some sweet animation here?
-    if (_input.start || DEBUG_START_GAME){
+    if (_input.start || (DEBUG_START_GAME && !seenTitleOnce)){
+        seenTitleOnce = 1;
         result = 1;
         setInputAllRead();
+    } else if (_input.escape){
+        result = -1;
     }
     
     return result;

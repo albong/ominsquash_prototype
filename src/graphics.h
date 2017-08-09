@@ -55,7 +55,9 @@ Sprite *init_Sprite(Sprite *self);
 Animation *init_Animation(Animation *self);
 
 // Free
-free_Image(Image *self);
+void free_Image(Image *self);
+void free_Sprite(Sprite *self);
+void free_Animation(Animation *self);
 
 // Loading
 Image *getEmptyImage(int width, int height);

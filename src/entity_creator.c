@@ -84,5 +84,14 @@ void loadEntityData(size_t *ids, size_t count){
 }
 
 void unloadEntityData(){
-    //PIZZA - Implement me!
+    size_t i;
+    for (i = 0; i < numLoadedEntities; i++){
+        free_Entity(loadedEntities[i]);
+        loadedEntities[i] = NULL;
+    }
+    free(loadedEntities);
+    free(loadedEntitiesIds);
+    loadedEntitiesIds = NULL;
+    loadedEntities = NULL;
+    numLoadedEntities = 0;
 }

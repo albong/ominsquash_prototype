@@ -2,9 +2,10 @@
 #include "stair.h"
 #include "constants.h"
 #include "player.h"
+#include "graphics.h"
 
 /////////////////////////////////////////////////
-// Loading
+// Loading/Unloading
 /////////////////////////////////////////////////
 Room *init_Room(Room *self){
     if (self == NULL){
@@ -45,6 +46,65 @@ Room *init_Room(Room *self){
     self->stairs = NULL;
     
     return self;
+}
+
+void term_Room(Room *self){
+    size_t i;
+    
+    free(self->flags);
+    free(self->tileIndices);
+    free(self->transitionTiles);
+    free(self->transitionToRoom);
+    
+    free_Image(self->buffer);
+    
+    term_Hitbox(&(self->walls));
+    
+    //shallow free, except for the animation - these will get freed for realsies in the creators, where the "master copy" is
+    //using term_Entity here will free the sprite, but pointers will still exist to that memory in the master copy, so only shallow free
+    for (i = 0; i < self->numEntities; i++){
+        free(self->entities[i]->animation);
+        self->entities[i]->animation = NULL;
+        free(self->entities[i]);
+        self->entities[i] = NULL;
+    }
+    free(self->entities);
+    free(self->entityIds);
+    free(self->entityInitialX);
+    free(self->entityInitialY);
+    self->entities = NULL;
+    self->entityIds = NULL;
+    self->entityInitialX = NULL;
+    self->entityInitialY = NULL;
+    self->numEntities = 0;
+    
+    //same as for entities - shallow free
+    for (i = 0; i < self->numEnemies; i++){
+        free(self->enemies[i]->e.animation);
+        self->enemies[i]->e.animation = NULL;
+        free(self->enemies[i]);
+        self->enemies[i] = NULL;
+    }
+    free(self->enemies);
+    free(self->enemyIds);
+    free(self->enemyInitialX);
+    free(self->enemyInitialY);
+    self->enemies = NULL;
+    self->enemyIds = NULL;
+    self->enemyInitialX = NULL;
+    self->enemyInitialY = NULL;
+    self->numEnemies = 0;
+    
+    //doors - PIZZA
+    
+    //stairs
+    for (i = 0; i < self->numStairs; i++){
+        free(self->stairs[i]);
+        self->stairs[i] = NULL;
+    }
+    free(self->stairs);
+    self->stairs = NULL;
+    self->numStairs = 0;
 }
 
 

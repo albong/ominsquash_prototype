@@ -28,6 +28,7 @@ void initInput(){
     _input.y = 0; 
     _input.start = 0; 
     _input.select = 0;
+    _input.escape = 0;
     
     _inputRead.up = 0;
     _inputRead.down = 0;
@@ -39,6 +40,7 @@ void initInput(){
     _inputRead.y = 0; 
     _inputRead.start = 0; 
     _inputRead.select = 0;
+    _inputRead.escape = 0;
 }
 
 void getInput(){
@@ -94,7 +96,8 @@ void getInput(){
 						break;
 					
 					case SDLK_ESCAPE:
-						exit(0);
+						// exit(0);
+                        _input.escape = 1;
 						break;
 						
                     default:
@@ -154,6 +157,12 @@ void getInput(){
 						_input.start = 0;
 						_inputRead.start = 0;
 						break;
+                        
+                    case SDLK_ESCAPE:
+						// exit(0);
+                        _input.escape = 0;
+                        _inputRead.escape = 0;
+						break;
                     
                     default:
                         break;
@@ -177,4 +186,5 @@ void setInputAllRead(){
     _inputRead.y = (_input.y) ? 1 : 0;
     _inputRead.start = (_input.start) ? 1 : 0; 
     _inputRead.select = (_input.select) ? 1 : 0;
+    _inputRead.escape = (_input.escape) ? 1 : 0;
 }

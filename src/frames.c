@@ -73,6 +73,10 @@ int gameFrameLogic(unsigned delta){
         _currentFrame = textboxFrame;
         setInputAllRead();
         return 1;
+    } else if (_input.escape){
+        setAreaIdToLoad(-1);
+        setInputAllRead();
+        return -1;
     }
     
     //do logic, calculate next positions
@@ -138,11 +142,16 @@ void textboxFrameDraw(){
 }
 
 int titleFrameLogic(unsigned delta){
-    if (doTitle(delta)){
+    int status = doTitle(delta);
+    
+    if (status == 1){
         setInputAllRead();
         // _currentFrame = gameFrame;
         _currentFrame = loadScreenFrame;
+        setAreaIdToLoad(0);
         return 1;
+    } else if (status == -1){
+        exit(0);
     } else {
         return 0;
     }
@@ -153,10 +162,15 @@ void titleFrameDraw(){
 }
 
 int loadScreenFrameLogic(unsigned delta){
-    if (doLoadScreen(delta)){
+    int status = doLoadScreen(delta);
+    
+    if (status == 1){
         setInputAllRead();
         _currentFrame = gameFrame;
         return 1;
+    } else if (status == -1){
+        setInputAllRead();
+        return -1;
     } else {
         return 0;
     }

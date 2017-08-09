@@ -26,7 +26,7 @@ int doLoadScreen(unsigned delta){
     //this is a hack to ensure that the loading icon gets drawn once - loading will block, so nothing will ever get drawn otherwise
     if (!hasDrawn){
         hasDrawn++;
-    } else {
+    } else if (areaIdToLoad >= 0){
         //update the animation
         loadingIcon->action(loadingIcon, delta);
         
@@ -38,6 +38,9 @@ int doLoadScreen(unsigned delta){
             result = 1;
             hasDrawn = 0;
         }
+    } else {
+        unloadCurrentArea();
+        result = -1;
     }
     return result;
 }
@@ -49,5 +52,5 @@ void drawLoadScreen(){
 }
 
 void setAreaIdToLoad(int id){
-    areaIdToLoad = 0;
+    areaIdToLoad = id;
 }
