@@ -98,6 +98,9 @@ the back of my mind as I plan and write.
 
 The planned games are codenamed Shirt and Pants, if I refer to them throughout.
 
+There is a dev blog at omnisquash.wordpress.com, which may be useful in
+clarifying and expounding on the things described in this document.
+
 Also, I'm sloppy in refering to functions and methods as the same thing.
 
 Also, idk if the ordering of this document is reasonable.
