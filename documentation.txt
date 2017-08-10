@@ -21,35 +21,35 @@
 2. Engine vs. Game
     The distinction between general source code, and game specific source code.
     Some information about directory structure.
-    
-3. Sprites/Animations/Hitboxes
-    The connection and explanation between these three classes.
 
-4. Frame Stack
-    How the layers of logic/drawing work.
-
-5. Creators
-    Adding game specific logic (eg enemies, weapons, etc).
-    
-6. Graphics
-    A bit about how SDL is abstracted.
-
-7. Data Files
+3. Data Files
     Some words about formatting and directory structure, and how files are
     loaded.
     
-8. Entities
-    The primary class for game objects.
+4. Frame Stack
+    How the layers of logic/drawing work.
     
-9. Input
+5. Input
     How to check and receive input.
     
-10. Animating Sprites
+6. Graphics
+    A bit about how SDL is abstracted.
+    
+7. Sprites/Animations/Hitboxes
+    The connection and explanation between these three classes.
+
+8. Animating Sprites
     An explanation of the format for image files and the data files needed for
     animated sprites.
     
-11. Area graphics
+9. Area graphics
     How the graphics for an area are different.
+    
+10. Creators
+    Adding game specific logic (eg enemies, weapons, etc).
+    
+11. Entities
+    The primary class for game objects.
     
 12. Initialization/Termination
     Initializing and freeing data/resources.
@@ -98,7 +98,9 @@ the back of my mind as I plan and write.
 
 The planned games are codenamed Shirt and Pants, if I refer to them throughout.
 
-Also I'm sloppy in refering to functions and methods as the same thing.
+Also, I'm sloppy in refering to functions and methods as the same thing.
+
+Also, idk if the ordering of this document is reasonable.
 
 
 +----------------------+
@@ -134,39 +136,28 @@ be aware that though you need to compile the engine and your game files
 together, there is a separation between the code.
 
 
-+----------------------------------+
-|  3. Sprites/Animations/Hitboxes  |
-+----------------------------------+
++-----------------+
+|  3. Data Files  |
++-----------------+
 
-Sprite, Animation, and Hitboxes are three classes that are deeply connected,
-because their usage is deeply connected.  Accordingly, the data files are
-connected also.
+Data files are JSON files.  Maybe someday I'll compress/encrypt them (lol) but
+for now they're just straight JSON.  I'm using cJSON to do the parsing (props to
+that sweet library), almost all of which occurs in data_reader.c.
 
-In essence, the timings of animation frames and hitboxes should be aligned, so
-internally both the Sprite and Hitboxes classes rely on the Animation class to
-determine their timings.  Because of this, the data files for each class are
-expected to have matching ID numbers - if you load an entity that has animation
-01234, the files 01234.sprite, 01234.hitboxes, and 01234.animation will be
-loaded.  You should not try to match 01234.sprite with 43210.animation.
+Most of the formats are flexible right now, and accordingly there is little
+validation of input.  When things stabilize further, I will add validation, but 
+it seems like a time consuming and code obfuscating step when I'm liable to 
+change the format drastically immediately afterwards.
 
-Its reasonable to have many things in a game with identical animation timings -
-reskinned enemies for example.  In this case, you are still supposed to create
-duplicate animation/hitboxes files with the ID matching the ID of the sprites.
-This is just how it works.
+Data files are stored in the directory data, where there are general config
+files and then subdirectories for each different kind of object.  Files for
+objects are named using five digit ID numbers, and as described in the sections
+on Creators and Sprites/Animations/Hitboxes, there are some rules and
+consistency required in the naming of these files.
 
-However, its not required that all three files exist.  Entity is the base class
-for objects on the screen, but there's no reason that all of those things need
-be animated or to have hitboxes.  For example, the loading screen features an
-image that says "Loading...".  This is an entity, which has a sprite, but the 
-sprite has no need for hitboxes or an animation, so those files don't exist.  In
-the case when no animation file is found, the file "no_animation.animation" is
-used, whereas the hitboxes are simply left empty.
-
-Currently there are messages printed to the console about missing files, but
-this is likely to change since missing files may not be an error.
-
-For more about the formatting of these files, and how animations actually work,
-see the sections on Data Files and Animating Sprites.
+I won't go into the details of each file type here, JSON is a reasonably clear
+format so just go look at the files yourself.  However, more information about
+the data in animation files can be found in the section Animating Sprites.
 
 
 +------------------+
@@ -234,9 +225,180 @@ I don't necessarily love the way I've implemented this system, but it seems to
 work, so yolo.
 
 
++------------+
+|  5. Input  |
++------------+
+
+To check input, include input.h.  There are two instances of the same struct
+available in this file, _input and _inputRead.  The struct itself contains a
+flag for each possible button.  
+
+If you want to check that a button is being pressed, check _input and 
+_inputRead.  If the flag in _input is 1, that means that the key is being 
+pressed.  If the flag in _inputRead is 1, that means that something else has
+already processed the input, and you probably don't want to act on the input (an
+exception to this would be movement, in which you want the button to be pressed
+continuously).  After reading the input, decide if you need continuous input or
+if you want other things to also check this input, then set the flag in 
+inputRead accordingly.
+
+If you're pushing or popping frames, or entering menus or etc, it is probably a
+good idea to call the poorly named method setInputAllRead, which sets all
+members of _inputRead to 1 if the corresponding key is being pressed.
+
+The current keybindings are:
+
+    Start   - C
+    Select  - X
+    A       - S
+    B       - D
+    X       - W
+    Y       - E
+    Up      - UP
+    Down    - DOWN
+    Left    - LEFT
+    Right   - RIGHT
+    Exit    - ESC
+
+Obviously in the future we'll make keys customizable.
+
+
 +---------------+
-|  5. Creators  |
+|  6. Graphics  |
 +---------------+
+
+Currently, Omnisquash uses SDL2 for its graphics library.  However, SDL is only
+used in graphics.h/c and input.h/c.  Transitioning to a different graphics
+library (or dare I say, different platform) is thus relatively straightforward,
+as evidenced by the relative ease of transition from SDL1 to SDL2 that was made
+some time back.
+
+The primary abstraction over SDL is the Image struct (for graphics, I have 
+eschewed object oriented code, as imperative code seems more reasonable), which
+holds an SDL_Surface or an SDL_Texture, a height and width, and a flag to
+determine whether the surface or texture is being used.  Though to be honest, I
+cannot recall anywhere that an SDL_Surface is actually used, I think its a hold
+over from when I used SDL1.  We certainly shouldn't be using surfaces, since
+those are processed by the CPU, while textures are graphics accelerated (the
+main advantage of SDL2 over SDL1).
+
+The other graphics object is a sprite, which holds an image and frame sizes, see
+the section on Animating Sprites for further details.
+
+Most of the graphics methods are straightforward and do exactly what their name
+suggests.
+
+For loaded images, magic pink is transparent.
+
+
++----------------------------------+
+|  7. Sprites/Animations/Hitboxes  |
++----------------------------------+
+
+Sprite, Animation, and Hitboxes are three classes that are deeply connected,
+because their usage is deeply connected.  Accordingly, the data files are
+connected also.
+
+In essence, the timings of animation frames and hitboxes should be aligned, so
+internally both the Sprite and Hitboxes classes rely on the Animation class to
+determine their timings.  Because of this, the data files for each class are
+expected to have matching ID numbers - if you load an entity that has animation
+01234, the files 01234.sprite, 01234.hitboxes, and 01234.animation will be
+loaded.  You should not try to match 01234.sprite with 43210.animation.
+
+Its reasonable to have many things in a game with identical animation timings -
+reskinned enemies for example.  In this case, you are still supposed to create
+duplicate animation/hitboxes files with the ID matching the ID of the sprites.
+This is just how it works.
+
+However, its not required that all three files exist.  Entity is the base class
+for objects on the screen, but there's no reason that all of those things need
+be animated or to have hitboxes.  For example, the loading screen features an
+image that says "Loading...".  This is an entity, which has a sprite, but the 
+sprite has no need for hitboxes or an animation, so those files don't exist.  In
+the case when no animation file is found, the file "no_animation.animation" is
+used, whereas the hitboxes are simply left empty.
+
+Currently there are messages printed to the console about missing files, but
+this is likely to change since missing files may not be an error.
+
+For more about the formatting of these files, and how animations actually work,
+see the sections on Data Files and Animating Sprites.
+
+
++------------------------+
+|  8. Animating Sprites  |
++------------------------+
+
+This section is specifically about how animation works.  For the interplay
+between the related objects, see the section on Sprites/Animations/Hitboxes.  
+For general comments about how graphics are handled, see the section on 
+Graphics.  For information about the general format of data files, see the 
+section on Data Files.
+
+The Sprite object in Omnisquash is really more of a spritesheet - it contains an
+Image object, and the pieces of information necessary to logically divide the
+image into sections, with each section being a frame of animation.  Which is, in
+fact, exactly how the drawing methods work.  Frames are all the same size, and
+are numbered starting with 0 at the top left, then moving right, then moving
+down.
+
+A 2D animation can be thought of as a series of frames, with a timing for each
+frame.  We refer to these as loops, with the Animation object being a collection
+of the data for multiple loops.  Each loop contains an ordered list of frame
+numbers, and millisecond timings for each frame.
+
+For example, suppose that you had a simple animated sprite with only three
+frames; the data for the loop could be:
+
+    frames: [1, 0, 2]
+    timings: [200, 100, 1000]
+
+which would be interpreted as "display frame 1 for 200 milliseconds, then
+display frame 0 for 100 milliseconds, then display frame 2 for 1000 
+milliseconds".  
+
+You can play frames in any order - indeed, you should put all of the frames for
+a single object into one sheet, and have as many loops as required.
+
+How does the animation progress?  During the logic loop, you must call the
+updateAnimation method in graphics.h.  If you want to change what loop is being
+played, use setAnimationLoop after updating the animation (the forceRestart is 
+to simplify logic).  I typically just update an Entity's animation as the first
+thing in the logic loop.
+
+Of course, loops don't need to actually "loop"; its totally fine to play a loop
+only once.
+
+
++--------------------+
+|  9. Area graphics  |
++--------------------+
+
+Areas, aside from needing their own section to explain, do graphics slightly
+differently than everything else.  Currently areas are not animated, though it
+would be straightforward to do so, and would still basically use the ideas here
+described.
+
+Most of the graphics capabilities in Omnisquash are just displaying parts of
+images loaded from file, but areas (and rooms) actually generate their own 
+images, and the idea is simple - it is better to take the time to generate a
+single image for a room than it is to draw each tile for the room every loop.
+In a word - buffering.
+
+When an area is loaded, it references an image file which is logically
+partitioned based on tile size, similar to sprites, as described in the section
+on Animating sprites.  Each room in the area contains a matrix of tile indices, 
+which are used to create a new Image from the tilesheet.  Since a room takes the
+whole screen, and is not animated (yet), Image is preferable over Sprite.
+
+It is certainly true that its not necessary that Area hold onto the tilesheet
+after generating the buffers, but yolo.
+
+
++----------------+
+|  10. Creators  |
++----------------+
 
 Creators are the method by which the engine components attach to the game
 components, see the section on Engine vs. Game.  I will admit that it may be
@@ -307,61 +469,9 @@ all of these functions.  Maybe I will change that later, or maybe not, since it
 does currently work.
 
 
-+---------------+
-|  6. Graphics  |
-+---------------+
-
-Currently, Omnisquash uses SDL2 for its graphics library.  However, SDL is only
-used in graphics.h/c and input.h/c.  Transitioning to a different graphics
-library (or dare I say, different platform) is thus relatively straightforward,
-as evidenced by the relative ease of transition from SDL1 to SDL2 that was made
-some time back.
-
-The primary abstraction over SDL is the Image struct (for graphics, I have 
-eschewed object oriented code, as imperative code seems more reasonable), which
-holds an SDL_Surface or an SDL_Texture, a height and width, and a flag to
-determine whether the surface or texture is being used.  Though to be honest, I
-cannot recall anywhere that an SDL_Surface is actually used, I think its a hold
-over from when I used SDL1.  We certainly shouldn't be using surfaces, since
-those are processed by the CPU, while textures are graphics accelerated (the
-main advantage of SDL2 over SDL1).
-
-The other graphics object is a sprite, which holds an image and frame sizes, see
-the section on Animating Sprites for further details.
-
-Most of the graphics methods are straightforward and do exactly what their name
-suggests.
-
-For loaded images, magic pink is transparent.
-
-
-+-----------------+
-|  7. Data Files  |
-+-----------------+
-
-Data files are JSON files.  Maybe someday I'll compress/encrypt them (lol) but
-for now they're just straight JSON.  I'm using cJSON to do the parsing (props to
-that sweet library), almost all of which occurs in data_reader.c.
-
-Most of the formats are flexible right now, and accordingly there is little
-validation of input.  When things stabilize further, I will add validation, but 
-it seems like a time consuming and code obfuscating step when I'm liable to 
-change the format drastically immediately afterwards.
-
-Data files are stored in the directory data, where there are general config
-files and then subdirectories for each different kind of object.  Files for
-objects are named using five digit ID numbers, and as described in the sections
-on Creators and Sprites/Animations/Hitboxes, there are some rules and
-consistency required in the naming of these files.
-
-I won't go into the details of each file type here, JSON is a reasonably clear
-format so just go look at the files yourself.  However, more information about
-the data in animation files can be found in the section Animating Sprites.
-
-
-+---------------+
-|  8. Entities  |
-+---------------+
++----------------+
+|  11. Entities  |
++----------------+
 
 The primary class for objects on the screen is Entity.  Almost everything is an
 Entity or subclasses it in someway.  If you look at the struct for them its 
@@ -386,114 +496,6 @@ force upon an entity BESIDES the movement they are creating themselves, you use
 this.  For example, if the player hits an enemy, the enemy gets knocked back;
 the knockback is the external movement.  This can also be used for moving
 platforms or holes or whatever.
-
-
-+------------+
-|  9. Input  |
-+------------+
-
-To check input, include input.h.  There are two instances of the same struct
-available in this file, _input and _inputRead.  The struct itself contains a
-flag for each possible button.  
-
-If you want to check that a button is being pressed, check _input and 
-_inputRead.  If the flag in _input is 1, that means that the key is being 
-pressed.  If the flag in _inputRead is 1, that means that something else has
-already processed the input, and you probably don't want to act on the input (an
-exception to this would be movement, in which you want the button to be pressed
-continuously).  After reading the input, decide if you need continuous input or
-if you want other things to also check this input, then set the flag in 
-inputRead accordingly.
-
-If you're pushing or popping frames, or entering menus or etc, it is probably a
-good idea to call the poorly named method setInputAllRead, which sets all
-members of _inputRead to 1 if the corresponding key is being pressed.
-
-The current keybindings are:
-
-    Start   - C
-    Select  - X
-    A       - S
-    B       - D
-    X       - W
-    Y       - E
-    Up      - UP
-    Down    - DOWN
-    Left    - LEFT
-    Right   - RIGHT
-    Exit    - ESC
-
-Obviously in the future we'll make keys customizable.
-
-
-+-------------------------+
-|  10. Animating Sprites  |
-+-------------------------+
-
-This section is specifically about how animation works.  For the interplay
-between the related objects, see the section on Sprites/Animations/Hitboxes.  
-For general comments about how graphics are handled, see the section on 
-Graphics.  For information about the general format of data files, see the 
-section on Data Files.
-
-The Sprite object in Omnisquash is really more of a spritesheet - it contains an
-Image object, and the pieces of information necessary to logically divide the
-image into sections, with each section being a frame of animation.  Which is, in
-fact, exactly how the drawing methods work.  Frames are all the same size, and
-are numbered starting with 0 at the top left, then moving right, then moving
-down.
-
-A 2D animation can be thought of as a series of frames, with a timing for each
-frame.  We refer to these as loops, with the Animation object being a collection
-of the data for multiple loops.  Each loop contains an ordered list of frame
-numbers, and millisecond timings for each frame.
-
-For example, suppose that you had a simple animated sprite with only three
-frames; the data for the loop could be:
-
-    frames: [1, 0, 2]
-    timings: [200, 100, 1000]
-
-which would be interpreted as "display frame 1 for 200 milliseconds, then
-display frame 0 for 100 milliseconds, then display frame 2 for 1000 
-milliseconds".  
-
-You can play frames in any order - indeed, you should put all of the frames for
-a single object into one sheet, and have as many loops as required.
-
-How does the animation progress?  During the logic loop, you must call the
-updateAnimation method in graphics.h.  If you want to change what loop is being
-played, use setAnimationLoop after updating the animation (the forceRestart is 
-to simplify logic).  I typically just update an Entity's animation as the first
-thing in the logic loop.
-
-Of course, loops don't need to actually "loop"; its totally fine to play a loop
-only once.
-
-
-+---------------------+
-|  11. Area graphics  |
-+---------------------+
-
-Areas, aside from needing their own section to explain, do graphics slightly
-differently than everything else.  Currently areas are not animated, though it
-would be straightforward to do so, and would still basically use the ideas here
-described.
-
-Most of the graphics capabilities in Omnisquash are just displaying parts of
-images loaded from file, but areas (and rooms) actually generate their own 
-images, and the idea is simple - it is better to take the time to generate a
-single image for a room than it is to draw each tile for the room every loop.
-In a word - buffering.
-
-When an area is loaded, it references an image file which is logically
-partitioned based on tile size, similar to sprites, as described in the section
-on Animating sprites.  Each room in the area contains a matrix of tile indices, 
-which are used to create a new Image from the tilesheet.  Since a room takes the
-whole screen, and is not animated (yet), Image is preferable over Sprite.
-
-It is certainly true that its not necessary that Area hold onto the tilesheet
-after generating the buffers, but yolo.
 
 
 +----------------------------------+
