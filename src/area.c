@@ -102,6 +102,7 @@ int loadAreaById(int id){
     //load the tilesheet
     // _current_area.tilesetName = "gfx/area1tiles.png";
     _current_area.tilesheet.sheet = loadImage(_current_area.tilesetName);
+    //PIZZA - these kinda seem pointless
     _current_area.tilesheet.tileWidth = TILE_SIZE;
     _current_area.tilesheet.tileHeight = TILE_SIZE;
 
@@ -232,40 +233,25 @@ void createAreaEntities(Area *self){
     }
 }
 
+//takes the tile index array and generates a buffer image using the tilesheet
 void drawRoomBuffers(Room *room){
-//    int currentRoom = _current_area.currentRoom;
-//    Room *room = _current_area.roomList[currentRoom];
-    int roomWidth = ROOM_WIDTH;
-    int roomHeight = ROOM_HEIGHT;
     int tileWidth = _current_area.tilesheet.tileWidth;
     int tileHeight = _current_area.tilesheet.tileHeight;
-    int numTilesWide = (_current_area.tilesheet.sheet->width - 1) / tileWidth;
-    int numTilesHigh = (_current_area.tilesheet.sheet->height - 1) / tileHeight;
-    SDL_Rect src, dst;
+    int numTilesWide = (_current_area.tilesheet.sheet->width) / tileWidth;
+    int numTilesHigh = (_current_area.tilesheet.sheet->height) / tileHeight;
     ImageRect srcR, dstR;
     int i, x, y;
-    for (i = 0; i < roomWidth * roomHeight; i++){
+    for (i = 0; i < ROOM_WIDTH * ROOM_HEIGHT; i++){
         x = room->tileIndices[i] % numTilesWide;
         y = room->tileIndices[i] / numTilesWide;
         
-        
-        src.x = x * (tileWidth + 1) + 1;
-        src.y = y * (tileHeight + 1) + 1;
-        src.w = tileWidth;
-        src.h = tileHeight;
-    
-        dst.x = (i % roomWidth) * tileWidth;
-        dst.y = (i / roomWidth) * tileHeight;
-        dst.w = tileWidth;
-        dst.h = tileHeight;
-        
-        srcR.x = x * (tileWidth + 1) + 1;
-        srcR.y = y * (tileHeight + 1) + 1;
+        srcR.x = x * tileWidth;
+        srcR.y = y * tileHeight;
         srcR.w = tileWidth;
         srcR.h = tileHeight;
     
-        dstR.x = (i % roomWidth) * tileWidth;
-        dstR.y = (i / roomWidth) * tileHeight;
+        dstR.x = (i % ROOM_WIDTH) * tileWidth;
+        dstR.y = (i / ROOM_WIDTH) * tileHeight;
         dstR.w = tileWidth;
         dstR.h = tileHeight;
 
