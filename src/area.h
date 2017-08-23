@@ -35,6 +35,7 @@ Area *init_Area(Area *self);
 int loadAreaById(int id);
 void term_Area(Area *self);
 void unloadCurrentArea();
+void initAreaTransition();
 
 // Logic
 void doRoom(int delta);
@@ -57,5 +58,6 @@ Door **getRoomDoorList();
 size_t getNumRoomStairs();
 Stair **getRoomStairList();
 void addTempEntityToArea(Entity *e);
+int checkChangeArea();
 
 #endif

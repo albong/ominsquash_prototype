@@ -21,6 +21,7 @@
 static int changingRooms = 0;
 static int changingToRoom = -1;
 static unsigned totalDelta = 0;
+static int changeToAreaId = -1;//checked by the game frame at the end of its logic cycle
 
 typedef struct Transition{
     double oldX, oldY;
@@ -28,6 +29,8 @@ typedef struct Transition{
     Room *newRoom;
     int direction;
     int roomLoaded;
+    int newArea;
+    int newRoomNumber;
 } Transition;
 
 Transition room_transition;
@@ -124,7 +127,7 @@ int loadAreaById(int id){
     
     //PIZZA remove this later
     //PIZZA - doors need to be reworked, but they're using the old graphics code
-    Room *TEMP_ROOM = _current_area.roomList[1];
+    Room *TEMP_ROOM;
     TEMP_ROOM = _current_area.roomList[0];
     // Sprite *doorSprite = loadAnimatedSprite("gfx/door1.png", TILE_SIZE);
     TEMP_ROOM->numDoors = 0;
@@ -139,6 +142,7 @@ int loadAreaById(int id){
     }
     
     _current_area.changingRooms = 0;
+    changeToAreaId = -1;
     
     return 1;
 }
@@ -290,6 +294,24 @@ void term_Area(Area *self){
 
 void unloadCurrentArea(){
     term_Area(&_current_area);
+
+    //reset the globals
+    changingRooms = 0;
+    changingToRoom = -1;
+    totalDelta = 0;
+    changeToAreaId = -1;
+}
+
+void initAreaTransition(){
+    room_transition.oldX= 0;
+    room_transition.oldY= 0;
+    room_transition.newX= -1;
+    room_transition.newY= -1;
+    room_transition.newRoom = NULL;
+    room_transition.direction = 0;
+    room_transition.roomLoaded = 0;
+    room_transition.newArea = -1;
+    room_transition.newRoomNumber = 0;
 }
 
 
@@ -320,13 +342,21 @@ void doRoom(int delta){
             totalDelta = 0;
             changingRooms = 2;
             _current_area.changingRooms = 2;
-            room_transition.newRoom = _current_area.roomList[stair->toRoom];
-            resetEntityPositions(room_transition.newRoom);
-            resetEnemyPositions(room_transition.newRoom);
-            clearAndResetEnemies(room_transition.newRoom);
-            setDoorStates(room_transition.newRoom, stair->toRoom);
+            if (stair->sameArea){
+                room_transition.newRoom = _current_area.roomList[stair->toRoom];
+                resetEntityPositions(room_transition.newRoom);
+                resetEnemyPositions(room_transition.newRoom);
+                clearAndResetEnemies(room_transition.newRoom);
+                setDoorStates(room_transition.newRoom, stair->toRoom);
+                room_transition.newArea = -1;
+            } else {
+                room_transition.newRoom = NULL;
+                room_transition.newArea = stair->toArea;
+                
+            }
             lockPlayer();
             
+            room_transition.newRoomNumber = stair->toRoom;
             room_transition.oldX = _player.e.x + (_player.e.w / 2);
             room_transition.oldY = _player.e.y + (_player.e.h / 2);
             room_transition.newX = stair->toX;
@@ -398,13 +428,17 @@ void shiftRoom(int roomIndex, int direction, int delta){
 void jumpRoom(){
     double transPercent = totalDelta / MILLI_PER_TRANSITION;
     
-    if (transPercent >= 1 && !room_transition.roomLoaded){
+    //if the wipe has covered the whole screen, prepare to unload or change rooms
+    if (transPercent >= 1 && room_transition.newArea != -1){
+        changeToAreaId = room_transition.newArea;
+    } else if (transPercent >= 1 && !room_transition.roomLoaded){
         _current_area.currentRoom = room_transition.newRoom;
         _player.e.x = room_transition.newX;
         _player.e.y = room_transition.newY;
         room_transition.roomLoaded = 1;
     }
     
+    //if the wipe has uncovered the whole screen, unlock the player
     if (transPercent >= 2.2){
         changingRooms = 0;
         _current_area.changingRooms = 0;
@@ -691,6 +725,10 @@ void addTempEntityToArea(Entity *e){
         }
     }
     _current_area.numTemporaryEntities++;
+}
+
+int checkChangeArea() {
+    return changeToAreaId;
 }
 
 

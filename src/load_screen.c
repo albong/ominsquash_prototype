@@ -2,6 +2,7 @@
 #include "entity.h"
 #include "data_reader.h"
 #include "constants.h"
+#include "area.h"
 
 #include <stdio.h>
 
@@ -35,6 +36,10 @@ int doLoadScreen(unsigned delta){
         loadingIcon->action(loadingIcon, delta);
         
         //PIZZA - free previous area?
+        if (checkChangeArea() != -1){
+            unloadCurrentArea();
+        }
+        
         if (!loadAreaById(areaIdToLoad)){
             printf("Failed to load area %d\n", areaIdToLoad);
             result = 0;

@@ -116,6 +116,7 @@ void initializeOmnisquash(){
     initInterface();
     initTitleScreen();
     initLoadScreen();
+    initAreaTransition();
 
     initFrames();
 }

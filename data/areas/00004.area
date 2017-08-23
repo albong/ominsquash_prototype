@@ -56,5 +56,5 @@
             ]
         }
     ], 
-    "tilesheet": "../gfx/tilesheets/tilesheet_Jerom.png"
+    "tilesheet": "gfx/tilesheets/tilesheet_Jerom.png"
 }

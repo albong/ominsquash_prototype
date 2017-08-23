@@ -62,7 +62,7 @@
                 {
                     "x" : 60,
                     "y" : 60,
-                    "to area" : 0,
+                    "to area" : -1,
                     "to room" : 2,
                     "to x" : 50,
                     "to y" : 50,
@@ -187,7 +187,16 @@
             "door positions" : [
                 ],
             "stairs" : [
-                ]
+                {
+                    "x" : 90,
+                    "y" : 90,
+                    "to area" : 1,
+                    "to room" : 0,
+                    "to x" : 50,
+                    "to y" : 50,
+                    "animation" : 7
+                }
+            ]
         }
     ]
 }

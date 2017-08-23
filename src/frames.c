@@ -71,6 +71,8 @@ void termFrames(){
 }
 
 int gameFrameLogic(unsigned delta){
+    int newAreaId;
+    
     if (_input.start && !_inputRead.start){
         _currentFrame = menuFrame;
         setInputAllRead();
@@ -111,7 +113,16 @@ int gameFrameLogic(unsigned delta){
         _inputRead.x = 1;
     }
     
-    return 0;
+    newAreaId = checkChangeArea();
+    if (newAreaId != -1){
+        printf("game frame\n");
+        fflush(stdout);
+        setAreaIdToLoad(newAreaId);
+        setInputAllRead();
+        return -1;
+    } else {
+        return 0;
+    }
 }
 
 void gameFrameDraw(){
@@ -172,7 +183,7 @@ void titleScreenFrameDraw(){
 
 int loadScreenFrameLogic(unsigned delta){
     int status = doLoadScreen(delta);
-    
+    printf("load screen\n");
     if (status == 1){
         setInputAllRead();
         _currentFrame = gameFrame;

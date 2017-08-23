@@ -305,11 +305,14 @@ int fillAreaFromJson(cJSON *root, Area *result){
             tempStair->e.x = cJSON_GetObjectItem(jsonTemp, "x")->valueint;
             tempStair->e.y = cJSON_GetObjectItem(jsonTemp, "y")->valueint;
             
-            tempStair->sameArea = 1; //PIZZA - need to add passing of id to these methods so that you can check and correctly use this
             tempStair->toArea = cJSON_GetObjectItem(jsonTemp, "to area")->valueint;
             tempStair->toRoom = cJSON_GetObjectItem(jsonTemp, "to room")->valueint;
             tempStair->toX = cJSON_GetObjectItem(jsonTemp, "to x")->valueint;
             tempStair->toY = cJSON_GetObjectItem(jsonTemp, "to y")->valueint;
+            
+            if (tempStair->toArea == -1){
+                tempStair->sameArea = 1;
+            }
             
             animationId = cJSON_GetObjectItem(jsonTemp, "animation")->valueint;
             addAnimationToEntity((Entity *)tempStair, animationId);

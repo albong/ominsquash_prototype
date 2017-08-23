@@ -56,5 +56,5 @@
             ]
         }
     ], 
-    "tilesheet": "../gfx/tilesheets/tilesheet_Overworld.png"
+    "tilesheet": "gfx/tilesheets/tilesheet_Overworld.png"
 }
