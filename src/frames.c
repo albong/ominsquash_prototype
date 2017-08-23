@@ -196,7 +196,12 @@ void loadScreenFrameDraw(){
 }
 
 int screenWipeFrameLogic(unsigned delta){
-    doScreenWipe(delta);
+    if (doScreenWipe(delta)){
+        setInputAllRead();
+        return -1;
+    } else {
+        return 0;
+    }
 }
 
 void screenWipeFrameDraw(){
