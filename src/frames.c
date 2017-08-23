@@ -10,6 +10,7 @@
 #include "textbox.h"
 #include "title_screen.h"
 #include "load_screen.h"
+#include "screen_wipe.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -20,8 +21,10 @@ static Frame *menuFrame;
 static Frame *textboxFrame;
 static Frame *titleScreenFrame;
 static Frame *loadScreenFrame;
+static Frame *screenWipeFrame;
 
 //methods
+static Frame *allocateFrame(int (* logic)(unsigned delta), void (* draw)(), int drawIfNotTop);
 static int gameFrameLogic(unsigned delta);
 static void gameFrameDraw();
 static int menuFrameLogic(unsigned delta);
@@ -32,34 +35,25 @@ static int titleScreenFrameLogic(unsigned delta);
 static void titleScreenFrameDraw();
 static int loadScreenFrameLogic(unsigned delta);
 static void loadScreenFrameDraw();
+static int screenWipeFrameLogic(unsigned delta);
+static void screenWipeFrameDraw();
 
 void initFrames(){
-    gameFrame = malloc(sizeof(Frame));
-    gameFrame->logic = &gameFrameLogic;
-    gameFrame->draw = &gameFrameDraw;
-    gameFrame->drawIfNotTop = 1;
-    
-    menuFrame = malloc(sizeof(Frame));
-    menuFrame->logic = &menuFrameLogic;
-    menuFrame->draw = &menuFrameDraw;
-    menuFrame->drawIfNotTop = 1;
-    
-    textboxFrame = malloc(sizeof(Frame));
-    textboxFrame->logic = &textboxFrameLogic;
-    textboxFrame->draw = &textboxFrameDraw;
-    textboxFrame->drawIfNotTop = 1;
-    
-    titleScreenFrame = malloc(sizeof(Frame));
-    titleScreenFrame->logic = &titleScreenFrameLogic;
-    titleScreenFrame->draw = &titleScreenFrameDraw;
-    titleScreenFrame->drawIfNotTop = 0;
-    
-    loadScreenFrame = malloc(sizeof(Frame));
-    loadScreenFrame->logic = loadScreenFrameLogic;
-    loadScreenFrame->draw = loadScreenFrameDraw;
-    loadScreenFrame->drawIfNotTop = 0;
+    gameFrame = allocateFrame(&gameFrameLogic, &gameFrameDraw, 1);
+    menuFrame = allocateFrame(&menuFrameLogic, &menuFrameDraw, 1);
+    textboxFrame = allocateFrame(&textboxFrameLogic, &textboxFrameDraw, 1);
+    titleScreenFrame = allocateFrame(&titleScreenFrameLogic, &titleScreenFrameDraw, 0);
+    loadScreenFrame = allocateFrame(&loadScreenFrameLogic, &loadScreenFrameDraw, 0);
+    screenWipeFrame = allocateFrame(&screenWipeFrameLogic, &screenWipeFrameDraw, 0);
     
     _currentFrame = titleScreenFrame;
+}
+
+Frame *allocateFrame(int (* logic)(unsigned delta), void (* draw)(), int drawIfNotTop){
+    Frame *result = malloc(sizeof(Frame));
+    result->logic = logic;
+    result->draw = draw;
+    result->drawIfNotTop = drawIfNotTop;
 }
 
 void termFrames(){
@@ -68,6 +62,7 @@ void termFrames(){
     free(textboxFrame);
     free(titleScreenFrame);
     free(loadScreenFrame);
+    free(screenWipeFrame);
 }
 
 int gameFrameLogic(unsigned delta){
@@ -183,7 +178,7 @@ void titleScreenFrameDraw(){
 
 int loadScreenFrameLogic(unsigned delta){
     int status = doLoadScreen(delta);
-    printf("load screen\n");
+    
     if (status == 1){
         setInputAllRead();
         _currentFrame = gameFrame;
@@ -199,3 +194,13 @@ int loadScreenFrameLogic(unsigned delta){
 void loadScreenFrameDraw(){
     drawLoadScreen();
 }
+
+int screenWipeFrameLogic(unsigned delta){
+    doScreenWipe(delta);
+}
+
+void screenWipeFrameDraw(){
+    drawScreenWipe();
+}
+
+
