@@ -1,6 +1,7 @@
 #include "screen_wipe.h"
 #include "graphics.h"
 #include "constants.h"
+#include <stdio.h>
 
 static double centerX = 0;
 static double centerY = 0;
@@ -19,25 +20,29 @@ int doScreenWipe(unsigned delta){
 }
 
 void drawScreenWipe(){
-    double transPercent = totalDelta / MILLI_PER_TRANSITION;
+    double transPercent;
     
     //if we're wiping outward, do the held black screen first
     if (!wipeInward && totalDelta <= MILLI_HOLD_TRANSITION){
         drawFilledRect_T(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0,0,0);
-    } else if (wipeInward && totalDelta <= MILLI_HOLD_TRANSITION + MILLI_PER_TRANSITION){
-        drawFilledRect_T(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0,0,0);
     
     //draw the wipe - WIDTH is greater than height, so just use that
-    } else if (wipeInward){
+    } else if (wipeInward && totalDelta <= MILLI_PER_TRANSITION){
+        transPercent = totalDelta / MILLI_PER_TRANSITION;
         drawFilledRect_T(centerX - SCREEN_WIDTH, 0, SCREEN_WIDTH * transPercent, SCREEN_WIDTH, 0,0,0);
         drawFilledRect_T(centerX + (SCREEN_WIDTH * (1-transPercent)), 0, SCREEN_WIDTH, SCREEN_WIDTH, 0,0,0);
         drawFilledRect_T(0, centerY - SCREEN_WIDTH, SCREEN_WIDTH, SCREEN_WIDTH * transPercent, 0,0,0);
         drawFilledRect_T(0, centerY + (SCREEN_WIDTH * (1-transPercent)), SCREEN_WIDTH, SCREEN_WIDTH, 0,0,0);
-    } else {
+    } else if (!wipeInward){
+        transPercent = (totalDelta - MILLI_HOLD_TRANSITION) / MILLI_PER_TRANSITION;
         drawFilledRect_T(centerX - SCREEN_WIDTH, 0, SCREEN_WIDTH * (1-transPercent), SCREEN_WIDTH, 0,0,0);
         drawFilledRect_T(centerX + (SCREEN_WIDTH * transPercent), 0, SCREEN_WIDTH, SCREEN_WIDTH, 0,0,0);
         drawFilledRect_T(0, centerY - SCREEN_WIDTH, SCREEN_WIDTH, SCREEN_WIDTH * (1-transPercent), 0,0,0);
         drawFilledRect_T(0, centerY + (SCREEN_WIDTH * transPercent), SCREEN_WIDTH, SCREEN_WIDTH, 0,0,0);
+    
+    //if we wipe inward, do the held black screen last
+    } else { // if (wipeInward && totalDelta <= MILLI_HOLD_TRANSITION + MILLI_PER_TRANSITION){
+        drawFilledRect_T(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0,0,0);
     }
 }
 

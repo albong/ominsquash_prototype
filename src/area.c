@@ -18,12 +18,12 @@
 #include <stdint.h>
 #include <string.h>
  
-static int changingRooms = 0;
+static int changingRooms = 0; //0 for nothing, 1 for shifting rooms, 2 for jumping rooms, 3 for area change?
 static int changingToRoom = -1;
 static unsigned totalDelta = 0;
 static int changeToAreaId = -1;//checked by the game frame at the end of its logic cycle
 
-typedef struct Transition{
+typedef struct Transition{//basically just to group the variables
     double oldX, oldY;
     double newX, newY;
     Room *newRoom;
@@ -42,7 +42,6 @@ static void createAreaEntities(Area *self);
 static void drawRoomBuffers(Room *room);
 
 static void shiftRoom(int roomIndex, int direction, int delta);
-static void jumpRoom();
 static int checkForRoomChange();
 static void doRoomEntities(int delta);
 static void doRoomEnemies(int delta);
@@ -354,7 +353,7 @@ void doRoom(int delta){
                 room_transition.newArea = stair->toArea;
                 
             }
-            lockPlayer();
+            // lockPlayer();
             
             room_transition.newRoomNumber = stair->toRoom;
             room_transition.oldX = _player.e.x + (_player.e.w / 2);
@@ -379,7 +378,20 @@ void doRoom(int delta){
     } else if (changingRooms == 1){
         shiftRoom(_current_area.currentRoom->connectingRooms[changingToRoom], changingToRoom, delta);
     } else { //changingRooms == 2
-        jumpRoom();
+        //after setting changingRooms initially, we should have already pushed on a screen wipe frame to wipe inward
+        //so here we should change everything so that at the end of the loop we push on another wipe outward if we haven't
+        //then if we've done both, then reset the various variables
+        if (!room_transition.roomLoaded){
+            _current_area.currentRoom = room_transition.newRoom;
+            _player.e.x = room_transition.newX;
+            _player.e.y = room_transition.newY;
+            room_transition.roomLoaded = 1;    
+        } else if (room_transition.roomLoaded){
+            changingRooms = 0;
+            _current_area.changingRooms = 0;
+            removeTempEntities();
+            totalDelta = 0;
+        }
     }
 }
 
@@ -421,29 +433,6 @@ void shiftRoom(int roomIndex, int direction, int delta){
         _current_area.currentRoom = room_transition.newRoom;
         removeTempEntities();
         stopPlayerTransitioning();
-        totalDelta = 0;
-    }
-}
-
-void jumpRoom(){
-    double transPercent = totalDelta / MILLI_PER_TRANSITION;
-    
-    //if the wipe has covered the whole screen, prepare to unload or change rooms
-    if (transPercent >= 1 && room_transition.newArea != -1){
-        changeToAreaId = room_transition.newArea;
-    } else if (transPercent >= 1 && !room_transition.roomLoaded){
-        _current_area.currentRoom = room_transition.newRoom;
-        _player.e.x = room_transition.newX;
-        _player.e.y = room_transition.newY;
-        room_transition.roomLoaded = 1;
-    }
-    
-    //if the wipe has uncovered the whole screen, unlock the player
-    if (transPercent >= 2.2){
-        changingRooms = 0;
-        _current_area.changingRooms = 0;
-        removeTempEntities();
-        unlockPlayer();
         totalDelta = 0;
     }
 }
@@ -600,26 +589,8 @@ void drawCurrentRoom(){
 }
 
 void drawCurrentRoomTopLayer(){
-    //can be used to create other depth effects as well
-    double transPercent = totalDelta / MILLI_PER_TRANSITION;
-    
-    if (changingRooms == 2){
-        //wipe inward or outward, depending on how far along, centered on the player
-        //using only SCREEN_WIDTH results in consistent wipe speeds
-        if (transPercent < 1){
-            drawFilledRect_T(room_transition.oldX - SCREEN_WIDTH, 0, SCREEN_WIDTH * transPercent, SCREEN_WIDTH, 0,0,0);
-            drawFilledRect_T(room_transition.oldX + (SCREEN_WIDTH * (1-transPercent)), 0, SCREEN_WIDTH, SCREEN_WIDTH, 0,0,0);
-            drawFilledRect_T(0, room_transition.oldY - SCREEN_WIDTH, SCREEN_WIDTH, SCREEN_WIDTH * transPercent, 0,0,0);
-            drawFilledRect_T(0, room_transition.oldY + (SCREEN_WIDTH * (1-transPercent)), SCREEN_WIDTH, SCREEN_WIDTH, 0,0,0);
-        } else if (transPercent >= 1 && transPercent < 1.2) {
-            drawFilledRect_T(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0,0,0);
-        } else {
-            drawFilledRect_T(room_transition.newX - SCREEN_WIDTH, 0, SCREEN_WIDTH * (2.2-transPercent), SCREEN_HEIGHT, 0,0,0);
-            drawFilledRect_T(room_transition.newX + (SCREEN_WIDTH * (transPercent-1.2)), 0, SCREEN_WIDTH, SCREEN_WIDTH, 0,0,0);
-            drawFilledRect_T(0, room_transition.newY - SCREEN_WIDTH, SCREEN_WIDTH, SCREEN_WIDTH * (2.2-transPercent), 0,0,0);
-            drawFilledRect_T(0, room_transition.newY + (SCREEN_WIDTH * (transPercent-1.2)), SCREEN_WIDTH, SCREEN_WIDTH, 0,0,0);
-        }
-    }
+    //was used for wipe effects, but isn't anymore.
+    //could be used for arbitrary depth effects
 }
 
 void drawRoomDoors(Room *room, double shiftX, double shiftY){
@@ -729,6 +700,25 @@ void addTempEntityToArea(Entity *e){
 
 int checkChangeArea() {
     return changeToAreaId;
+}
+
+int checkScreenWipe(double *x, double *y){
+    int result;
+    
+    //check if we're jumping rooms, and then whether or not we've moved the player
+    if (changingRooms == 2 && !room_transition.roomLoaded){
+        *x = room_transition.oldX;
+        *y = room_transition.oldY;
+        result = 1;
+    } else if (changingRooms == 2 && room_transition.roomLoaded){
+        *x = room_transition.newX;
+        *y = room_transition.newY;
+        result = 2;
+    } else {
+        result = 0;
+    }
+    
+    return result;
 }
 
 

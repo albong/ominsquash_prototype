@@ -8,7 +8,7 @@ typedef struct Frame{
     int drawIfNotTop;
 } Frame;
 
-Frame *_currentFrame;
+Frame *_currentFrame; //HORRIBLY misnamed, its really the frame that next gets pushed onto the stack
 
 void initFrames();
 void termFrames();

@@ -66,7 +66,8 @@ void termFrames(){
 }
 
 int gameFrameLogic(unsigned delta){
-    int newAreaId;
+    int newAreaId, pushWipe;
+    double x, y;
     
     if (_input.start && !_inputRead.start){
         _currentFrame = menuFrame;
@@ -107,14 +108,26 @@ int gameFrameLogic(unsigned delta){
     if (_input.x){
         _inputRead.x = 1;
     }
-    
+
+    //check if we need to push on a wipe or change areas
     newAreaId = checkChangeArea();
-    if (newAreaId != -1){
+    pushWipe = checkScreenWipe(&x, &y);
+    if (newAreaId != -1){ //change area
         printf("game frame\n");
         fflush(stdout);
         setAreaIdToLoad(newAreaId);
         setInputAllRead();
         return -1;
+    } else if (pushWipe == 1){ //wipe inward
+        setScreenWipeCenter(x, y);
+        setScreenWipeInward(1);
+        _currentFrame = screenWipeFrame;
+        return 1;
+    } else if (pushWipe == 2){ //wipe outward
+        setScreenWipeCenter(x, y);
+        setScreenWipeInward(0);
+        _currentFrame = screenWipeFrame;
+        return 1;
     } else {
         return 0;
     }
