@@ -1,0 +1,359 @@
+{   
+    "movement" : [
+        {
+            "circles" : [],
+            "rectangles" : [
+                {
+                    "x" : 4,
+                    "y" : 5,
+                    "width" : 7,
+                    "height" : 11
+                }
+            ]
+        },
+        {
+            "circles" : [],
+            "rectangles" : [
+                {
+                    "x" : 4,
+                    "y" : 5,
+                    "width" : 7,
+                    "height" : 11
+                }
+            ]
+        },
+        {
+            "circles" : [],
+            "rectangles" : [
+                {
+                    "x" : 4,
+                    "y" : 5,
+                    "width" : 7,
+                    "height" : 11
+                }
+            ]
+        },
+        {
+            "circles" : [],
+            "rectangles" : [
+                {
+                    "x" : 4,
+                    "y" : 5,
+                    "width" : 7,
+                    "height" : 11
+                }
+            ]
+        },
+        {
+            "circles" : [],
+            "rectangles" : [
+                {
+                    "x" : 4,
+                    "y" : 5,
+                    "width" : 7,
+                    "height" : 11
+                }
+            ]
+        },
+        {
+            "circles" : [],
+            "rectangles" : [
+                {
+                    "x" : 4,
+                    "y" : 5,
+                    "width" : 7,
+                    "height" : 11
+                }
+            ]
+        },
+        {
+            "circles" : [],
+            "rectangles" : [
+                {
+                    "x" : 4,
+                    "y" : 5,
+                    "width" : 7,
+                    "height" : 11
+                }
+            ]
+        },
+        {
+            "circles" : [],
+            "rectangles" : [
+                {
+                    "x" : 4,
+                    "y" : 5,
+                    "width" : 7,
+                    "height" : 11
+                }
+            ]
+        },
+        {
+            "circles" : [],
+            "rectangles" : [
+                {
+                    "x" : 4,
+                    "y" : 5,
+                    "width" : 7,
+                    "height" : 11
+                }
+            ]
+        },
+        {
+            "circles" : [],
+            "rectangles" : [
+                {
+                    "x" : 4,
+                    "y" : 5,
+                    "width" : 7,
+                    "height" : 11
+                }
+            ]
+        },
+        {
+            "circles" : [],
+            "rectangles" : [
+                {
+                    "x" : 4,
+                    "y" : 5,
+                    "width" : 7,
+                    "height" : 11
+                }
+            ]
+        },
+        {
+            "circles" : [],
+            "rectangles" : [
+                {
+                    "x" : 4,
+                    "y" : 5,
+                    "width" : 7,
+                    "height" : 11
+                }
+            ]
+        },
+        {
+            "circles" : [],
+            "rectangles" : [
+                {
+                    "x" : 4,
+                    "y" : 5,
+                    "width" : 7,
+                    "height" : 11
+                }
+            ]
+        },
+        {
+            "circles" : [],
+            "rectangles" : [
+                {
+                    "x" : 4,
+                    "y" : 5,
+                    "width" : 7,
+                    "height" : 11
+                }
+            ]
+        },
+        {
+            "circles" : [],
+            "rectangles" : [
+                {
+                    "x" : 4,
+                    "y" : 5,
+                    "width" : 7,
+                    "height" : 11
+                }
+            ]
+        },
+        {
+            "circles" : [],
+            "rectangles" : [
+                {
+                    "x" : 4,
+                    "y" : 5,
+                    "width" : 7,
+                    "height" : 11
+                }
+            ]
+        }
+    ],
+    
+    "interact" : [
+        {
+            "circles" : [],
+            "rectangles" : [
+                {
+                    "x" : -3,
+                    "y" : -3,
+                    "width" : 22,
+                    "height" : 24
+                }
+            ]
+        },
+        {
+            "circles" : [],
+            "rectangles" : [
+                {
+                    "x" : -3,
+                    "y" : -3,
+                    "width" : 22,
+                    "height" : 24
+                }
+            ]
+        },
+        {
+            "circles" : [],
+            "rectangles" : [
+                {
+                    "x" : -3,
+                    "y" : -3,
+                    "width" : 22,
+                    "height" : 24
+                }
+            ]
+        },
+        {
+            "circles" : [],
+            "rectangles" : [
+                {
+                    "x" : -3,
+                    "y" : -3,
+                    "width" : 22,
+                    "height" : 24
+                }
+            ]
+        },
+        {
+            "circles" : [],
+            "rectangles" : [
+                {
+                    "x" : -3,
+                    "y" : -3,
+                    "width" : 22,
+                    "height" : 24
+                }
+            ]
+        },
+        {
+            "circles" : [],
+            "rectangles" : [
+                {
+                    "x" : -3,
+                    "y" : -3,
+                    "width" : 22,
+                    "height" : 24
+                }
+            ]
+        },
+        {
+            "circles" : [],
+            "rectangles" : [
+                {
+                    "x" : -3,
+                    "y" : -3,
+                    "width" : 22,
+                    "height" : 24
+                }
+            ]
+        },
+        {
+            "circles" : [],
+            "rectangles" : [
+                {
+                    "x" : -3,
+                    "y" : -3,
+                    "width" : 22,
+                    "height" : 24
+                }
+            ]
+        },
+        {
+            "circles" : [],
+            "rectangles" : [
+                {
+                    "x" : -3,
+                    "y" : -3,
+                    "width" : 22,
+                    "height" : 24
+                }
+            ]
+        },
+        {
+            "circles" : [],
+            "rectangles" : [
+                {
+                    "x" : -3,
+                    "y" : -3,
+                    "width" : 22,
+                    "height" : 24
+                }
+            ]
+        },
+        {
+            "circles" : [],
+            "rectangles" : [
+                {
+                    "x" : -3,
+                    "y" : -3,
+                    "width" : 22,
+                    "height" : 24
+                }
+            ]
+        },
+        {
+            "circles" : [],
+            "rectangles" : [
+                {
+                    "x" : -3,
+                    "y" : -3,
+                    "width" : 22,
+                    "height" : 24
+                }
+            ]
+        },
+        {
+            "circles" : [],
+            "rectangles" : [
+                {
+                    "x" : -3,
+                    "y" : -3,
+                    "width" : 22,
+                    "height" : 24
+                }
+            ]
+        },
+        {
+            "circles" : [],
+            "rectangles" : [
+                {
+                    "x" : -3,
+                    "y" : -3,
+                    "width" : 22,
+                    "height" : 24
+                }
+            ]
+        },
+        {
+            "circles" : [],
+            "rectangles" : [
+                {
+                    "x" : -3,
+                    "y" : -3,
+                    "width" : 22,
+                    "height" : 24
+                }
+            ]
+        },
+        {
+            "circles" : [],
+            "rectangles" : [
+                {
+                    "x" : -3,
+                    "y" : -3,
+                    "width" : 22,
+                    "height" : 24
+                }
+            ]
+        }
+    ]
+}

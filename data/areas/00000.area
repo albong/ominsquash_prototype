@@ -1,7 +1,5 @@
 {
-    "tilesheet" : "gfx/area1tiles_fixed.png",
-    "number of tiles wide" : 15,
-    "number of tiles high" : 6,
+    "tilesheet" : "gfx/tilesheets/area1tiles_fixed.png",
     "rooms" : [
         {
             "room number" : 0,
