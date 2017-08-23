@@ -64,8 +64,8 @@
                     "y" : 60,
                     "to area" : 0,
                     "to room" : 2,
-                    "to tile x" : 15,
-                    "to tile y" : 15,
+                    "to x" : 50,
+                    "to y" : 50,
                     "animation" : 7
                 }
             ]

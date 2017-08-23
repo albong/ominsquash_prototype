@@ -329,8 +329,8 @@ void doRoom(int delta){
             
             room_transition.oldX = _player.e.x + (_player.e.w / 2);
             room_transition.oldY = _player.e.y + (_player.e.h / 2);
-            room_transition.newX = TILE_SIZE * stair->toTileX;
-            room_transition.newY = TILE_SIZE * stair->toTileY;
+            room_transition.newX = stair->toX;
+            room_transition.newY = stair->toY;
             room_transition.roomLoaded = 0;
             
         } else if (newRoom >= 0 && _current_area.currentRoom->connectingRooms[newRoom] != -1){

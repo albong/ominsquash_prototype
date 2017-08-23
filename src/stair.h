@@ -8,8 +8,8 @@ typedef struct Stair {
     int sameArea;
     int toArea;
     int toRoom;
-    int toTileX;
-    int toTileY;
+    int toX;
+    int toY;
 } Stair;
 
 // Loading
