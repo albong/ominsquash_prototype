@@ -112,9 +112,9 @@ int gameFrameLogic(unsigned delta){
     //check if we need to push on a wipe or change areas
     newAreaId = checkChangeArea();
     pushWipe = checkScreenWipe(&x, &y);
+    
+    //we should switch areas over performing a wipe, doCurrentRoom should accordingling manage variables to make this work correctly
     if (newAreaId != -1){ //change area
-        printf("game frame\n");
-        fflush(stdout);
         setAreaIdToLoad(newAreaId);
         setInputAllRead();
         return -1;

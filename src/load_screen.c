@@ -35,17 +35,21 @@ int doLoadScreen(unsigned delta){
         //update the animation
         loadingIcon->action(loadingIcon, delta);
         
-        //PIZZA - free previous area?
+        //free previous area?
         if (checkChangeArea() != -1){
             unloadCurrentArea();
         }
         
+        //load the area
         if (!loadAreaById(areaIdToLoad)){
             printf("Failed to load area %d\n", areaIdToLoad);
             result = 0;
         } else {
             result = 1;
             hasDrawn = 0;
+            
+            //causes the area to set variables to push an outward wipe onto the frame stack
+            setWipeAfterLoadScreen();
         }
     } else {
         unloadCurrentArea();

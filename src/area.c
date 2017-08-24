@@ -339,9 +339,9 @@ void doRoom(int delta){
             stair = _current_area.currentRoom->stairs[stairIndex];
             
             totalDelta = 0;
-            changingRooms = 2;
-            _current_area.changingRooms = 2;
             if (stair->sameArea){
+                changingRooms = 2;
+                _current_area.changingRooms = 2;
                 room_transition.newRoom = _current_area.roomList[stair->toRoom];
                 resetEntityPositions(room_transition.newRoom);
                 resetEnemyPositions(room_transition.newRoom);
@@ -349,11 +349,11 @@ void doRoom(int delta){
                 setDoorStates(room_transition.newRoom, stair->toRoom);
                 room_transition.newArea = -1;
             } else {
+                changingRooms = 3;
+                _current_area.changingRooms = 3;
                 room_transition.newRoom = NULL;
                 room_transition.newArea = stair->toArea;
-                
             }
-            // lockPlayer();
             
             room_transition.newRoomNumber = stair->toRoom;
             room_transition.oldX = _player.e.x + (_player.e.w / 2);
@@ -377,7 +377,9 @@ void doRoom(int delta){
         }
     } else if (changingRooms == 1){
         shiftRoom(_current_area.currentRoom->connectingRooms[changingToRoom], changingToRoom, delta);
-    } else { //changingRooms == 2
+    
+    //IF YOU CHANGE THESE PLEASE CHECK checkScreenWipe() AND setWipeAfterLoadScreen() STILL WORK
+    } else if (changingRooms == 2) {
         //after setting changingRooms initially, we should have already pushed on a screen wipe frame to wipe inward
         //so here we should change everything so that at the end of the loop we push on another wipe outward if we haven't
         //then if we've done both, then reset the various variables
@@ -385,11 +387,22 @@ void doRoom(int delta){
             _current_area.currentRoom = room_transition.newRoom;
             _player.e.x = room_transition.newX;
             _player.e.y = room_transition.newY;
-            room_transition.roomLoaded = 1;    
-        } else if (room_transition.roomLoaded){
+            room_transition.roomLoaded = 1;
+        } else {// if (room_transition.roomLoaded){
             changingRooms = 0;
             _current_area.changingRooms = 0;
             removeTempEntities();
+            totalDelta = 0;
+        }
+    } else { //changingRooms == 3
+        if (!room_transition.roomLoaded){
+            changeToAreaId = room_transition.newArea;
+            _player.e.x = room_transition.newX;
+            _player.e.y = room_transition.newY;
+            room_transition.roomLoaded = 1;
+        } else {
+            changingRooms = 0;
+            _current_area.changingRooms = 0;
             totalDelta = 0;
         }
     }
@@ -698,7 +711,7 @@ void addTempEntityToArea(Entity *e){
     _current_area.numTemporaryEntities++;
 }
 
-int checkChangeArea() {
+int checkChangeArea(){
     return changeToAreaId;
 }
 
@@ -706,11 +719,11 @@ int checkScreenWipe(double *x, double *y){
     int result;
     
     //check if we're jumping rooms, and then whether or not we've moved the player
-    if (changingRooms == 2 && !room_transition.roomLoaded){
+    if ((changingRooms == 2 || changingRooms == 3) && !room_transition.roomLoaded){
         *x = room_transition.oldX;
         *y = room_transition.oldY;
         result = 1;
-    } else if (changingRooms == 2 && room_transition.roomLoaded){
+    } else if ((changingRooms == 2 || changingRooms == 3) && room_transition.roomLoaded){
         *x = room_transition.newX;
         *y = room_transition.newY;
         result = 2;
@@ -719,6 +732,19 @@ int checkScreenWipe(double *x, double *y){
     }
     
     return result;
+}
+
+void setWipeAfterLoadScreen(){
+    //set these to cause the logic loop to push an outward wipe
+    changingRooms = 3;
+    room_transition.roomLoaded = 0;
+    room_transition.newArea = -1; //so that we don't push another load screen on
+    
+    //if this is the first load, since we've not setup starting positions, just use the center of the screen
+    if (room_transition.newX == -1 && room_transition.newY == -1){
+        room_transition.newX = SCREEN_WIDTH / 2;
+        room_transition.newY = SCREEN_HEIGHT / 2;
+    }
 }
 
 
