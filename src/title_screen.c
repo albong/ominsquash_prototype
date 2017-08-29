@@ -101,7 +101,7 @@ void drawTitleScreen(){
 int loadTitleScreenData(){
     int result = 1;
     char *titleFilename = "data/title.data";
-    char filename[80];
+    char filename[FILENAME_BUFFER_SIZE];
     int id;
     size_t i, arrLen;
     cJSON *root, *buttonsList, *temp;

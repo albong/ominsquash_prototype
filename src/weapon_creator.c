@@ -32,7 +32,7 @@ Weapon *createWeaponById(size_t id){
     }
     
     Weapon *result = NULL;
-    char filename[80];
+    char filename[FILENAME_BUFFER_SIZE];
     
     //ultimately we'll load from file, just hack it for now
     // sprintf(filename, "data/entities/%05d.entity", id);
@@ -45,7 +45,7 @@ Weapon *createWeaponById(size_t id){
     // numLoadedEntities = count;
     // loadedEntitiesIds = malloc(sizeof(size_t) * count);
     // loadedEntities = malloc(sizeof(Entity *) * count);
-    // char filename[80];
+    // char filename[FILENAME_BUFFER_SIZE];
     
     // //load the various entity datas from file and store in our array
     // size_t i;

@@ -54,7 +54,7 @@ void loadEnemyData(size_t *ids, size_t count){
     numLoadedEnemies = count;
     loadedEnemiesIds = malloc(sizeof(size_t) * count);
     loadedEnemies = malloc(sizeof(Enemy *) * count);
-    char filename[80];
+    char filename[FILENAME_BUFFER_SIZE];
     
     //load the various datas from file and store in our array
     size_t i;

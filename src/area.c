@@ -87,7 +87,7 @@ Area *init_Area(Area *self){
 
 int loadAreaById(int id){
     size_t i;
-    char dataFilename[80];
+    char dataFilename[FILENAME_BUFFER_SIZE];
     Area *tempArea;
 
     //load the data file - PIZZA, probably could replace _current_area with a pointer

@@ -67,7 +67,7 @@ void loadEntityData(size_t *ids, size_t count){
     numLoadedEntities = count;
     loadedEntitiesIds = malloc(sizeof(size_t) * count);
     loadedEntities = malloc(sizeof(Entity *) * count);
-    char filename[80];
+    char filename[FILENAME_BUFFER_SIZE];
     
     //load the various entity datas from file and store in our array
     size_t i;
