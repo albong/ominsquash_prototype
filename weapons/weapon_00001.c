@@ -43,7 +43,12 @@ Weapon *weapon_create_00001(){
 //	w->totalDelta = 0;
 //	w->cancelled = 0;
     
+    //make the bullets
     createProjectiles();
+    
+    //make the icon
+    w->icon = init_Entity(malloc(sizeof(Entity)));
+    readAnimationIntoEntity(w->icon, 15);
     
     return w;
 }

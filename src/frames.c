@@ -142,11 +142,7 @@ void gameFrameDraw(){
 }
 
 int menuFrameLogic(unsigned delta){
-    doMenu(delta);
-
-    //if you've hit start, exit the menu
-    if (_input.start && !_inputRead.start){
-        setInputAllRead();
+    if (doMenu(delta) == -1){
         return -1;
     } else {
         return 0;

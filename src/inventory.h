@@ -25,6 +25,8 @@ We def need to ask Vince about this idea
     // Item ** itemList;
 // } Inventory;
 
+//PIZZA - weapons will continue to be handled by weapon.h for now
+
 void initInventory();
 void termInventory();
 void addWeaponToInventory(Weapon *w);
