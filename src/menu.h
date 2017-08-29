@@ -3,6 +3,7 @@
 
 void initMenu();
 void termMenu();
+int doMenu(unsigned delta);
 void drawMenu();
 
 #endif

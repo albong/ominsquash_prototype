@@ -14,7 +14,7 @@ Weapon *init_Weapon(Weapon *self){
     self->totalDelta = 0;
     self->cancelled = 0;
     self->collide = NULL;
-    
+    self->icon = NULL;
     return self;
 }
 
@@ -30,11 +30,13 @@ void termWeaponLists(){
     size_t i;
     
     for (i = 0; i < _player_weapons.num; i++){
+        free_Entity(_player_weapons.weapons[i]->icon);
         free_Entity((Entity *)_player_weapons.weapons[i]);
     }
     free(_player_weapons.weapons);
     
     for (i = 0; i < _enemy_weapons.num; i++){
+        free_Entity(_enemy_weapons.weapons[i]->icon);
         free_Entity((Entity *)_enemy_weapons.weapons[i]);
     }
     free(_enemy_weapons.weapons);

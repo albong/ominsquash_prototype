@@ -12,6 +12,6 @@ Enemy *readEnemyFromFile(char *filename, Enemy *result);
 Sprite *readSpriteFromFile(char *filename, Sprite *result);
 Animation *readAnimationFromFile(char *filename, Animation *result);
 Hitboxes *readHitboxesFromFile(char *filename, Hitboxes *result, int allowAllocate);
-
+int readAnimationIntoEntity(Entity *result, int animationId); //returns 0 on fail, 1 on success
 
 #endif

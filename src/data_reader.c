@@ -23,7 +23,6 @@ static int fillEnemyFromJson(cJSON *root, Enemy *result);
 static int fillSpriteFromJson(cJSON *root, Sprite *result);
 static int fillAnimationFromJson(cJSON *root, Animation *result);
 static int fillHitboxesFromJson(cJSON *root, Hitboxes *result);
-static int addAnimationToEntity(Entity *result, int animationId);
 
 Area *readAreaFromFile(char *filename, Area *result){
     //init the area
@@ -315,7 +314,7 @@ int fillAreaFromJson(cJSON *root, Area *result){
             }
             
             animationId = cJSON_GetObjectItem(jsonTemp, "animation")->valueint;
-            addAnimationToEntity((Entity *)tempStair, animationId);
+            readAnimationIntoEntity((Entity *)tempStair, animationId);
             currRoom->stairs[i] = tempStair;
         }
     }
@@ -344,7 +343,7 @@ int fillEntityFromJson(cJSON *root, Entity *result){
     result->interactable = (cJSON_GetObjectItem(root, "interactable")->type == cJSON_True);
     
     //load the sprite and animation and hitboxes
-    // char dataFilename[80];
+    // char dataFilename[FILENAME_BUFFER_SIZE];
     int animationId = cJSON_GetObjectItem(root, "animation")->valueint;
     // sprintf(dataFilename, "data/sprites/%05d.sprite", animationId);
     // result->sprite = readSpriteFromFile(dataFilename, malloc(sizeof(Sprite)));
@@ -357,7 +356,7 @@ int fillEntityFromJson(cJSON *root, Entity *result){
     // if (result->animation == NULL){
         // result->animation = readAnimationFromFile("data/animations/no_animation.animation", malloc(sizeof(Animation)));
     // }
-    addAnimationToEntity(result, animationId);
+    readAnimationIntoEntity(result, animationId);
     
     return 1;
 }
@@ -373,7 +372,7 @@ int fillEnemyFromJson(cJSON *root, Enemy *result){
     result->touchDamage = cJSON_GetObjectItem(root, "damage for touching")->valueint;
     
     //load the death entity
-    char dataFilename[80];
+    char dataFilename[FILENAME_BUFFER_SIZE];
     int entityId = cJSON_GetObjectItem(root, "death entity")->valueint;
     sprintf(dataFilename, "data/entities/%05d.entity", entityId);
     result->deathEntity = readEntityFromFile(dataFilename, malloc(sizeof(Entity)));
@@ -495,8 +494,12 @@ int fillHitboxesFromJson(cJSON *root, Hitboxes *result){
     return 1;
 }
 
-int addAnimationToEntity(Entity *result, int animationId){
-    char dataFilename[80];
+int readAnimationIntoEntity(Entity *result, int animationId){
+    if (result == NULL){
+        return 0;
+    }
+    
+    char dataFilename[FILENAME_BUFFER_SIZE];
     sprintf(dataFilename, "data/sprites/%05d.sprite", animationId);
     result->sprite = readSpriteFromFile(dataFilename, malloc(sizeof(Sprite)));
     sprintf(dataFilename, "data/animations/%05d.animation", animationId);

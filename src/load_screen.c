@@ -11,7 +11,7 @@ static int areaIdToLoad = 0;
 static int hasDrawn = 0;
 
 void initLoadScreen(){
-    char dataFilename[80];
+    char dataFilename[FILENAME_BUFFER_SIZE];
     sprintf(dataFilename, "data/entities/%05d.entity", LOAD_ICON_ENTITY_ID);
     
     //PIZZA - probs just replace with an image

@@ -30,4 +30,6 @@
 
 #define LOAD_ICON_ENTITY_ID 4
 
+#define FILENAME_BUFFER_SIZE 80
+
 #endif

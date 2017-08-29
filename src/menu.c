@@ -4,13 +4,20 @@
 #include "player.h"
 
 static Image *menuImage;
+static Entity *menuEntity;
 
 void initMenu(){
     menuImage = loadImage("gfx/menu_placeholder.png");
+    menuEntity = init_Entity(malloc(sizeof(Entity)));
+    
 }
 
 void termMenu(){
     free_Image(menuImage);
+}
+
+int doMenu(unsigned delta){
+    
 }
 
 void drawMenu(){

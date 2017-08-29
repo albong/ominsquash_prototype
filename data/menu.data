@@ -1,0 +1,12 @@
+{
+    "menu animation" : 12,
+    "icon selector animation" : 13,
+
+    "icons per row" : 6,
+    "icons per column" : 10,
+    "icon width" : 20,
+    "icon height" : 20,
+    "icon buffer" : 3,
+    "icon area x offset" : 10,
+    "icon area y offset" : 10
+}
