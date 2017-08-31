@@ -22,6 +22,7 @@ static Frame *textboxFrame;
 static Frame *titleScreenFrame;
 static Frame *loadScreenFrame;
 static Frame *screenWipeFrame;
+static int popToMenu = 0;
 
 //methods
 static Frame *allocateFrame(int (* logic)(unsigned delta), void (* draw)(), int drawIfNotTop);
@@ -79,7 +80,8 @@ int gameFrameLogic(unsigned delta){
         _currentFrame = textboxFrame;
         consumeAllInput();
         return 1;
-    } else if (checkInput(ESCAPE_BUTTON)){
+    } else if (checkInput(ESCAPE_BUTTON) || popToMenu){
+        popToMenu = 0;
         setAreaIdToLoad(-1);
         consumeAllInput();
         return -1;
@@ -140,7 +142,14 @@ void gameFrameDraw(){
 }
 
 int menuFrameLogic(unsigned delta){
-    if (doMenu(delta) == -1){
+    int status = doMenu(delta);
+    
+    if (status == -1){
+        consumeAllInput();
+        return -1;
+    } else if (status == -2){
+        popToMenu = 1;
+        consumeAllInput();
         return -1;
     } else {
         return 0;

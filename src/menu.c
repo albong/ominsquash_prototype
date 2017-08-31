@@ -86,6 +86,7 @@ void termMenu(){
 }
 
 int doMenu(unsigned delta){
+    int result;
     size_t i;
     
     //if this is the first time through the loop since opening the menu, set the positions
@@ -146,10 +147,17 @@ int doMenu(unsigned delta){
     if (checkInput(START_BUTTON)){
         resetMenu = 1; //next time we do logic, reset everything
         consumeAllInput();
-        return -1;
+        result = -1;
+    } else if (currentSection == BUTTON_MENU && checkAndConsumeInput(X_BUTTON)){
+        if (currY == 2){ //exit button
+            resetMenu = 1; //next time we do logic, reset everything
+            result = -2;
+        }
     } else {
-        return 0;
+        result = 0;
     }
+    
+    return result;
 }
 
 void drawMenu(){
