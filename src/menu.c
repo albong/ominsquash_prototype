@@ -10,23 +10,34 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+//used to track which section of the menu we're in
+typedef enum {
+    WEAPON_MENU, BUTTON_MENU
+} MenuSection;
+
 //data variables
 static Entity *menuEntity;
 static Entity *iconSelectorEntity;
+static Entity *buttonSelectorEntity;
+static Entity *saveButtonEntity;
+static Entity *loadButtonEntity;
+static Entity *exitButtonEntity;
 static int numIconsPerRow, numIconsPerColumn;
 static int weaponIconOffsetX, weaponIconOffsetY;
 static int iconBufferSize, iconSize;
 static int **iconDisplay;
-static int menuOffsetX;
-static int menuOffsetY;
+static int buttonOffsetX, buttonOffsetY;
+static int buttonBufferSize, buttonHeight;
+static int menuOffsetX, menuOffsetY;
 
 //display variables
 static int resetMenu = 1;
-static int inWeaponMenu = 1; //replace with an enum for which section of the menu we're currently in
+static MenuSection currentSection;
 static int currX = 0;
 static int currY = 0;
 static int startPositionInWeaponList = 0; //increment this by numIconsPerRow if there are more weapons in the list than can be displayed
 
+//methods
 static int loadMenuData();
 static int updateSelectionFromInput(); //returns 0 if nothing changed, 1 otherwise
 
@@ -36,6 +47,10 @@ void initMenu(){
     //allocate the entities
     menuEntity = init_Entity(malloc(sizeof(Entity)));
     iconSelectorEntity = init_Entity(malloc(sizeof(Entity)));
+    buttonSelectorEntity = init_Entity(malloc(sizeof(Entity)));
+    saveButtonEntity = init_Entity(malloc(sizeof(Entity)));
+    loadButtonEntity = init_Entity(malloc(sizeof(Entity)));
+    exitButtonEntity = init_Entity(malloc(sizeof(Entity)));
     
     //read in the data from file, load animations
     if (!loadMenuData()){
@@ -55,6 +70,14 @@ void initMenu(){
     //set menu position
     menuOffsetX = (SCREEN_WIDTH / 2) - (menuEntity->sprite->frameWidth / 2);
     menuOffsetY = (SCREEN_HEIGHT / 2) - (menuEntity->sprite->frameHeight / 2);
+    
+    //set the button positions
+    saveButtonEntity->x = buttonBufferSize + buttonOffsetX;
+    saveButtonEntity->y = buttonBufferSize + buttonOffsetY;
+    loadButtonEntity->x = buttonBufferSize + buttonOffsetX;
+    loadButtonEntity->y = buttonBufferSize + buttonOffsetY + (buttonHeight + 2*buttonBufferSize);
+    exitButtonEntity->x = buttonBufferSize + buttonOffsetX;
+    exitButtonEntity->y = buttonBufferSize + buttonOffsetY + 2*(buttonHeight + 2*buttonBufferSize);
 }
 
 void termMenu(){
@@ -68,31 +91,34 @@ int doMenu(unsigned delta){
     //if this is the first time through the loop since opening the menu, set the positions
     if (resetMenu){
         //set where we are in the menu and what the selector is currently on
-        inWeaponMenu = 1;
+        currentSection = WEAPON_MENU;
         startPositionInWeaponList = 0;
         currX = 0;
         currY = 0;
-        
-        //setup the selector
-        iconSelectorEntity->active = 1;
         
         //don't do this again until we next open the menu
         resetMenu = 0;
     }
     
-    //update the animations
+    //update the animations, even if not displayed
     menuEntity->action(menuEntity, delta);
     iconSelectorEntity->action(iconSelectorEntity, delta);
+    buttonSelectorEntity->action(buttonSelectorEntity, delta);
     
     //handle input - you can't hold the buttons down, but that's just a logic thing I don't feel like managing right now
+    //reset all animations regardless of whether or not its drawn - why not
     if (updateSelectionFromInput()){
         setAnimationLoop(iconSelectorEntity->animation, 0, 1);
+        setAnimationLoop(buttonSelectorEntity->animation, 0, 1);
     }
     
     //move the selector
-    if (inWeaponMenu){
+    if (currentSection == WEAPON_MENU){
         iconSelectorEntity->x = weaponIconOffsetX + (currX * (iconSize + 2*iconBufferSize));
         iconSelectorEntity->y = weaponIconOffsetY + (currY * (iconSize + 2*iconBufferSize));
+    } else if (currentSection == BUTTON_MENU){
+        buttonSelectorEntity->x = buttonOffsetX;
+        buttonSelectorEntity->y = buttonOffsetY + (currY * (buttonHeight + 2*buttonBufferSize));
     }
     
     //update the weapon icon displays
@@ -104,10 +130,12 @@ int doMenu(unsigned delta){
             _player_weapons.weapons[i]->icon->y = ((i-startPositionInWeaponList) / numIconsPerRow)*(iconSize + 2*iconBufferSize) + weaponIconOffsetY + iconBufferSize;
             
             //if the selector is overtop of us, play animation, otherwise reset animation and don't pass delta
-            if (currX + (currY * numIconsPerRow) == i - startPositionInWeaponList){
-                _player_weapons.weapons[i]->icon->action(_player_weapons.weapons[i]->icon, delta);
-            } else {
-                setAnimationLoop(_player_weapons.weapons[i]->icon->animation, 0, 1);
+            if (currentSection == WEAPON_MENU){
+                if (currX + (currY * numIconsPerRow) == i - startPositionInWeaponList){
+                    _player_weapons.weapons[i]->icon->action(_player_weapons.weapons[i]->icon, delta);
+                } else {
+                    setAnimationLoop(_player_weapons.weapons[i]->icon->animation, 0, 1);
+                }
             }
         } else {
             _player_weapons.weapons[i]->icon->active = 0;
@@ -135,9 +163,16 @@ void drawMenu(){
         _player_weapons.weapons[i]->icon->draw(_player_weapons.weapons[i]->icon, menuOffsetX, menuOffsetY);
     }
     
+    //draw the buttons
+    saveButtonEntity->draw(saveButtonEntity, menuOffsetX, menuOffsetY);
+    loadButtonEntity->draw(loadButtonEntity, menuOffsetX, menuOffsetY);
+    exitButtonEntity->draw(exitButtonEntity, menuOffsetX, menuOffsetY);
+    
     //finally, draw the selector
-    if (inWeaponMenu){
+    if (currentSection == WEAPON_MENU){
         iconSelectorEntity->draw(iconSelectorEntity, menuOffsetX, menuOffsetY);
+    } else if (currentSection == BUTTON_MENU){
+        buttonSelectorEntity->draw(buttonSelectorEntity, menuOffsetX, menuOffsetY);
     }
 }
 
@@ -164,6 +199,16 @@ int loadMenuData(){
         //load the selector animations
         id = cJSON_GetObjectItem(root, "icon selector animation")->valueint;
         readAnimationIntoEntity(iconSelectorEntity, id);
+        id = cJSON_GetObjectItem(root, "button selector animation")->valueint;
+        readAnimationIntoEntity(buttonSelectorEntity, id);
+        
+        //load the button animations
+        id = cJSON_GetObjectItem(root, "save button animation")->valueint;
+        readAnimationIntoEntity(saveButtonEntity, id);
+        id = cJSON_GetObjectItem(root, "load button animation")->valueint;
+        readAnimationIntoEntity(loadButtonEntity, id);
+        id = cJSON_GetObjectItem(root, "exit button animation")->valueint;
+        readAnimationIntoEntity(exitButtonEntity, id);
         
         //get the icon display sizes
         numIconsPerRow = cJSON_GetObjectItem(root, "icons per row")->valueint;
@@ -176,6 +221,14 @@ int loadMenuData(){
         //get the sizing of the icons so we can accurately determine positions
         iconBufferSize = cJSON_GetObjectItem(root, "icon buffer size")->valueint;
         iconSize = cJSON_GetObjectItem(root, "icon size")->valueint;
+        
+        //get the offset into the menu sprite where buttons will be drawn
+        buttonOffsetX = cJSON_GetObjectItem(root, "button area x offset")->valueint;
+        buttonOffsetY = cJSON_GetObjectItem(root, "button area y offset")->valueint;
+        
+        //get the sizing of the buttons so we can accurately determine positions
+        buttonBufferSize = cJSON_GetObjectItem(root, "button buffer size")->valueint;
+        buttonHeight = cJSON_GetObjectItem(root, "button height")->valueint;
     }
     
     return result;
@@ -185,36 +238,58 @@ int loadMenuData(){
 int updateSelectionFromInput(){
     int result = 0;
     
-    //currently there is no scrolling, so do nothing if go too far
+    //
+    // PIZZA - ultimately we should use percentages of screen position to decide where to go when shifting sections
+    //
+    
+    //first, just check the input
     if (checkAndConsumeInput(UP_BUTTON)){
         currY--;
-        if (currY < 0){
-            currY = 0;
-        }
         result = 1;
-    }
-    if (checkAndConsumeInput(DOWN_BUTTON)){
+    } else if (checkAndConsumeInput(DOWN_BUTTON)){
         currY++;
-        if (currY >= numIconsPerColumn){
-            currY = numIconsPerColumn - 1;
-        }
+        result = 1;
+    } else if (checkAndConsumeInput(LEFT_BUTTON)){
+        currX--;
+        result = 1;
+    } else if (checkAndConsumeInput(RIGHT_BUTTON)){
+        currX++;
         result = 1;
     }
     
-    //currently there is only one menu, so do nothing if go too far
-    if (checkAndConsumeInput(LEFT_BUTTON)){
-        currX--;
-        if (currX < 0){
+    //adjust our current X and Y in whatever section (or change section) accordingly
+    if (currentSection == WEAPON_MENU){
+        //there is nothing for scrolling yet, so just don't go too far up or down
+        if (currY < 0){
+            currY = 0;
+        } else if (currY >= numIconsPerColumn){
+            currY = numIconsPerColumn - 1;
+        }
+        
+        //if you scroll too far left or right, change sections
+        if (currX < 0 || currX >= numIconsPerRow){
             currX = 0;
+            currY = 0;
+            currentSection = BUTTON_MENU;
         }
-        result = 1;
-    }
-    if (checkAndConsumeInput(RIGHT_BUTTON)){
-        currX++;
-        if (currX >= numIconsPerRow){
+    } else if (currentSection == BUTTON_MENU){
+        //there is no item menu yet, so just don't go too far up or down
+        if (currY < 0){
+            currY = 0;
+        } else if (currY >= 3){ //only 3 buttons I guess
+            currY--;
+        }
+        
+        //there's only one column of buttons
+        if (currX < 0){ //moved left
             currX = numIconsPerRow - 1;
+            currY = 0;
+            currentSection = WEAPON_MENU;
+        } else if (currX > 0){ //moved right
+            currX = 0;
+            currY = 0;
+            currentSection = WEAPON_MENU;
         }
-        result = 1;
     }
     
     return result;
