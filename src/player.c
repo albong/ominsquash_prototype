@@ -74,7 +74,7 @@ void doPlayer(int delta){
     totalDelta += delta;
     if (_player.e.active == 1){
 		//if movement key is pressed
-        if (_input.down || _input.up || _input.left || _input.right){
+        if (checkInput(UP_BUTTON) || checkInput(DOWN_BUTTON) || checkInput(RIGHT_BUTTON) || checkInput(LEFT_BUTTON)){
 		    _player.e.isMoving = 1;
 		} else {
 		    _player.e.isMoving = 0;
@@ -82,20 +82,20 @@ void doPlayer(int delta){
 		
 		//weapon key pressed
 		if (_player.equippedAInd >= 0){
-    		if (_input.a && !_player_weapons.weapons[_player.equippedAInd]->cancelled){
+    		if (checkInput(A_BUTTON) && !_player_weapons.weapons[_player.equippedAInd]->cancelled){
     		    _player_weapons.weapons[_player.equippedAInd]->e.active = 1;
     		    _player_weapons.weapons[_player.equippedAInd]->e.action(_player_weapons.weapons[_player.equippedAInd], delta);
-    		} else if (!_input.a){
+    		} else if (!checkInput(A_BUTTON)){
     		    _player_weapons.weapons[_player.equippedAInd]->e.active = 0;
     		    _player_weapons.weapons[_player.equippedAInd]->e.milliPassed = 0;
     		    _player_weapons.weapons[_player.equippedAInd]->cancelled = 0;
     		}
         }
 		if (_player.equippedBInd >= 0){
-    		if (_input.b && !_player_weapons.weapons[_player.equippedBInd]->cancelled){
+    		if (checkInput(B_BUTTON) && !_player_weapons.weapons[_player.equippedBInd]->cancelled){
     		    _player_weapons.weapons[_player.equippedBInd]->e.active = 1;
     		    _player_weapons.weapons[_player.equippedBInd]->e.action(_player_weapons.weapons[_player.equippedBInd], delta);
-    		} else if (!_input.b){
+    		} else if (!checkInput(B_BUTTON)){
     		    _player_weapons.weapons[_player.equippedBInd]->e.active = 0;
     		    _player_weapons.weapons[_player.equippedBInd]->e.milliPassed = 0;
     		    _player_weapons.weapons[_player.equippedBInd]->cancelled = 0;
@@ -238,13 +238,13 @@ static void updatePlayerFrame(int delta){
 }
 
 static void updatePlayerOrientation(){
-    if (_input.up){
+    if (checkInput(UP_BUTTON)){
         _player.e.orientation = UP;
-    } else if (_input.down) {
+    } else if (checkInput(DOWN_BUTTON)) {
         _player.e.orientation = DOWN;
-    } else if (_input.left) {
+    } else if (checkInput(LEFT_BUTTON)) {
         _player.e.orientation = LEFT;
-    } else if (_input.right) {
+    } else if (checkInput(RIGHT_BUTTON)) {
         _player.e.orientation = RIGHT;
     }
 }
@@ -252,32 +252,32 @@ static void updatePlayerOrientation(){
 static void updatePlayerPosition(int delta){
     _player.e.changeX = 0;
     _player.e.changeY = 0;
-    if (_input.up && _input.left){
+    if (checkInput(UP_BUTTON) && checkInput(LEFT_BUTTON)){
         _player.e.changeX = _player.e.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2) * -1;
         _player.e.changeY = _player.e.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2) * -1;
 
-    } else if (_input.up && _input.right){
+    } else if (checkInput(UP_BUTTON) && checkInput(RIGHT_BUTTON)){
         _player.e.changeX = _player.e.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2);
         _player.e.changeY = _player.e.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2) * -1;
 
-    } else if (_input.down && _input.left){
+    } else if (checkInput(DOWN_BUTTON) && checkInput(LEFT_BUTTON)){
         _player.e.changeX = _player.e.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2) * -1;
         _player.e.changeY = _player.e.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2);
 
-    } else if (_input.down && _input.right){
+    } else if (checkInput(DOWN_BUTTON) && checkInput(RIGHT_BUTTON)){
         _player.e.changeX = _player.e.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2);
         _player.e.changeY = _player.e.pixelsPerMilli * (delta/1000.0) * (1/SQRT_2);
         
-	} else if (_input.up == 1){
+	} else if (checkInput(UP_BUTTON)){
 		_player.e.changeY = _player.e.pixelsPerMilli * delta/1000.0 * -1;
 
-	} else if (_input.down == 1){
+	} else if (checkInput(DOWN_BUTTON)){
 		_player.e.changeY = _player.e.pixelsPerMilli * delta/1000.0;
 
-	} else if (_input.left == 1){
+	} else if (checkInput(LEFT_BUTTON)){
 		_player.e.changeX = _player.e.pixelsPerMilli * delta/1000.0 * -1;
 
-	} else if (_input.right == 1){
+	} else if (checkInput(RIGHT_BUTTON)){
 		_player.e.changeX = _player.e.pixelsPerMilli * delta/1000.0;
 	}
 	
@@ -306,5 +306,5 @@ void drawPlayer(){
 // Access
 /////////////////////////////////////////////////
 int isPlayerInteractable(){
-    return _input.x && !_inputRead.x;
+    return checkInput(X_BUTTON);
 }

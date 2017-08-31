@@ -41,8 +41,7 @@ int doTextbox(unsigned delta){
     //also use delta to make flashing cursor and whatnot
     if (numLines == 0){
         return 1;
-    } else if (_input.x && !_inputRead.x){
-        _inputRead.x = 1;
+    } else if (checkAndConsumeInput(X_BUTTON)){
         
         if (numLines < currLine + NUM_LINES){
             cleanupText();

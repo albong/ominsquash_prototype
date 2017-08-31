@@ -232,6 +232,8 @@ work, so yolo.
 |  5. Input  |
 +------------+
 
+OUTDATED - use the methods checkInput and checkAndConsumeInput
+
 To check input, include input.h.  There are two instances of the same struct
 available in this file, _input and _inputRead.  The struct itself contains a
 flag for each possible button.  
@@ -246,7 +248,7 @@ if you want other things to also check this input, then set the flag in
 inputRead accordingly.
 
 If you're pushing or popping frames, or entering menus or etc, it is probably a
-good idea to call the poorly named method setInputAllRead, which sets all
+good idea to call consumeAllInput, which sets all
 members of _inputRead to 1 if the corresponding key is being pressed.
 
 The current keybindings are:

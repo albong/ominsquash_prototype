@@ -115,9 +115,9 @@ int doMenu(unsigned delta){
     }
     
     //if you've hit start, exit the menu
-    if (_input.start && !_inputRead.start){
+    if (checkInput(START_BUTTON)){
         resetMenu = 1; //next time we do logic, reset everything
-        setInputAllRead();
+        consumeAllInput();
         return -1;
     } else {
         return 0;
@@ -186,40 +186,49 @@ int updateSelectionFromInput(){
     int result = 0;
     
     //currently there is no scrolling, so do nothing if go too far
-    if (_input.up && !_inputRead.up){
+    if (checkAndConsumeInput(UP_BUTTON)){
         currY--;
         if (currY < 0){
             currY = 0;
         }
-        _inputRead.up = 1;
         result = 1;
     }
-    if (_input.down && !_inputRead.down){
+    if (checkAndConsumeInput(DOWN_BUTTON)){
         currY++;
         if (currY >= numIconsPerColumn){
             currY = numIconsPerColumn - 1;
         }
-        _inputRead.down = 1;
         result = 1;
     }
     
     //currently there is only one menu, so do nothing if go too far
-    if (_input.left && !_inputRead.left){
+    if (checkAndConsumeInput(LEFT_BUTTON)){
         currX--;
         if (currX < 0){
             currX = 0;
         }
-        _inputRead.left = 1;
         result = 1;
     }
-    if (_input.right && !_inputRead.right){
+    if (checkAndConsumeInput(RIGHT_BUTTON)){
         currX++;
         if (currX >= numIconsPerRow){
             currX = numIconsPerRow - 1;
         }
-        _inputRead.right = 1;
         result = 1;
     }
     
     return result;
 }
+
+
+
+
+
+/*
+
+
+Maybe I should have icons representing the a/b buttons (or is it x/y?) to overlay
+on the player's selected weapons.  Still not sure of how to do the ui.
+
+
+*/

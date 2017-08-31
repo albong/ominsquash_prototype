@@ -48,23 +48,21 @@ int doTitleScreen(unsigned delta){
     }
     
     //manage input and change animation loops
-    if (_input.up && !_inputRead.up){
+    if (checkAndConsumeInput(UP_BUTTON)){
         //set the current button's animation to the "up" state
         setAnimationLoop(buttons[currButton].animation, 0, 0);
         
         //change the current button
         currButton = (currButton - 1) % numButtons;
-        _inputRead.up = 1;
         
         //set the current button's animation to the "down" state
         setAnimationLoop(buttons[currButton].animation, 1, 0);
-    } else if (_input.down && !_inputRead.down){
+    } else if (checkAndConsumeInput(DOWN_BUTTON)){
         //set the current button's animation to the "up" state
         setAnimationLoop(buttons[currButton].animation, 0, 0);
         
         //change the current button
         currButton = (currButton + 1) % numButtons;
-        _inputRead.down = 1;
         
         //set the current button's animation to the "down" state
         setAnimationLoop(buttons[currButton].animation, 1, 0);
@@ -72,11 +70,11 @@ int doTitleScreen(unsigned delta){
     
     //PIZZA - hardcoded to start a new game, since that's the only button right now
     //PIZZA - do we need to play some sweet animation here?
-    if (_input.start || (DEBUG_START_GAME && !seenTitleOnce)){
+    if (checkInput(START_BUTTON) || (DEBUG_START_GAME && !seenTitleOnce)){
         seenTitleOnce = 1;
         result = 1;
-        setInputAllRead();
-    } else if (_input.escape && !_inputRead.escape){
+        consumeAllInput();
+    } else if (checkInput(ESCAPE_BUTTON)){
         result = -1;
     }
     

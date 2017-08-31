@@ -69,19 +69,19 @@ int gameFrameLogic(unsigned delta){
     int newAreaId, pushWipe;
     double x, y;
     
-    if (_input.start && !_inputRead.start){
+    if (checkInput(START_BUTTON)){
         _currentFrame = menuFrame;
-        setInputAllRead();
+        consumeAllInput();
         return 1;
-    } else if (_input.y && !_inputRead.y){
+    } else if (checkInput(Y_BUTTON)){
         addTextToTextbox("If the measure of a space is finite, then convergence\n in measure implies convergence\n almost anywhere implies...");
         // testTextbox();
         _currentFrame = textboxFrame;
-        setInputAllRead();
+        consumeAllInput();
         return 1;
-    } else if (_input.escape){
+    } else if (checkInput(ESCAPE_BUTTON)){
         setAreaIdToLoad(-1);
-        setInputAllRead();
+        consumeAllInput();
         return -1;
     }
     
@@ -105,9 +105,7 @@ int gameFrameLogic(unsigned delta){
     updateInterface(delta);
     
     //interact button only gets one press here
-    if (_input.x){
-        _inputRead.x = 1;
-    }
+    checkAndConsumeInput(X_BUTTON);
 
     //check if we need to push on a wipe or change areas
     newAreaId = checkChangeArea();
@@ -116,7 +114,7 @@ int gameFrameLogic(unsigned delta){
     //we should switch areas over performing a wipe, doCurrentRoom should accordingling manage variables to make this work correctly
     if (newAreaId != -1){ //change area
         setAreaIdToLoad(newAreaId);
-        setInputAllRead();
+        consumeAllInput();
         return -1;
     } else if (pushWipe == 1){ //wipe inward
         setScreenWipeCenter(x, y);
@@ -156,7 +154,7 @@ void menuFrameDraw(){
 int textboxFrameLogic(unsigned delta){
     //if true, text is done being read
     if (doTextbox(delta)){
-        setInputAllRead();
+        consumeAllInput();
         return -1;
     } else {    
         return 0;
@@ -171,13 +169,13 @@ int titleScreenFrameLogic(unsigned delta){
     int status = doTitleScreen(delta);
     
     if (status == 1){
-        setInputAllRead();
+        consumeAllInput();
         // _currentFrame = gameFrame;
         _currentFrame = loadScreenFrame;
         setAreaIdToLoad(0);
         return 1;
     } else if (status == -1){
-        setInputAllRead();
+        consumeAllInput();
         return -1; // will cause game to exit, better to have the exit stuff in main.c I think
     } else {
         return 0;
@@ -192,11 +190,11 @@ int loadScreenFrameLogic(unsigned delta){
     int status = doLoadScreen(delta);
     
     if (status == 1){
-        setInputAllRead();
+        consumeAllInput();
         _currentFrame = gameFrame;
         return 1;
     } else if (status == -1){
-        setInputAllRead();
+        consumeAllInput();
         return -1;
     } else {
         return 0;
@@ -209,7 +207,7 @@ void loadScreenFrameDraw(){
 
 int screenWipeFrameLogic(unsigned delta){
     if (doScreenWipe(delta)){
-        setInputAllRead();
+        consumeAllInput();
         return -1;
     } else {
         return 0;
