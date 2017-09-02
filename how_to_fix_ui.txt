@@ -1,0 +1,2 @@
+All draw methods accept a pair of external offsets, just offset the game
+from the ui bar at the top
