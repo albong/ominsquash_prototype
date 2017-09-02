@@ -5,6 +5,7 @@
 #include "entity.h"
 #include "graphics.h"
 #include "hitbox.h"
+#include "text.h"
 
 Area *readAreaFromFile(char *filename, Area *result);
 Entity *readEntityFromFile(char *filename, Entity *result);
@@ -13,5 +14,6 @@ Sprite *readSpriteFromFile(char *filename, Sprite *result);
 Animation *readAnimationFromFile(char *filename, Animation *result);
 Hitboxes *readHitboxesFromFile(char *filename, Hitboxes *result, int allowAllocate);
 int readAnimationIntoEntity(Entity *result, int animationId); //returns 0 on fail, 1 on success
+Text *readTextFromFile(char *filename, Text *result);
 
 #endif

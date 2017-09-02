@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "file_reader.h"
+#include "graphics.h"
 
 //note: I had to change the colors of the output, had to get that sweet magic pink
 //
@@ -23,7 +24,7 @@ static uint16_t readUInt16FromBlock(uint8_t *block);
 static uint16_t readInt16FromBlock(uint8_t *block);
 static uint32_t readUInt32FromBlock(uint8_t *block);
 
-Font *loadFontFile(char *language){
+Font *loadFontForLanguage(char *language){
     char filename[80];
     uint8_t *data;
     size_t index;
@@ -123,12 +124,12 @@ void readPagesBlock(uint8_t *block, uint32_t blockSize, Font *font){
     }
     
     //allocate the array
-    //font->fontSheets = malloc(sizeof(Image *) * font->numSheets);
+    font->fontSheets = malloc(sizeof(Image *) * font->numSheets);
     
     //go over each sheet and load the image
     for (i = 0; i < font->numSheets; i++){
-        printf("%s\n", block);
-        //font->fontSheets[i] = loadImage(block);
+        // printf("%s\n", block);
+        font->fontSheets[i] = loadImage(block);
         block += strlen(block)+1;
     }
 }

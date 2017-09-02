@@ -1,6 +1,7 @@
 #ifndef FONT_H
 #define FONT_H
 #include <stdint.h>
+#include "graphics.h"
 
 //PIZZA - need to correct the filenames in the font files from tga to png
 //PIZZA - also really we could just have json data files but whatever
@@ -23,7 +24,7 @@ typedef struct FontCharacter {
 } FontCharacter;
 
 typedef struct Font {
-    //Image **fontSheets;
+    Image **fontSheets;
     FontCharacter *characters; //array
     uint32_t *idTable; //sorted? use binary search to find?
     uint32_t numCharacters;
@@ -32,7 +33,7 @@ typedef struct Font {
     uint16_t lineHeight;
 } Font;
 
-Font *loadFontFile(char *language);
+Font *loadFontForLanguage(char *language);
 
 /*
 
