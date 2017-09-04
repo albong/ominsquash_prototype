@@ -202,9 +202,15 @@ SDL_Surface *loadSurface(char *name){
 }
 
 SDL_Texture *loadTexture(char *name){
+    SDL_Texture *result = NULL;
+    
+    //load and convert the surface
     SDL_Surface *surface = loadSurface(name);
-    SDL_Texture *result = convertToTexture(surface);
-    SDL_FreeSurface(surface);
+    if (surface != NULL){
+        result = convertToTexture(surface);
+        SDL_FreeSurface(surface);
+    }
+    
     return result;
 }
 
@@ -233,12 +239,19 @@ Image *getEmptyImage(int width, int height){
 }
 
 Image *loadImage(char *name){
-    Image *result = malloc(sizeof(Image));
+    Image *result = NULL;
     
-    result->texture = loadTexture(name);
-    result->surface = NULL;
-    result->isTexture = 1;
-    SDL_QueryTexture(result->texture, NULL, NULL, &(result->width), &(result->height));
+    //load the texture, malloc and assign to the struct
+    SDL_Texture *texture = loadTexture(name);
+    if (texture != NULL){
+        result = malloc(sizeof(Image));
+        result->texture = loadTexture(name);
+        result->surface = NULL;
+        result->isTexture = 1;
+        SDL_QueryTexture(result->texture, NULL, NULL, &(result->width), &(result->height));
+    } else {
+        printf("File not found: %s\n", name);
+    }
     
     return result;
 }
