@@ -1,12 +1,15 @@
 #ifndef TEXTBOX_H
 #define TEXTBOX_H
 
+#include "font.h"
+
 void initTextbox();
 void termTextbox();
 int doTextbox(unsigned delta);
 void drawTextbox();
 void addTextToTextbox(const char *text);
 // void testTextbox();
+void configureTextboxForFont(Font *font);
 
 #endif
 

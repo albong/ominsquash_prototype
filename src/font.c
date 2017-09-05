@@ -5,6 +5,7 @@
 #include <string.h>
 #include "file_reader.h"
 #include "graphics.h"
+#include "constants.h"
 
 //note: I had to change the colors of the output, had to get that sweet magic pink
 //
@@ -39,7 +40,7 @@ Font *loadFontForLanguage(char *language){
     }
     
     //read in the file
-    sprintf(filename, "fonts/%s.fnt", language);
+    sprintf(filename, "data/fonts/%s.fnt", language);
     data = readBinaryFileToCharStar(filename, &fileSize);
     
     //null check, size check, header check
@@ -60,7 +61,7 @@ Font *loadFontForLanguage(char *language){
     while (index < fileSize){
         //read int the block header
         blockType = data[index];
-        blockSize = readUInt16FromBlock(data + index + 1);
+        blockSize = readUInt32FromBlock(data + index + 1);
         
         //"copy" the block
         block = data + index + 5;//five bytes for the header
@@ -117,6 +118,7 @@ void readPagesBlock(uint8_t *block, uint32_t blockSize, Font *font){
     //
     //Since the filenames are null separated, can just pass the whole block as a string
     size_t i;
+    char filename[FILENAME_BUFFER_SIZE];
     
     //check if the sizes are the same
     if (blockSize / (strlen(block)+1) != font->numSheets){
@@ -128,8 +130,8 @@ void readPagesBlock(uint8_t *block, uint32_t blockSize, Font *font){
     
     //go over each sheet and load the image
     for (i = 0; i < font->numSheets; i++){
-        // printf("%s\n", block);
-        font->fontSheets[i] = loadImage(block);
+        sprintf(filename, "gfx/fonts/%s", block);
+        font->fontSheets[i] = loadImage(filename);
         block += strlen(block)+1;
     }
 }
@@ -145,7 +147,7 @@ void readCharsBlock(uint8_t *block, uint32_t blockSize, Font *font){
     font->idTable = malloc(sizeof(uint32_t) * font->numCharacters); //yes, I sizeof'd
     
     //loop over the block
-    while (index < blockSize){
+    while (index < blockSize && position < font->numCharacters){
         //first four bytes are an id
         font->idTable[position] = readUInt32FromBlock(block + index);
         index += 4;
@@ -195,3 +197,44 @@ uint16_t readInt16FromBlock(uint8_t *block){
 uint32_t readUInt32FromBlock(uint8_t *block){
     return ((uint32_t)block[0+3]<<24) | ((uint32_t)block[0+2]<<16) | ((uint32_t)block[0+1]<<8) | ((uint32_t)block[0]);
 }
+
+int getWidthOfText(Font *font, Text *text, int startIndex, int length){
+    size_t i;
+    int result = 0;
+    FontCharacter *c;
+    
+    //null check
+    if (text == NULL || startIndex >= text->length){
+        return 0;
+    }
+    
+    //add up the lengths
+    
+    for (i = startIndex; (i - startIndex) < length && i < text->length; i++){
+        c = findCharacter(font, text->ids[i]);
+        if (c != NULL){
+            result += c->width + c->xOffset; //maybe check max of this and c->xAdvance?
+        }
+    }
+    
+    return result;
+}
+
+FontCharacter *findCharacter(Font *font, uint32_t id){
+    if (font == NULL){
+        return NULL;
+    }
+    
+    //straight search - hella inefficient
+    FontCharacter *result = NULL;
+    size_t i;
+    for (i = 0; i < font->numCharacters; i++){
+        if (font->idTable[i] == id){
+            result = font->characters + i;
+            break;
+        }
+    }
+    
+    return result;
+}
+

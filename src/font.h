@@ -1,7 +1,9 @@
 #ifndef FONT_H
 #define FONT_H
+
 #include <stdint.h>
 #include "graphics.h"
+#include "text.h"
 
 //PIZZA - need to correct the filenames in the font files from tga to png
 //PIZZA - also really we could just have json data files but whatever
@@ -34,7 +36,9 @@ typedef struct Font {
 } Font;
 
 Font *loadFontForLanguage(char *language);
-
+int getWidthOfText(Font *font, Text *text, int startIndex, int length);
+FontCharacter *findCharacter(Font *font, uint32_t id);
+    
 /*
 
 How to make sense for drawing:
@@ -51,6 +55,24 @@ How to make sense for drawing:
     you'll draw the next character
  - baseHeight is the height from the top of the line to the bottom
     of where letters are drawn, which in hindsight is basically useless
+
+*/
+
+/*
+
+I should like to replace the idTable with range tables:
+
+struct {
+    uint32_t firstId;
+    uint32_t index;
+    size_t numberIds;
+}
+
+and have an array of these in Font.
+
+so if you want the index for the id 2345, you go through the array in Font
+until you find the range table such that firstId <= 2345 < firstId + numberIds.
+Then numberIds[2345-firstId] is the index in font->characters.
 
 */
 
