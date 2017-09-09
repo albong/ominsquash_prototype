@@ -108,7 +108,7 @@ void drawTextbox(){
         cursorY = shiftY + TEXTBOX_OFFSET + (j * currentFont->lineHeight);
             
         //draw the letters
-        for (i = display.startPosition[j]; i < display.numCharacters[j]; i++){
+        for (i = display.startPosition[j]; i < display.startPosition[j] + display.numCharacters[j]; i++){
             fc = findCharacter(currentFont, currentText->ids[i]);
             if (fc != NULL){
                 //where is the character in the font sheet
@@ -182,9 +182,11 @@ void loadNextBlockOfText(){
     for (i = 0; i < display.numLines; i++){
         if (display.numCharacters[i] != 0){
             display.blockStart = display.startPosition[i] + display.numCharacters[i] + 1;
+            printf("%u - %d\n", display.startPosition[i], display.numCharacters[i]);
         }
     }
     display.loadBlock = 0;
+    printf("%u\n", display.blockStart);
 }
 
 int addCharacterToDisplay(){
