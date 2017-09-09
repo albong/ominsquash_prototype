@@ -209,11 +209,15 @@ int getWidthOfText(Font *font, Text *text, int startIndex, int length){
     }
     
     //add up the lengths
-    
     for (i = startIndex; (i - startIndex) < length && i < text->length; i++){
         c = findCharacter(font, text->ids[i]);
         if (c != NULL){
-            result += c->width + c->xOffset; //maybe check max of this and c->xAdvance?
+            //take the max of the sizes
+            // if (c->xAdvance > c->width + c->xOffset){
+                result += c->xAdvance;
+            // } else {
+                // result += c->width + c->xOffset;
+            // }
         }
     }
     

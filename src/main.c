@@ -142,5 +142,7 @@ void terminateOmnisquash(){
     termTitleScreen();
     termLoadScreen();
     
+    //pizza - need to track and free fonts
+    
     termFrames();
 }

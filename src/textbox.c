@@ -6,20 +6,8 @@
 #include "font.h"
 #include <string.h>
 
-
-#define NUM_CHAR_LINE 19
-#define NUM_LINES 3
-#define ALPHA_WIDTH 10
-#define ALPHA_HEIGHT 10
-#define LETTER_WIDTH 18
-#define LETTER_HEIGHT 20
-
 #define TEXTBOX_OFFSET 6 //the offset for the text area for the textbox; probably should be replaced by an arbitrary rectangle in a config file
 #define TEXTBOX_DRAW_SPEED 20
-
-#define LINEFEED_UTF8_ID 10
-#define SPACE_UTF8_ID 32
-#define DASH_UTF8_ID 45
 
 static Image *textboxImage; //replace with entity?
 static unsigned totalDelta = 0;
@@ -39,7 +27,6 @@ typedef struct TextboxDisplay {
     int loadBlock;
     size_t blockStart;
 } TextboxDisplay;
-
 static TextboxDisplay display;
 
 static void resetDisplay();
@@ -60,7 +47,11 @@ void initTextbox(){
 
 void termTextbox(){
     free_Image(textboxImage);
-    
+    if (display.numLines != 0) {
+        free(display.startPosition);
+        free(display.numCharacters);
+        free(display.addDashAtLineEnd);
+    }
     //this stuff isn't finalized, and the text is freed elsewhere
 }
 
@@ -128,6 +119,35 @@ void drawTextbox(){
                 
                 //advance the cursor
                 cursorX += fc->xAdvance;
+                
+            //if the character can't be found, draw a 1px red line
+            } else if (DEBUG_DRAW_MISSING_CHARACTERS){
+                drawFilledRect_T(cursorX, cursorY, 1, currentFont->lineHeight, 255, 0, 0);
+                cursorX += 1;
+            }
+        }
+        
+        //draw the dash if we split mid-word
+        if (display.addDashAtLineEnd[j]){
+            fc = findCharacter(currentFont, DASH_UTF8_ID);
+            if (fc != NULL){
+                //where is the character in the font sheet
+                src.x = fc->x;
+                src.y = fc->y;
+                src.w = fc->width;
+                src.h = fc->height;
+                
+                //adjust the destination accordingly
+                dst.x = cursorX + fc->xOffset;
+                dst.y = cursorY + fc->yOffset;
+                dst.w = fc->width;
+                dst.h = fc->height;
+                
+                //draw
+                drawImageSrcDst(currentFont->fontSheets[fc->sheetNum], &src, &dst);
+                
+                //advance the cursor
+                cursorX += fc->xAdvance;
             }
         }
     }
@@ -147,11 +167,12 @@ void configureTextboxForFont(Font *font){
     if (display.numLines != 0) {
         free(display.startPosition);
         free(display.numCharacters);
+        free(display.addDashAtLineEnd);
     }
     
     //allocate new data
     display.numLines = (textboxImage->height - (2*TEXTBOX_OFFSET)) / font->lineHeight;
-    display.startPosition = malloc(sizeof(int) * display.numLines);
+    display.startPosition = malloc(sizeof(size_t) * display.numLines);
     display.numCharacters = malloc(sizeof(int) * display.numLines);
     display.addDashAtLineEnd = malloc(sizeof(int) * display.numLines);
     
@@ -173,7 +194,7 @@ void loadNextBlockOfText(){
     resetDisplay();
     display.startPosition[0] = display.blockStart;
     
-    //holy crap what
+    //idk - indenting reasons
     while(!addCharacterToDisplay()) {
     }
     
@@ -182,14 +203,16 @@ void loadNextBlockOfText(){
     for (i = 0; i < display.numLines; i++){
         if (display.numCharacters[i] != 0){
             display.blockStart = display.startPosition[i] + display.numCharacters[i] + 1;
-            printf("%u - %d\n", display.startPosition[i], display.numCharacters[i]);
         }
     }
     display.loadBlock = 0;
-    printf("%u\n", display.blockStart);
 }
 
 int addCharacterToDisplay(){
+    int result = 0;
+    int lengthToSpace = -1;
+    int i;
+    int newWidth;
     size_t startPos = display.startPosition[display.currLine];
     int currLength = display.numCharacters[display.currLine];
     
@@ -197,27 +220,18 @@ int addCharacterToDisplay(){
     if (startPos + currLength >= currentText->length){
         return 1;
     
-    //check if the next character is a line break, in which case stop printing and wait, or increment what line we're on - linefeed won't get drawn
+    //check if the next character is a line break, in which case stop printing and wait
     } else if (currentText->ids[startPos + currLength + 1] == LINEFEED_UTF8_ID) {
-        if (display.currLine == display.numLines - 1){
-            display.numCharacters[display.currLine]++;
-            return 1;
-        } else {
-            display.currLine++;
-            display.startPosition[display.currLine] = startPos + currLength + 2; // 2 because skip the linefeed
-            return 0;
-        }
+        display.numCharacters[display.currLine]++;//linefeed shouldn't get drawn
+        return 1;
     }
     
     //we want to add a character to the current line, but we need to make sure we don't overrun the line
     //check if adding a new character makes the line too wide
-    int result = 0;
-    int lengthToSpace = -1;
-    int i;
-    int newWidth = getWidthOfText(currentFont, currentText, startPos, currLength + 1);
+    newWidth = getWidthOfText(currentFont, currentText, startPos, currLength + 1);
     if (newWidth > display.maxWidth){
         //walk backwards until we find a space character
-        for (i = currLength + 1; i > 0; i--){
+        for (i = currLength; i > 0; i--){
             if (currentText->ids[startPos + i] == SPACE_UTF8_ID){
                 lengthToSpace = i;
                 break;
@@ -232,7 +246,7 @@ int addCharacterToDisplay(){
                 result = 1;
             } else {
                 display.currLine++;
-                display.startPosition[display.currLine] = startPos + lengthToSpace;
+                display.startPosition[display.currLine] = startPos + lengthToSpace + 1; //skip the space
             }
             
         //if there was no space character, add a dash and advance the line without adding a new character
