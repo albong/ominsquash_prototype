@@ -11,6 +11,7 @@
 #include "title_screen.h"
 #include "load_screen.h"
 #include "screen_wipe.h"
+#include "data_reader.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -75,8 +76,8 @@ int gameFrameLogic(unsigned delta){
         consumeAllInput();
         return 1;
     } else if (checkInput(Y_BUTTON)){
-        addTextToTextbox("If the measure of a space is finite, then convergence\n in measure implies convergence\n almost anywhere implies...");
-        // testTextbox();
+        // setTextboxText(readTextFromFile("data/text/ko/00000.text", NULL));
+        setTextboxText(readTextFromFile("data/text/en/00001.text", NULL));
         _currentFrame = textboxFrame;
         consumeAllInput();
         return 1;

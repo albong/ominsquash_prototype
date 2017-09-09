@@ -119,8 +119,8 @@ void initializeOmnisquash(){
     initAreaTransition();
 
     //set the current font stuff
-    // configureTextboxForFont(loadFontForLanguage("en"));
-    configureTextboxForFont(loadFontForLanguage("ko"));
+    configureTextboxForFont(loadFontForLanguage("en"));
+    // configureTextboxForFont(loadFontForLanguage("ko"));
     
     initFrames();
 }
