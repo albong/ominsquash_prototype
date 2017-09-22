@@ -13,6 +13,8 @@ static Enemy **loadedEnemies = NULL;
 //the function tables
 //these types declared in enemy_tables.h
 //swag : http://stackoverflow.com/a/5488718
+static enemy_entity_construct_ptr_t *eConstructTable; //array
+static enemy_entity_destruct_ptr_t *eDestructTable; //array
 static enemy_entity_action_ptr_t *eActionTable; //array
 static enemy_draw_ptr_t *drawTable; //array
 static enemy_interact_ptr_t *interactTable; //array
@@ -22,10 +24,12 @@ static enemy_action_ptr_t *actionTable; //array
 static size_t enemyTableSize = 0;
 
 void initEnemyCreateTable(){
-    fillEnemyTables(&eActionTable, &drawTable, &interactTable, &takeDamageTable, &collidePlayerTable, &actionTable, &enemyTableSize);
+    fillEnemyTables(&eConstructTable, &eDestructTable, &eActionTable, &drawTable, &interactTable, &takeDamageTable, &collidePlayerTable, &actionTable, &enemyTableSize);
 }
 
 void termEnemyCreateTable(){
+    free(eConstructTable);
+    free(eDestructTable);
     free(eActionTable);
     free(drawTable);
     free(interactTable);
@@ -44,10 +48,47 @@ Enemy *createEnemyById(size_t id){
             result = malloc(sizeof(Enemy));
             memcpy(result, loadedEnemies[i], sizeof(Enemy));
             result->e.animation = shallowCopyAnimation(loadedEnemies[i]->e.animation);
+            if (result->e.construct != NULL){
+                result->e.construct((Entity *)result); //and then we immediately recast it in the method
+            }
         }
     }
     
     return result;
+}
+
+Enemy *assignEnemyFunctionsById(size_t id, Enemy *e){
+    if (e == NULL){
+        return NULL;
+    }
+    
+    //set the entity's methods from the tables
+    if (eConstructTable[id] != NULL){
+        e->e.construct = eConstructTable[id];
+    }
+    if (eDestructTable[id] != NULL){
+        e->e.destruct = eDestructTable[id];
+    }
+    if (eActionTable[id] != NULL){
+        e->e.action = eActionTable[id];
+    }
+    if (drawTable[id] != NULL){
+        e->e.draw = drawTable[id];
+    }
+    if (interactTable[id] != NULL){
+        e->e.interact = interactTable[id];
+    }
+    if (takeDamageTable[id] != NULL){
+        e->takeDamage = takeDamageTable[id];
+    }
+    if (collidePlayerTable[id] != NULL){
+        e->collidePlayer = collidePlayerTable[id];
+    }
+    if (actionTable[id] != NULL){
+        e->action = actionTable[id];
+    }
+    
+    return e;
 }
 
 void loadEnemyData(size_t *ids, size_t count){
@@ -64,24 +105,7 @@ void loadEnemyData(size_t *ids, size_t count){
         loadedEnemies[i] = readEnemyFromFile(filename, NULL);
         
         //set the methods from the tables
-        if (eActionTable[ids[i]] != NULL){
-            loadedEnemies[i]->e.action = eActionTable[ids[i]];
-        }
-        if (drawTable[ids[i]] != NULL){
-            loadedEnemies[i]->e.draw = drawTable[ids[i]];
-        }
-        if (interactTable[ids[i]] != NULL){
-            loadedEnemies[i]->e.interact = interactTable[ids[i]];
-        }
-        if (takeDamageTable[ids[i]] != NULL){
-            loadedEnemies[i]->takeDamage = takeDamageTable[ids[i]];
-        }
-        if (collidePlayerTable[ids[i]] != NULL){
-            loadedEnemies[i]->collidePlayer = collidePlayerTable[ids[i]];
-        }
-        if (actionTable[ids[i]] != NULL){
-            loadedEnemies[i]->action = actionTable[ids[i]];
-        }
+        assignEntityFunctionsById(ids[i], loadedEnemies[i]);
     }
 }
 

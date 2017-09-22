@@ -255,6 +255,8 @@ def checkEnemyHeaderMethods(headerList):
     result = {}
     
     for h in headerList:
+        hasEConstruct = False
+        hasEDestruct = False
         hasEAction = False
         hasDraw = False
         hasInteract = False
@@ -271,6 +273,10 @@ def checkEnemyHeaderMethods(headerList):
                     line = " ".join(line.split())
                     
                     #check for methods
+                    if line.startswith("void enemy_entity_construct_" + ID):
+                        hasEConstruct = True
+                    if line.startswith("void enemy_entity_destruct_" + ID):
+                        hasEDestruct = True
                     if line.startswith("void enemy_entity_action_" + ID):
                         hasEAction = True
                     if line.startswith("void enemy_draw_" + ID):
@@ -284,7 +290,7 @@ def checkEnemyHeaderMethods(headerList):
                     if line.startswith("void enemy_action_" + ID):
                         hasAction = True
                         
-                result[ID] = (hasEAction, hasDraw, hasInteract, hasTakeDamage, hasCollide, hasAction)
+                result[ID] = (hasEConstruct, hasEDestruct, hasEAction, hasDraw, hasInteract, hasTakeDamage, hasCollide, hasAction)
                 
         except IOError:
             print "Error reading file " + ENTITIES_DIR + h
@@ -303,7 +309,9 @@ def writeEnemyTableFile(fout, headerList, methodDict):
     
     #now write the beginning of the method
     tableSize = int(headerList[-1][len("enemy_"):-2]) + 1
-    fout.write("void fillEnemyTables(enemy_entity_action_ptr_t **eActionTable,\n")
+    fout.write("void fillEnemyTables(enemy_entity_construct_ptr_t **eConstructTable,\n")
+    fout.write("                    enemy_entity_destruct_ptr_t **eDestructTable,\n")
+    fout.write("                    enemy_entity_action_ptr_t **eActionTable,\n")
     fout.write("                    enemy_draw_ptr_t **drawTable,\n")
     fout.write("                    enemy_interact_ptr_t **interactTable,\n")
     fout.write("                    enemy_takeDamage_ptr_t **takeDamageTable,\n")
@@ -313,6 +321,8 @@ def writeEnemyTableFile(fout, headerList, methodDict):
     fout.write("    *tableSize = " + str(tableSize) + ";\n")
     fout.write("\n")
     
+    fout.write("    enemy_entity_construct_ptr_t *e_ct = malloc(sizeof(enemy_entity_action_ptr_t) * " + str(tableSize) + ");\n")
+    fout.write("    enemy_entity_destruct_ptr_t *e_det = malloc(sizeof(enemy_entity_action_ptr_t) * " + str(tableSize) + ");\n")
     fout.write("    enemy_entity_action_ptr_t *e_at = malloc(sizeof(enemy_entity_action_ptr_t) * " + str(tableSize) + ");\n")
     fout.write("    enemy_draw_ptr_t *dt = malloc(sizeof(enemy_draw_ptr_t) * " + str(tableSize) + ");\n")
     fout.write("    enemy_interact_ptr_t *it = malloc(sizeof(enemy_interact_ptr_t) * " + str(tableSize) + ");\n")
@@ -332,7 +342,19 @@ def writeEnemyTableFile(fout, headerList, methodDict):
         hasAction = False
         
         if ID in methodDict:
-            hasEAction, hasDraw, hasInteract, hasTakeDamage, hasCollide, hasAction = methodDict[ID]
+            hasEConstruct, hasEDestruct, hasEAction, hasDraw, hasInteract, hasTakeDamage, hasCollide, hasAction = methodDict[ID]
+        
+        #entity_construct
+        if hasEConstruct:
+            fout.write("    e_ct[" + ID + "] = &enemy_entity_construct_" + ID + ";\n")
+        else:
+            fout.write("    e_ct[" + ID + "] = NULL;\n")
+        
+        #entity_destruct
+        if hasEDestruct:
+            fout.write("    e_det[" + ID + "] = &enemy_entity_destruct_" + ID + ";\n")
+        else:
+            fout.write("    e_det[" + ID + "] = NULL;\n")
         
         #entity_action
         if hasEAction:
@@ -372,6 +394,8 @@ def writeEnemyTableFile(fout, headerList, methodDict):
     fout.write("\n")
     
     #write the end of the method
+    fout.write("    *eConstructTable = e_ct;\n")
+    fout.write("    *eDestructTable = e_det;\n")
     fout.write("    *eActionTable = e_at;\n")
     fout.write("    *drawTable = dt;\n")
     fout.write("    *interactTable = it;\n")

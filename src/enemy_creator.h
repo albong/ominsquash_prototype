@@ -6,6 +6,7 @@
 void initEnemyCreateTable();
 void termEnemyCreateTable();
 Enemy *createEnemyById(size_t id);
+Enemy *assignEnemyFunctionsById(size_t id, Enemy *e);
 
 //PIZZA - should change this to loadEntityData(...), load and pass off the data files, and from these
 // load the sprite info - probably should generalize to a subclass of interactables or something
