@@ -54,7 +54,7 @@ Entity *createEntityById(size_t id){
 
 Entity *assignEntityFunctionsById(size_t id, Entity *e){
     if (e == NULL){
-        return;
+        return NULL;
     }
     
     //set the entity's methods from the tables
