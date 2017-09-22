@@ -41,7 +41,7 @@ typedef struct Entity {
 	Orientation orientation;
     void (*construct)(struct Entity *self);
     void (*destruct)(struct Entity *self);
-	void (*action)(void *, int); //probs should be Entity *, but whatevs?
+	void (*action)(void *, int); //probs should be Entity *, but whatevs? - The advantage of void is not having to cast when calling, despite having to cast in method, especially when subclassing
 	void (*draw)(struct Entity *, double shiftX, double shiftY);
 //	void (*collide)(void *);
 	CollisionType type;
