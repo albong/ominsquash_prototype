@@ -68,6 +68,8 @@ def checkEntityHeaderMethods(headerList):
     result = {}
     
     for h in headerList:
+        hasConstruct = False
+        hasDestruct = False
         hasAction = False
         hasDraw = False
         hasInteract = False
@@ -81,6 +83,10 @@ def checkEntityHeaderMethods(headerList):
                     line = " ".join(line.split())
                     
                     #check for methods
+                    if line.startswith("void entity_construct_" + ID):
+                        hasConstruct = True
+                    if line.startswith("void entity_destruct_" + ID):
+                        hasDestruct = True
                     if line.startswith("void entity_action_" + ID):
                         hasAction = True
                     if line.startswith("void entity_draw_" + ID):
@@ -88,7 +94,7 @@ def checkEntityHeaderMethods(headerList):
                     if line.startswith("void entity_interact_" + ID):
                         hasInteract = True
                         
-                result[ID] = (hasAction, hasDraw, hasInteract)
+                result[ID] = (hasConstruct, hasDestruct, hasAction, hasDraw, hasInteract)
                 
         except IOError:
             print "Error reading file " + ENTITIES_DIR + h
@@ -107,9 +113,11 @@ def writeEntityTableFile(fout, headerList, methodDict):
     
     #now write the beginning of the method
     tableSize = int(headerList[-1][len("entity_"):-2]) + 1
-    fout.write("void fillEntityTables(entity_action_ptr_t **actionTable, entity_draw_ptr_t **drawTable, entity_interact_ptr_t **interactTable, size_t *tableSize){\n")
+    fout.write("void fillEntityTables(entity_construct_ptr_t **constructTable, entity_destruct_ptr_t **destructTable, entity_action_ptr_t **actionTable, entity_draw_ptr_t **drawTable, entity_interact_ptr_t **interactTable, size_t *tableSize){\n")
     fout.write("    *tableSize = " + str(tableSize) + ";\n")
     fout.write("\n")
+    fout.write("    entity_construct_ptr_t *ct = malloc(sizeof(entity_construct_ptr_t) * " + str(tableSize) + ");\n")
+    fout.write("    entity_destruct_ptr_t *det = malloc(sizeof(entity_destruct_ptr_t) * " + str(tableSize) + ");\n")
     fout.write("    entity_action_ptr_t *at = malloc(sizeof(entity_action_ptr_t) * " + str(tableSize) + ");\n")
     fout.write("    entity_draw_ptr_t *dt = malloc(sizeof(entity_draw_ptr_t) * " + str(tableSize) + ");\n")
     fout.write("    entity_interact_ptr_t *it = malloc(sizeof(entity_interact_ptr_t) * " + str(tableSize) + ");\n")
@@ -123,7 +131,19 @@ def writeEntityTableFile(fout, headerList, methodDict):
         hasInteract = False
         
         if ID in methodDict:
-            hasAction, hasDraw, hasInteract = methodDict[ID]
+            hasConstruct, hasDestruct, hasAction, hasDraw, hasInteract = methodDict[ID]
+        
+        #construct
+        if hasConstruct:
+            fout.write("    ct[" + ID + "] = &entity_construct_" + ID + ";\n")
+        else:
+            fout.write("    ct[" + ID + "] = NULL;\n")
+            
+        #destruct
+        if hasDestruct:
+            fout.write("    det[" + ID + "] = &entity_destruct_" + ID + ";\n")
+        else:
+            fout.write("    det[" + ID + "] = NULL;\n")
         
         #action
         if hasAction:
@@ -145,6 +165,8 @@ def writeEntityTableFile(fout, headerList, methodDict):
     fout.write("\n")
     
     #write the end of the method
+    fout.write("    *constructTable = ct;\n")
+    fout.write("    *destructTable = det;\n")
     fout.write("    *actionTable = at;\n")
     fout.write("    *drawTable = dt;\n")
     fout.write("    *interactTable = it;\n")

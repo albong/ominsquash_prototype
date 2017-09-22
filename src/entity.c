@@ -38,6 +38,8 @@ Entity *init_Entity(Entity *self){
     self->animation = NULL;
 	self->orientation = UP;
 	// self->action = NULL;
+    self->construct = NULL;
+    self->destruct = NULL;
 	self->action = &defaultActionEntity;
 	self->draw = &defaultDrawEntity;
     self->type = NONE;
@@ -61,6 +63,9 @@ void term_Entity(Entity *self){
     
     term_Hitboxes(&(self->hitboxes));
     
+    if (self->destruct != NULL){
+        self->destruct(self);
+    }
 }
 
 void free_Entity(Entity *self){

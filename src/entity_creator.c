@@ -13,16 +13,20 @@ static Entity **loadedEntities = NULL;
 //the function tables
 //these types declared in entity_tables.h
 //swag : http://stackoverflow.com/a/5488718
+static entity_construct_ptr_t *entityConstructTable; //array
+static entity_destruct_ptr_t *entityDestructTable; //array
 static entity_action_ptr_t *entityActionTable; //array
 static entity_draw_ptr_t *entityDrawTable; //array
 static entity_interact_ptr_t *entityInteractTable; //array
 static size_t entityTableSize = 0;
 
 void initEntityCreateTable(){
-    fillEntityTables(&entityActionTable, &entityDrawTable, &entityInteractTable, &entityTableSize);
+    fillEntityTables(&entityConstructTable, &entityDestructTable, &entityActionTable, &entityDrawTable, &entityInteractTable, &entityTableSize);
 }
 
 void termEntityCreateTable(){
+    free(entityConstructTable);
+    free(entityDestructTable);
     free(entityActionTable);
     free(entityDrawTable);
     free(entityInteractTable);
@@ -38,6 +42,10 @@ Entity *createEntityById(size_t id){
             result = malloc(sizeof(Entity));
             memcpy(result, loadedEntities[i], sizeof(Entity));
             result->animation = shallowCopyAnimation(loadedEntities[i]->animation);
+            if (result->construct != NULL){
+                result->construct(result);
+            }
+            break;
         }
     }
     
@@ -50,6 +58,12 @@ Entity *assignEntityFunctionsById(size_t id, Entity *e){
     }
     
     //set the entity's methods from the tables
+    if (entityConstructTable[id] != NULL){
+        e->construct = entityConstructTable[id];
+    }
+    if (entityDestructTable[id] != NULL){
+        e->destruct = entityDestructTable[id];
+    }
     if (entityActionTable[id] != NULL){
         e->action = entityActionTable[id];
     }
@@ -77,15 +91,7 @@ void loadEntityData(size_t *ids, size_t count){
         loadedEntities[i] = readEntityFromFile(filename, malloc(sizeof(Entity)));
         
         //set the entity's methods from the tables
-        if (entityActionTable[ids[i]] != NULL){
-            loadedEntities[i]->action = entityActionTable[ids[i]];
-        }
-        if (entityDrawTable[ids[i]] != NULL){
-            loadedEntities[i]->draw = entityDrawTable[ids[i]];
-        }
-        if (entityInteractTable[ids[i]] != NULL){
-            loadedEntities[i]->interact = entityInteractTable[ids[i]];
-        }
+        assignEntityFunctionsById(ids[i], loadedEntities[i]);
     }
 }
 

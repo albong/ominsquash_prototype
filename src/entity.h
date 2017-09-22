@@ -39,6 +39,8 @@ typedef struct Entity {
     Sprite *sprite;
     Animation *animation;
 	Orientation orientation;
+    void (*construct)(struct Entity *self);
+    void (*destruct)(struct Entity *self);
 	void (*action)(void *, int); //probs should be Entity *, but whatevs?
 	void (*draw)(struct Entity *, double shiftX, double shiftY);
 //	void (*collide)(void *);
