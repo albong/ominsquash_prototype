@@ -4,7 +4,7 @@
 #include "../src/entity.h"
 
 //these correspond to the pointers used by the Entity struct
-typedef void (*entity_construct_ptr_t)(Entity *);
+typedef void *(*entity_construct_ptr_t)(Entity *);
 typedef void (*entity_destruct_ptr_t)(Entity *);
 typedef void (*entity_action_ptr_t)(void *, int);
 typedef void (*entity_draw_ptr_t)(Entity *, double, double);

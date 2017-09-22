@@ -39,7 +39,7 @@ typedef struct Entity {
     Sprite *sprite;
     Animation *animation;
 	Orientation orientation;
-    void (*construct)(struct Entity *self);
+    void *(*construct)(struct Entity *self);
     void (*destruct)(struct Entity *self);
 	void (*action)(void *, int); //probs should be Entity *, but whatevs? - The advantage of void is not having to cast when calling, despite having to cast in method, especially when subclassing
 	void (*draw)(struct Entity *, double shiftX, double shiftY);

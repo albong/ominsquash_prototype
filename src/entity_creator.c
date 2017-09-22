@@ -43,7 +43,7 @@ Entity *createEntityById(size_t id){
             memcpy(result, loadedEntities[i], sizeof(Entity));
             result->animation = shallowCopyAnimation(loadedEntities[i]->animation);
             if (result->construct != NULL){
-                result->construct(result);
+                result = result->construct(result);
             }
             break;
         }
@@ -92,6 +92,11 @@ void loadEntityData(size_t *ids, size_t count){
         
         //set the entity's methods from the tables
         assignEntityFunctionsById(ids[i], loadedEntities[i]);
+        
+        //construct - doesn't really matter, since this gets shallow copied, except that destruct may expect things to be allocated
+        if (loadedEntities[i]->construct != NULL){
+            loadedEntities[i] = loadedEntities[i]->construct(loadedEntities[i]);
+        }
     }
 }
 

@@ -5,7 +5,7 @@
 #include "../src/enemy.h"
 
 //these correspond to the pointers used by the Enemy/Entity struct
-typedef void (*enemy_entity_construct_ptr_t)(Entity *);
+typedef void *(*enemy_entity_construct_ptr_t)(Entity *);
 typedef void (*enemy_entity_destruct_ptr_t)(Entity *);
 typedef void (*enemy_entity_action_ptr_t)(void *, int);
 typedef void (*enemy_draw_ptr_t)(Entity *, double, double);

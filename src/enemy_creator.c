@@ -49,8 +49,9 @@ Enemy *createEnemyById(size_t id){
             memcpy(result, loadedEnemies[i], sizeof(Enemy));
             result->e.animation = shallowCopyAnimation(loadedEnemies[i]->e.animation);
             if (result->e.construct != NULL){
-                result->e.construct((Entity *)result); //and then we immediately recast it in the method
+                result = result->e.construct((Entity *)result); //and then we immediately recast it in the method
             }
+            break;
         }
     }
     
@@ -106,6 +107,11 @@ void loadEnemyData(size_t *ids, size_t count){
         
         //set the methods from the tables
         assignEntityFunctionsById(ids[i], loadedEnemies[i]);
+        
+        //construct - doesn't really matter, since this gets shallow copied, except that destruct may expect things to be allocated
+        if (loadedEnemies[i]->e.construct != NULL){
+            loadedEnemies[i] = loadedEnemies[i]->e.construct((Entity *)loadedEnemies[i]);
+        }
     }
 }
 
