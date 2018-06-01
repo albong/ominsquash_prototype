@@ -106,6 +106,7 @@ def writeEntityTableFile(fout, headerList, methodDict):
     """write the entity tables file"""
     #first, write the header
     fout.write("#include \"entity_tables.h\"\n\n")
+    fout.write("#include <stdlib.h>\n\n")
     fout.write("\n")
     for h in headerList:
         fout.write("#include \"" + h + "\"\n")
@@ -207,6 +208,7 @@ def writeWeaponTableFile(fout, headerList, methodDict):
     """write the entity tables file"""
     #first, write the header
     fout.write("#include \"weapon_tables.h\"\n\n")
+    fout.write("#include <stdlib.h>\n\n")
     fout.write("\n")
     for h in headerList:
         fout.write("#include \"" + h + "\"\n")
@@ -302,6 +304,7 @@ def writeEnemyTableFile(fout, headerList, methodDict):
     """write the entity tables file"""
     #first, write the header
     fout.write("#include \"enemy_tables.h\"\n\n")
+    fout.write("#include <stdlib.h>\n\n")
     fout.write("\n")
     for h in headerList:
         fout.write("#include \"" + h + "\"\n")

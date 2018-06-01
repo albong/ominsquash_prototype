@@ -5,6 +5,7 @@
 #include "data_reader.h"
 #include "font.h"
 #include <string.h>
+#include <stdlib.h>
 
 #define TEXTBOX_OFFSET 6 //the offset for the text area for the textbox; probably should be replaced by an arbitrary rectangle in a config file
 #define TEXTBOX_DRAW_SPEED 20

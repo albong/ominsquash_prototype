@@ -8,8 +8,8 @@
 #include <stdio.h>
 
 static int totalDelta = 0;
-static const hitstunMilli = 1000;
-static const DEFAULT_HEALTH = 8;
+static const int hitstunMilli = 1000;
+static const int DEFAULT_HEALTH = 8;
 
 static void updatePosition(Enemy *self, int delta);
 static void updateFrame(Enemy *self, int delta);

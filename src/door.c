@@ -1,5 +1,6 @@
 #include "door.h"
 #include "hitbox.h"
+#include <stdlib.h>
 
 static Door *init_Door(Door *self);
 static void doDoor(void *self, int delta);

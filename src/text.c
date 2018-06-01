@@ -1,4 +1,5 @@
 #include "text.h"
+#include <stddef.h>
 
 Text *init_Text(Text *self){
     if (self == NULL){

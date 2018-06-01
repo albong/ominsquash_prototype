@@ -13,7 +13,7 @@
 static int roomTransition = 0;
 static int transitionDirection = -1;
 static unsigned totalDelta = 0;
-static const hitstunMilli = 1000;
+static const int hitstunMilli = 1000;
 
 /////////////////////////////////////////////////
 // Loading / Unloading

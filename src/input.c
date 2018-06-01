@@ -1,5 +1,6 @@
 #include "input.h"
 #include "SDL2/SDL.h"
+#include <stdlib.h>
 
 /*
     KEY LISTING

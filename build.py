@@ -18,6 +18,7 @@ LIBS=""
 INCS=""
 CFLAGS=""
 BIN=""
+ENVIRONMENT_MODIFY = os.environ.copy()
 
 FORCE = False
 LINK = False
@@ -37,6 +38,7 @@ def configure():
     global INCS
     global CFLAGS
     global BIN
+    global ENVIRONMENT_MODIFY
 
     #determine the platform and set things accordingly
     if "cygwin" in platform.system().lower():
@@ -58,12 +60,13 @@ def configure():
                 "-I\"D:/SDL2-2.0.4/include/\""
         BIN = "omnisquash.exe"
     elif "windows" in platform.system().lower() or "win32" in platform.system().lower():
-        print "Windows detected"
+        #
+        # No slashes at the end of paths, they'll be read as escape characters for the quotations
+        #
         PLATFORM = "WINDOWS"
-        CC = "gcc"
-        # CC = "c:\\Program Files\\Dev-Cpp\\MinGW64\\bin\\gcc.exe"
-        # LIBS = "-L\"C:/Program Files/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib32\" "\
-        LIBS = "-L\"D:/SDL2-2.0.4/lib\" "\
+        CC = "C:\\MinGW\\bin\\gcc.exe"
+        LIBS = "-L\"C:\\MinGW\\lib\" "\
+                "-L\"D:\\omnisquash\\SDL2-2.0.8\\i686-w64-mingw32\\lib\" "\
                 "-static-libgcc "\
                 "-lmingw32 "\
                 "-lSDL2main "\
@@ -72,12 +75,10 @@ def configure():
                 "-lSDL2_ttf "\
                 "-m32 "\
                 "-g3"
-        # INCS = "-I\"C:/Program Files/Dev-Cpp/MinGW64/include\" "\
-        #        "-I\"C:/Program Files/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include\" "\
-        #        "-I\"C:/Program Files/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include\" "\
-        #        "-I\"D:/SDL-1.2.15/include\""
-        INCS = "-I\"D:\\SDL2-2.0.4\\include\\\" "
+        INCS = "-I\"C:\\MinGW\\include\" "\
+                "-I\"D:\\omnisquash\\SDL2-2.0.8\\i686-w64-mingw32\\include\" "
         BIN = "omnisquash.exe"
+        ENVIRONMENT_MODIFY["PATH"] += "C:\\MinGW\\bin;"
     elif "mac" in platform.system().lower() or "darwin" in platform.system().lower():
         PLATFORM = "MAC"
         CC = "gcc"
@@ -110,8 +111,7 @@ def findIgnore():
             for line in fin:
                 line = line.strip()
                 if len(line) > 0 and line[0] != "#":
-                    line.replace("/", os.sep)
-                    toIgnore.append(BUILD_DIR + line)
+                    toIgnore.append(BUILD_DIR + line.replace("/", os.sep))
     except IOError:
         pass
                 
@@ -508,8 +508,10 @@ for f in cFileList:
             compileCmd = "eval \"" + compileCmd.replace("\"", "\\\"") + "\""
             ret = subprocess.call(compileCmd, shell=True)
         elif PLATFORM == "WINDOWS":
-            compileCmd = compileCmd.replace("\"", "\\\"") + "\""
-            ret = subprocess.call(compileCmd)
+            #idk what this was for?
+            #maybe I figured you wouldn't have manually made the variables for each environment?
+            # compileCmd = compileCmd.replace("\"", "\\\"") + "\""
+            ret = subprocess.call(compileCmd, env=ENVIRONMENT_MODIFY)
         else:
             ret = subprocess.call(compileCmd)
             
@@ -542,6 +544,8 @@ elif not CLEAN:
     if PLATFORM == "CYGWIN":
         linkCmd = "eval \"" + linkCmd.replace("\"", "\\\"") + "\""
         ret = subprocess.call(linkCmd, shell=True)
+    elif PLATFORM == "WINDOWS":
+        ret = subprocess.call(linkCmd, env=ENVIRONMENT_MODIFY)
     else:
         ret = subprocess.call(linkCmd)
 

@@ -3,6 +3,7 @@
 #include "../src/graphics.h"
 #include "../src/data_reader.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 static const int DAMAGE = 4;
 

@@ -16,6 +16,7 @@
 #include "enemy_creator.h"
 
 #include <stdint.h>
+#include <stdlib.h>
 #include <string.h>
  
 static int changingRooms = 0; //0 for nothing, 1 for shifting rooms, 2 for jumping rooms, 3 for area change?

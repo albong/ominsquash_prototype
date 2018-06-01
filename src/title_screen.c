@@ -7,6 +7,7 @@
 #include "data_reader.h"
 #include "../lib/cJSON/cJSON.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 #define NUM_BUTTONS_TITLE 10
 

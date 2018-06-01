@@ -12,12 +12,15 @@
 #include "interface.h"
 #include "entity_creator.h"
 #include "enemy_creator.h"
+#include "weapon_creator.h"
 #include "title_screen.h"
 #include "load_screen.h"
+#include "menu.h"
 
 #include "../debug/hitbox_drawer.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 
 //Refer to http://gamedev.stackexchange.com/a/132835 for changes
 

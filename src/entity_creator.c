@@ -5,6 +5,8 @@
 #include "../entities/entity_tables.h"
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 static size_t numLoadedEntities = 0;
 static size_t *loadedEntitiesIds = NULL;

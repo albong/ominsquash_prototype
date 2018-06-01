@@ -1,0 +1,24 @@
+Download or clone source from git, this will be dev directory.
+
+Download the development libraries for:
+	- SDL2
+	- SDL_image
+	- SDL_ttf
+	
+Inside of these tarballs will be several directories.  "i686-w64-mingw32" is for
+32 bit, and "x86_64-w64-mingw32" is for 64 bit.  In "bin" will be the .dll
+files, please copy these to the root of the dev directory with the game files.
+Copy these directories from each of the SDL extensions to the main SDL library
+directory (the header and library files for the extensions like to be in the 
+same directory as for the main SDL files).
+
+Install a C compiler.
+
+Modify the build.py script to appropriately reference the include/library 
+directories for each library, and reference the correct C compiler.  You may
+need to adjust the ENVIRONMENT_MODIFY variable to appropriately add environment
+variables for the C compiler too.
+
+Refer here for additional help:
+https://w3.cs.jmu.edu/bernstdh/web/common/help/cpp_mingw-sdl-setup.php
+

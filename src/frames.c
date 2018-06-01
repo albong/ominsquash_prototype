@@ -12,6 +12,7 @@
 #include "load_screen.h"
 #include "screen_wipe.h"
 #include "data_reader.h"
+#include "interface.h"
 
 #include <stdlib.h>
 #include <stdio.h>

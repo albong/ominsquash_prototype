@@ -2,6 +2,7 @@
 #include "player.h"
 #include "data_reader.h"
 #include "graphics.h"
+#include <stdlib.h>
 
 #define MAX_SHIELD_SLOTS 20
 
