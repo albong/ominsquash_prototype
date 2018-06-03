@@ -16,6 +16,7 @@
 #include "title_screen.h"
 #include "load_screen.h"
 #include "menu.h"
+#include "logging.h"
 
 #include "../debug/hitbox_drawer.h"
 
@@ -105,7 +106,10 @@ void initializeOmnisquash(){
     
     //when the program exits, clean everything up
     atexit(stopSDL);
-    
+ 
+    LOG_INF("SDL started");
+    LOG_WAR("Not really a warning %d", 5);
+
     //initialization stuff
     initEntityCreateTable();
     initEnemyCreateTable();
