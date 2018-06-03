@@ -1,5 +1,6 @@
 #include "graphics.h"
 #include "constants.h"
+#include "logging.h"
 #include "SDL2/SDL.h"
 #include "SDL2/SDL_image.h"
 #include <stdint.h>
@@ -25,34 +26,37 @@ static SDL_Surface *screen;
 void initSDL(){
     //Initialise SDL
 	if (SDL_Init(SDL_INIT_VIDEO|SDL_INIT_AUDIO) < 0){
-		printf("Could not initialize SDL: %s\n", SDL_GetError());
+		LOG_ERR("Could not initialize SDL: %s", SDL_GetError());
 		exit(1);
 	}
+    LOG_INF("SDL setup");
 	
 	//Initialise SDL_TTF 
 	if (TTF_Init() < 0){
-		printf("Couldn't initialize SDL TTF: %s\n", SDL_GetError());
+		LOG_ERR("Couldn't initialize SDL TTF: %s", SDL_GetError());
 		exit(1);
 	}
+    LOG_INF("SDL_ttf setup");
 	
 	//Open a screen
 //	screen = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 0, SDL_HWPALETTE|SDL_DOUBLEBUF);
 	window = SDL_CreateWindow("omnisquash", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, WINDOW_WIDTH, WINDOW_HEIGHT, SDL_WINDOW_OPENGL);
 	if (window == NULL){
-		printf("Couldn't set screen mode to %d x %d: %s\n", SCREEN_WIDTH, SCREEN_HEIGHT, SDL_GetError());
+		LOG_ERR("Couldn't set screen mode to %d x %d: %s", SCREEN_WIDTH, SCREEN_HEIGHT, SDL_GetError());
 		exit(1);
 	}
+    LOG_INF("Window created");
 	
     //PIZZA hacks, get rid of
     screen = SDL_GetWindowSurface(window);
 
     renderer = SDL_CreateRenderer(window, -1, 0);
     if (renderer == NULL){
-        printf("Couldn't create a renderer!\n");
+        LOG_ERR("Couldn't create a renderer!");
         exit(1);
     }
-    
     SDL_RenderSetLogicalSize(renderer, SCREEN_WIDTH, SCREEN_HEIGHT);
+    LOG_INF("Renderer setup");
     
 	//Set the audio rate to 22050, 16 bit stereo, 2 channels and a 4096 byte buffer
 //	if (Mix_OpenAudio(22050, AUDIO_S16SYS, 2, 4096) != 0){
@@ -66,13 +70,15 @@ void initSDL(){
     //Initialize SDL_image
     int imageInitResult = IMG_Init( IMG_INIT_PNG );
     if (!(imageInitResult & IMG_INIT_PNG)){
-        printf("Couldn't initialize SDL_image!\n");
+        LOG_ERR("Couldn't initialize SDL_image!");
         exit(1);
     }
+    LOG_INF("SDL_image setup");
 }
 
 void stopSDL(){
     SDL_Quit();
+    LOG_INF("SDL stopped");
 }
 
 
@@ -81,6 +87,7 @@ void stopSDL(){
 /////////////////////////////////////////////////
 Sprite *init_Sprite(Sprite *self){
     if (self == NULL){
+        LOG_WAR("Received null pointer");
         return NULL;
     }
 
@@ -89,11 +96,13 @@ Sprite *init_Sprite(Sprite *self){
     self->frameHeight = 0;
     self->numFramesPerRow = 0;
 
+    LOG_INF("Sprite at %p initialized", self);
     return self;
 }
 
 Animation *init_Animation(Animation *self){
     if (self == NULL){
+        LOG_WAR("Received null pointer");
         return NULL;
     }
 
@@ -106,6 +115,8 @@ Animation *init_Animation(Animation *self){
     self->repeatLoop = NULL;
     self->frameNumber = NULL;
     self->frameStartTime = NULL;
+    
+    LOG_INF("Animation at %p initialized", self);
     return self;
 }
 
@@ -115,6 +126,7 @@ Animation *init_Animation(Animation *self){
 /////////////////////////////////////////////////
 void free_Image(Image *self){
     if (self == NULL){
+        LOG_WAR("Received null pointer");
         return;
     }
     
@@ -124,10 +136,12 @@ void free_Image(Image *self){
     }
     
     free(self);
+    LOG_INF("Image at %p freed", self);
 }
 
 void free_Sprite(Sprite *self){
     if (self == NULL){
+        LOG_WAR("Received null pointer");
         return;
     }
     
@@ -137,10 +151,12 @@ void free_Sprite(Sprite *self){
     self->frameHeight = 0;
     self->numFramesPerRow = 0;
     free(self);
+    LOG_INF("Sprite at %p freed", self);
 }
 
 void free_Animation(Animation *self){
     if (self == NULL){
+        LOG_WAR("Received null pointer");
         return;
     }
 
@@ -168,6 +184,7 @@ void free_Animation(Animation *self){
     self->currFrame = 0;
     
     free(self);
+    LOG_INF("Animation at %p freed", self);
 }
 
 
@@ -197,7 +214,11 @@ SDL_Surface *loadSurface(char *name){
             
             //Set all pixels of color R 0, G 0xFF, B 0xFF to be transparent
             SDL_SetColorKey(optimizedImage, SDL_TRUE, colorkey);
+        } else {
+            LOG_WAR("Failed to convert image at %s", name);
         }
+    } else {
+        LOG_WAR("Failed to load image at %s", name);
     }
 
     return optimizedImage;
@@ -211,8 +232,11 @@ SDL_Texture *loadTexture(char *name){
     if (surface != NULL){
         result = convertToTexture(surface);
         SDL_FreeSurface(surface);
+    } else {
+        LOG_WAR("SDL surface could not be loaded from %s", name);
     }
     
+    LOG_INF("Texture loaded from %s into %p", name, result);
     return result;
 }
 
@@ -235,8 +259,10 @@ Image *getEmptyImage(int width, int height){
     if (result->texture == NULL){
         free(result);
         result = NULL;
+        LOG_WAR("Failed to create empty texture");
     }
     
+    LOG_INF("Empty image created at %p", result);
     return result;
 }
 
@@ -252,14 +278,16 @@ Image *loadImage(char *name){
         result->isTexture = 1;
         SDL_QueryTexture(result->texture, NULL, NULL, &(result->width), &(result->height));
     } else {
-        printf("File not found: %s\n", name);
+        LOG_WAR("File not found: %s", name);
     }
     
+    LOG_INF("Image loaded from %s into %p", name, result);
     return result;
 }
 
 Animation *shallowCopyAnimation(Animation *original){
     if (original == NULL){
+        LOG_WAR("Received null pointer");
         return NULL;
     }
     
@@ -267,11 +295,13 @@ Animation *shallowCopyAnimation(Animation *original){
     Animation *result = malloc(sizeof(Animation));
     copyAnimation(original, result);
     
+    LOG_INF("Animation at %p shallow copied to %p", original, result);
     return result;
 }
 
 Animation *copyAnimation(Animation *source, Animation *dest){
     if (source == NULL || dest == NULL){
+        LOG_WAR("Received null pointer");
         return NULL;
     }
     
@@ -282,6 +312,7 @@ Animation *copyAnimation(Animation *source, Animation *dest){
     dest->numLoops = 0;
     dest->milliPassed = 0;
     
+    LOG_INF("Animation copied from %s to %s", source, dest);
     return dest;
 }
 

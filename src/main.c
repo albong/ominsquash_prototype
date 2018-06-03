@@ -106,9 +106,6 @@ void initializeOmnisquash(){
     
     //when the program exits, clean everything up
     atexit(stopSDL);
- 
-    LOG_INF("SDL started");
-    LOG_WAR("Not really a warning %d", 5);
 
     //initialization stuff
     initEntityCreateTable();
