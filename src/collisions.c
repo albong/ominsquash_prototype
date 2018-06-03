@@ -7,7 +7,7 @@
 #include "enemy.h"
 #include "door.h"
 
-#define square(x) (x*x)
+#define square(x) ((x)*(x))
 
 /////////////////////////////////////////////////
 // Declarations

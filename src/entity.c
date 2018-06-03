@@ -3,7 +3,7 @@
 #include <string.h>
 #include <stdio.h>
 
-#define square(x) (x*x)
+#define square(x) ((x)*(x))
 
 static void defaultActionEntity(void *e, int delta);
 static void defaultDrawEntity(Entity *self, double shiftX, double shiftY);
