@@ -5,6 +5,7 @@
 #include "area.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 
 static Entity *loadingIcon;
 static int areaIdToLoad = 0; //set to -1 to pop back to menu

@@ -5,6 +5,8 @@
 #include "../enemies/enemy_tables.h"
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 static size_t numLoadedEnemies = 0;
 static size_t *loadedEnemiesIds = NULL;
@@ -106,7 +108,7 @@ void loadEnemyData(size_t *ids, size_t count){
         loadedEnemies[i] = readEnemyFromFile(filename, NULL);
         
         //set the methods from the tables
-        assignEntityFunctionsById(ids[i], loadedEnemies[i]);
+        assignEnemyFunctionsById(ids[i], loadedEnemies[i]);
         
         //construct - doesn't really matter, since this gets shallow copied, except that destruct may expect things to be allocated
         if (loadedEnemies[i]->e.construct != NULL){

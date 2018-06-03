@@ -5,6 +5,7 @@
 #include "../weapons/weapon_tables.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 
 // static size_t numLoadedWeapons = 0;
 // static size_t *loadedWeaponIds = NULL;

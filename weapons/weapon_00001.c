@@ -4,6 +4,7 @@
 #include "../src/data_reader.h"
 #include "../src/weapon_creator.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 #define NUM_PROJECTILES 50
 

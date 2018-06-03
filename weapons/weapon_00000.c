@@ -2,6 +2,7 @@
 #include "../src/enemy.h"
 #include "../src/graphics.h"
 #include "../src/data_reader.h"
+#include <stdlib.h>
 
 static const int DAMAGE = 4;
 

@@ -4,6 +4,8 @@
 #include "SDL2/SDL_image.h"
 #include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 static SDL_Surface *loadSurface(char *name);
 static SDL_Texture *loadTexture(char *name);

@@ -3,6 +3,7 @@
 #include "constants.h"
 #include "player.h"
 #include "graphics.h"
+#include <stdlib.h>
 
 /////////////////////////////////////////////////
 // Loading/Unloading
