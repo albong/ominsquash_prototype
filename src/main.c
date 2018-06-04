@@ -17,6 +17,7 @@
 #include "load_screen.h"
 #include "menu.h"
 #include "logging.h"
+#include "sound.h"
 
 #include "../debug/hitbox_drawer.h"
 
@@ -108,6 +109,7 @@ void initializeOmnisquash(){
     atexit(stopSDL);
 
     //initialization stuff
+    initSound();
     initEntityCreateTable();
     initEnemyCreateTable();
     initWeaponCreateTable();
@@ -133,6 +135,7 @@ void terminateOmnisquash(){
     clearScreen();
     
     //free everything left
+    termSound();
     termEntityCreateTable();
     termEnemyCreateTable();
     termWeaponCreateTable();

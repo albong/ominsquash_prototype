@@ -52,6 +52,7 @@ def configure():
                 "-lSDL2 "\
                 "-lSDL2_image "\
                 "-lSDL2_ttf "\
+                "-lSDL2_mixer "\
                 "-m32 "\
                 "-g3"
         INCS = "-I\"C:/Program Files/Dev-Cpp/MinGW64/include\" "\
@@ -73,6 +74,7 @@ def configure():
                 "-lSDL2 "\
                 "-lSDL2_image "\
                 "-lSDL2_ttf "\
+                "-lSDL2_mixer "\
                 "-m32 "\
                 "-g3"
         INCS = "-I\"C:\\MinGW\\include\" "\
