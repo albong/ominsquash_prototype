@@ -45,20 +45,19 @@ def configure():
         PLATFORM = "CYGWIN"
         CC = "/cygdrive/c/Program\ Files/Dev-Cpp/MinGW64/bin/gcc.exe"
         LIBS = "-L\"C:/Program Files/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib32\" "\
-                "-L\"D:/SDL2-2.0.4/lib\" "\
+                "-L\"D:/SDL2-2.0.8/i686-w64-mingw32/lib\" "\
                 "-static-libgcc "\
                 "-lmingw32 "\
                 "-lSDL2main "\
                 "-lSDL2 "\
                 "-lSDL2_image "\
-                "-lSDL2_ttf "\
                 "-lSDL2_mixer "\
                 "-m32 "\
                 "-g3"
         INCS = "-I\"C:/Program Files/Dev-Cpp/MinGW64/include\" "\
                 "-I\"C:/Program Files/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include\" "\
                 "-I\"C:/Program Files/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include\" "\
-                "-I\"D:/SDL2-2.0.4/include/\""
+                "-I\"D:/SDL2-2.0.8/i686-w64-mingw32/include/\" "
         BIN = "omnisquash.exe"
     elif "windows" in platform.system().lower() or "win32" in platform.system().lower():
         #

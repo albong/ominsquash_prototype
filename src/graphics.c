@@ -24,19 +24,12 @@ static SDL_Surface *screen;
 // SDL
 /////////////////////////////////////////////////
 void initSDL(){
-    //Initialise SDL
+    //Initialise SDL - the audio extension library is initialized elsewhere, but we must flag here
 	if (SDL_Init(SDL_INIT_VIDEO|SDL_INIT_AUDIO) < 0){
 		LOG_ERR("Could not initialize SDL: %s", SDL_GetError());
 		exit(1);
 	}
     LOG_INF("SDL setup");
-	
-	//Initialise SDL_TTF 
-	if (TTF_Init() < 0){
-		LOG_ERR("Couldn't initialize SDL TTF: %s", SDL_GetError());
-		exit(1);
-	}
-    LOG_INF("SDL_ttf setup");
 	
 	//Open a screen
 //	screen = SDL_SetVideoMode(SCREEN_WIDTH, SCREEN_HEIGHT, 0, SDL_HWPALETTE|SDL_DOUBLEBUF);

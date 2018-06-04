@@ -2,7 +2,6 @@
 #define GRAPHICS_H
 
 #include "SDL2/SDL.h"
-#include "SDL2/SDL_ttf.h"
 
 #define MAX_SPRITES 100
 
@@ -44,7 +43,6 @@ typedef struct Animation{
 
 // Globals
 // static SDL_Surface *screen;
-static TTF_Font *font;
 
 // SDL 
 void initSDL();
