@@ -5,6 +5,8 @@
 #include "entity.h"
 #include "file_reader.h"
 #include "data_reader.h"
+#include "sound.h"
+#include "logging.h"
 #include "../lib/cJSON/cJSON.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -16,14 +18,16 @@ static size_t numButtons = 1;
 static size_t currButton = 0;
 static Entity buttons[NUM_BUTTONS_TITLE]; //PIZZA - hardcoded cause I don't see a way not to have the logic for the buttons hardcoded
 
+static Music *backgroundMusic;
+static Sound *buttonSound; //maybe this should be in the button entity?
+
 static int seenTitleOnce = 0; //If the flag to skip the title screen at load is on, you need this so that you can return to the title screen
 
 static int loadTitleScreenData();
 
 void initTitleScreen(){
     if (!loadTitleScreenData()){
-        printf("Error: failed to load title data\n");
-        fflush(stdout);
+        LOG_ERR("Failed to load title data");
     }
     
     setAnimationLoop(buttons[0].animation, 1, 0);
@@ -67,6 +71,11 @@ int doTitleScreen(unsigned delta){
         
         //set the current button's animation to the "down" state
         setAnimationLoop(buttons[currButton].animation, 1, 0);
+    }
+    
+    //play the music
+    if (!musicIsPlaying()){
+        playMusic(backgroundMusic);
     }
     
     //PIZZA - hardcoded to start a new game, since that's the only button right now
@@ -117,8 +126,7 @@ int loadTitleScreenData(){
     
     //check that the file was read correctly, then parse the data
     if (!root){
-        printf("%s: Error before: %s\n", filename, cJSON_GetErrorPtr());
-        fflush(stdout);
+        LOG_ERR("Error reading title data: %s", cJSON_GetErrorPtr());
         result = 0;
     } else {
         //load in the entity for the name of the game
@@ -133,8 +141,7 @@ int loadTitleScreenData(){
         arrLen = cJSON_GetArraySize(buttonsList);
         if (arrLen != numButtons){
             result = 0;
-            printf("Error in title.data: button quantities don't match.\n");
-            fflush(stdout);
+            LOG_ERR("Error in title.data: button quantities don't match");
         } else {
             for (i = 0; i < numButtons; i++){
                 temp = cJSON_GetArrayItem(buttonsList, i);
@@ -145,13 +152,21 @@ int loadTitleScreenData(){
                 buttons->y = cJSON_GetObjectItem(temp, "y")->valueint;
             }
         }
+
+        //read the sounds/music
+        id = cJSON_GetObjectItem(root, "background music")->valueint;
+        sprintf(filename, "data/music/%05d.music", id);
+        backgroundMusic = readMusicFromFile(filename, backgroundMusic);
+        id = cJSON_GetObjectItem(root, "button sound")->valueint;
+        sprintf(filename, "data/sound/%05d.sound", id);
+        buttonSound = readSoundFromFile(filename, buttonSound);
         
-        //free the csjon object
+        //free the cjson object
         cJSON_Delete(root);
     }
     
     //free the read file and return
     free(fileContents);
-    
+    LOG_INF("Title data file read");
     return result;
 }

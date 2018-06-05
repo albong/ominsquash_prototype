@@ -9,6 +9,8 @@
             "x" : 100,
             "y" : 150
         }
-    ]
+    ],
     
+    "button sound" : 0,
+    "background music" : 0
 }

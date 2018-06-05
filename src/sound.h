@@ -1,8 +1,20 @@
 #ifndef SOUND_H
 #define SOUND_H
 
+#include "SDL2/SDL_mixer.h"
+
+#define NUM_SOUND_CHANNELS 100
+
+//this is essentially the same as sound right now, but we could potentially have music be more complicated, with looping sections?
+typedef struct Music{
+    Mix_Music *music;
+    int volumeAdjust;
+} Music;
+
 typedef struct Sound{
-    int channel;
+    Mix_Chunk *chunk;
+    int volumeAdjust;
+    int channel; //cannot be used to check if playing, since the channel may have been given away
 } Sound;
 
 // OTOH, its probably better just to allocate like
@@ -28,22 +40,31 @@ typedef struct Sound{
 //and the adjusted volume causes the SDL volume to be 0 (which could happen if we
 //allowed arbitrary adjustments)
 
-//Initialization
+//PIZZA
+//we could store pointers to the currently playing music and sound to check if a particular sound/music is playing
+
+//Library setup/teardown
 void initSound();
 void termSound();
 
-//Loading
-Sound *loadSound(char *name);
+//Init
+Music *init_Music(Music *self);
+Sound *init_Sound(Sound *self);
 
-//Freeing
-void freeSound(Sound *self);
+//Freeing - note, these don't check if the music/sound is stopped
+void free_Music(Music *self);
+void free_Sound(Sound *self);
+
+//Loading - obscures SDL data
+Music *fillMusicFromFile(Music *self, char *name);
+Sound *fillSoundFromFile(Sound *self, char *name);
 
 //Music
-void setMusicVolume(int volume); //can be called while music is playing?
-void playMusic(Sound *music);
+void playMusic(Music *music);
 void stopMusic();
 void fadeOutMusic();
-void fadeToMusic(Sound *newMusic, int fadeDuration);
+void fadeToMusic(Music *newMusic, int fadeDuration);
+int musicIsPlaying();
 void increaseMusicVolume();
 void decreaseMusicVolume();
 
@@ -51,7 +72,8 @@ void decreaseMusicVolume();
 int playSound(Sound *sound, int volume);
 int repeatSound(Sound *sound, int volume, int numRepeats);
 void stopSound(Sound *sound);
-void increaseSoundsVolume();
-void decreaseSoundsVolume();
+void stopAllSound();
+void increaseSoundVolume();
+void decreaseSoundVolume();
 
 #endif

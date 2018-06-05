@@ -9,6 +9,8 @@
 #include "graphics.h"
 #include "entity_creator.h"
 #include "text.h"
+#include "sound.h"
+#include "logging.h"
 
 #include "../lib/cJSON/cJSON.h"
 #include <stdio.h>
@@ -633,3 +635,73 @@ Text *readTextFromFile(char *filename, Text *result){
     free(data);
     return result;
 }
+
+Music *readMusicFromFile(char *filename, Music *result){
+    if (result == NULL){
+        result = malloc(sizeof(Music));
+    }
+    init_Music(result);
+    
+    //read in the given file to a cJSON object
+    char *fileContents = readFileToCharStar(filename);
+    cJSON *root = cJSON_Parse(fileContents);
+    
+    //if the initial parsing failed, or the detailed parsing failed, print an error and free/NULL result
+    //otherwise free the cJSON root correctly
+    if (!root){
+        LOG_ERR("%s had a JSON error: %s", filename, cJSON_GetErrorPtr());
+        free(result);
+        result = NULL;
+    } else {
+        //open the sound file
+        char *musicFile = cJSON_GetObjectItem(root, "music file")->valuestring;
+        fillMusicFromFile(result, musicFile);
+        
+        //set the volume
+        result->volumeAdjust = cJSON_GetObjectItem(root, "volume adjust")->valueint;
+        
+        //free
+        cJSON_Delete(root);
+    }
+    
+    //free and return
+    free(fileContents);
+    LOG_INF("Music at %s read into %p", filename, result);
+    return result;
+}
+
+Sound *readSoundFromFile(char *filename, Sound *result){
+    if (result == NULL){
+        result = malloc(sizeof(Sound));
+    }
+    init_Sound(result);
+
+    //read in the given file to a cJSON object
+    char *fileContents = readFileToCharStar(filename);
+    cJSON *root = cJSON_Parse(fileContents);
+    
+    //if the initial parsing failed, or the detailed parsing failed, print an error and free/NULL result
+    //otherwise free the cJSON root correctly
+    if (!root){
+        LOG_ERR("%s had a JSON error: %s", filename, cJSON_GetErrorPtr());
+        free(result);
+        result = NULL;
+    } else {
+        //open the sound file
+        char *soundFile = cJSON_GetObjectItem(root, "sound file")->valuestring;
+        fillSoundFromFile(result, soundFile);
+        
+        //set the volume
+        result->volumeAdjust = cJSON_GetObjectItem(root, "volume adjust")->valueint;
+        
+        //free
+        cJSON_Delete(root);
+    }
+    
+    //free and return
+    free(fileContents);
+    LOG_INF("Sound at %s read into %p", filename, result);
+    return result;
+}
+
+
