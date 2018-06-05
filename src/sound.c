@@ -2,10 +2,13 @@
 #include "logging.h"
 #include "SDL2/SDL_mixer.h"
 #include <stdlib.h>
+#include <stddef.h>
 
 
 static int musicVolume = 10;
 static int soundVolume = 10;
+//SDL_mixer has callback things we could use, but then we'd need to give each sound a callback and blah blah
+static Sound *lastPlayedSounds[NUM_SOUND_CHANNELS];
 
 
 /////////////////////////////////////////////////
@@ -21,7 +24,14 @@ void initSound(){
         LOG_ERR("SDL_Mixer could not be started: %s", Mix_GetError());
         exit(1);
     }
+    
+    //setup stuff for all the different sounds we can play
+    size_t i;
+    for (i; i < NUM_SOUND_CHANNELS; i++){
+        lastPlayedSounds[i] = NULL;
+    }
     Mix_AllocateChannels(NUM_SOUND_CHANNELS); //from the documentation - this call never fails, only segfaults
+    
     LOG_INF("SDL_Mix setup");
 }
 
@@ -165,7 +175,7 @@ void playMusic(Music *music){
     
     //first set the volume
     Mix_VolumeMusic(musicVolume * 12 + music->volumeAdjust);
-    if (!Mix_PlayMusic(music->music, -1)){
+    if (Mix_PlayMusic(music->music, -1) != -1){
         LOG_INF("Music %p playing", music);
     } else {
         LOG_ERR("Failed to play music %p: %s", music, Mix_GetError());
@@ -177,8 +187,44 @@ void stopMusic(){
     LOG_INF("Music stopped");
 }
 
+void fadeInMusic(Music *music, int fadeDuration){
+    if (music == NULL){
+        LOG_WAR("Received null pointer");
+        return;
+    }
+
+    //NOTE: if you try to fade in while something is fading in, the volume just goes to max
+    if (Mix_FadingMusic() == MIX_FADING_IN){
+        LOG_WAR("Trying to fade in %p while something else is fading in", music);
+    }
+    
+    //first set the volume
+    Mix_VolumeMusic(musicVolume * 12 + music->volumeAdjust);
+    if (Mix_FadeInMusic(music->music, -1, fadeDuration) != -1){
+        LOG_INF("Music %p fading in over %d milliseconds", music, fadeDuration);
+    } else {
+        LOG_ERR("Failed to fade in music %p: %s", music, Mix_GetError());
+    }
+}
+
+void fadeOutMusic(int fadeDuration){
+    if (Mix_FadeOutMusic(fadeDuration) != 0){ //yo why doesn't this return match the others?
+        LOG_INF("Music fading out over %d milliseconds", fadeDuration);
+    } else {
+        LOG_ERR("Failed to fade out music: %s", Mix_GetError());
+    }
+}
+
 int musicIsPlaying(){
     return Mix_PlayingMusic(); //0 if not, 1 if yes
+}
+
+int musicIsFadingIn(){
+    return (Mix_FadingMusic() == MIX_FADING_IN);
+}
+
+int musicIsFadingOut(){
+    return (Mix_FadingMusic() == MIX_FADING_OUT);
 }
 
 void increaseMusicVolume(){
@@ -207,10 +253,51 @@ int playSound(Sound *sound){
     sound->channel = Mix_PlayChannel(-1, sound->chunk, 0);
     if (sound->channel != -1){
         Mix_Volume(sound->channel, soundVolume * 12 + sound->volumeAdjust);
+        lastPlayedSounds[sound->channel] = sound;
         LOG_INF("Sound %p playing", sound);
     } else {
         LOG_ERR("Failed to play sound %p: %s", sound, Mix_GetError());
     }
+}
+
+int repeatSound(Sound *sound, int numRepeats){
+    if (sound == NULL){
+        LOG_WAR("Received null pointer");
+        return;
+    }
+    
+    //play music and adjust volume
+    sound->channel = Mix_PlayChannel(-1, sound->chunk, numRepeats);
+    if (sound->channel != -1){
+        Mix_Volume(sound->channel, soundVolume * 12 + sound->volumeAdjust);
+        lastPlayedSounds[sound->channel] = sound;
+        LOG_INF("Sound %p playing with %d repeats", sound, numRepeats);
+    } else {
+        LOG_ERR("Failed to play sound %p: %s", sound, Mix_GetError());
+    }
+}
+
+void stopSound(Sound *sound){
+    if (sound == NULL){
+        LOG_WAR("Received null pointer");
+        return;
+    }
+    
+    //check if this sound is still being played
+    if (lastPlayedSounds[sound->channel] == sound){
+        Mix_HaltChannel(sound->channel);
+        LOG_INF("The sound %p was stopped", sound);
+    } else {
+        LOG_WAR("The sound %p was not playing", sound);
+    }
+}
+
+void stopAllSound(){
+    int i;
+    for (i = 0; i < NUM_SOUND_CHANNELS; i++){
+        Mix_HaltChannel(i);
+    }
+    LOG_INF("All sounds stopped");
 }
 
 void increaseSoundVolume(){

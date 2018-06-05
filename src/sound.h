@@ -66,9 +66,12 @@ Sound *fillSoundFromFile(Sound *self, char *name);
 //Music
 void playMusic(Music *music);
 void stopMusic();
-void fadeOutMusic();
-void fadeToMusic(Music *newMusic, int fadeDuration);
+void fadeInMusic(Music *music, int fadeDuration); //duration is in milliseconds
+void fadeOutMusic(int fadeDuration);
+// void fadeToMusic(Music *newMusic, int fadeDuration); //SDL_Mixer DOES NOT DO CROSSFADES
 int musicIsPlaying();
+int musicIsFadingIn();
+int musicIsFadingOut();
 void increaseMusicVolume();
 void decreaseMusicVolume();
 
