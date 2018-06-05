@@ -7,6 +7,7 @@
 static int musicVolume = 10;
 static int soundVolume = 10;
 
+
 /////////////////////////////////////////////////
 // Library setup/teardown
 /////////////////////////////////////////////////
@@ -157,10 +158,18 @@ Sound *fillSoundFromFile(Sound *self, char *name){
 // Music
 /////////////////////////////////////////////////
 void playMusic(Music *music){
+    if (music == NULL){
+        LOG_WAR("Received null pointer");
+        return;
+    }
+    
     //first set the volume
     Mix_VolumeMusic(musicVolume * 12 + music->volumeAdjust);
-    Mix_PlayMusic(music->music, -1);
-    LOG_INF("Music %p playing", music);
+    if (!Mix_PlayMusic(music->music, -1)){
+        LOG_INF("Music %p playing", music);
+    } else {
+        LOG_ERR("Failed to play music %p: %s", music, Mix_GetError());
+    }
 }
 
 void stopMusic(){
@@ -188,7 +197,33 @@ void decreaseMusicVolume(){
 /////////////////////////////////////////////////
 // Sounds
 /////////////////////////////////////////////////
+int playSound(Sound *sound){
+    if (sound == NULL){
+        LOG_WAR("Received null pointer");
+        return;
+    }
+    
+    //play music and adjust volume
+    sound->channel = Mix_PlayChannel(-1, sound->chunk, 0);
+    if (sound->channel != -1){
+        Mix_Volume(sound->channel, soundVolume * 12 + sound->volumeAdjust);
+        LOG_INF("Sound %p playing", sound);
+    } else {
+        LOG_ERR("Failed to play sound %p: %s", sound, Mix_GetError());
+    }
+}
 
+void increaseSoundVolume(){
+    if (soundVolume < 10){
+        soundVolume++;
+    }
+}
+
+void decreaseSoundVolume(){
+    if (soundVolume > 0){
+        soundVolume--;
+    }
+}
 
 
 

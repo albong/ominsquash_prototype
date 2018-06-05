@@ -39,6 +39,9 @@ typedef struct Sound{
 //unintentionally having no volume for something when the menu volume is set to 1,
 //and the adjusted volume causes the SDL volume to be 0 (which could happen if we
 //allowed arbitrary adjustments)
+//
+//I'm worried about the performance cost of setting the volume so often though?  maybe
+//we should test to see how it impacts, or examine the source?
 
 //PIZZA
 //we could store pointers to the currently playing music and sound to check if a particular sound/music is playing
@@ -69,8 +72,8 @@ void increaseMusicVolume();
 void decreaseMusicVolume();
 
 //Sounds
-int playSound(Sound *sound, int volume);
-int repeatSound(Sound *sound, int volume, int numRepeats);
+int playSound(Sound *sound);
+int repeatSound(Sound *sound, int numRepeats);
 void stopSound(Sound *sound);
 void stopAllSound();
 void increaseSoundVolume();

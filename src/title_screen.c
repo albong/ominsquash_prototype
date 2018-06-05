@@ -62,6 +62,9 @@ int doTitleScreen(unsigned delta){
         
         //set the current button's animation to the "down" state
         setAnimationLoop(buttons[currButton].animation, 1, 0);
+        
+        //play a noise
+        playSound(buttonSound);
     } else if (checkAndConsumeInput(DOWN_BUTTON)){
         //set the current button's animation to the "up" state
         setAnimationLoop(buttons[currButton].animation, 0, 0);
@@ -71,6 +74,9 @@ int doTitleScreen(unsigned delta){
         
         //set the current button's animation to the "down" state
         setAnimationLoop(buttons[currButton].animation, 1, 0);
+        
+        //play a noise
+        playSound(buttonSound);
     }
     
     //play the music
