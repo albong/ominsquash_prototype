@@ -1,0 +1,8 @@
+How to fix doors:
+
+Have the door struct check a flag in the flag table to see if it should be open
+or not.  Make the flag number part of the struct.  Doors with more complicated
+triggers can just have an array of flags that must all be 1 to be open.
+
+For locked doors, the interact part of the door will check for an appropriate
+key, and then set the flag that the door should be open.
