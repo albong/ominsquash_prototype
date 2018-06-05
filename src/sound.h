@@ -58,7 +58,8 @@ Sound *init_Sound(Sound *self);
 void free_Music(Music *self);
 void free_Sound(Sound *self);
 
-//Loading - obscures SDL data
+//Loading
+//Its inconvenient to have an intermediary type like "Image" in graphics, this obscures SDL from data_reader
 Music *fillMusicFromFile(Music *self, char *name);
 Sound *fillSoundFromFile(Sound *self, char *name);
 
