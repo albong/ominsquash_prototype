@@ -1,0 +1,11 @@
+Do we want to have a table of functions for flags also?  Like, when a flag is 
+set/unset, we call this function?
+
+I suspect that'd complicate things a bit with flags, but it might simplify the
+logic necessary for other objects.  For example, suppose there are several
+conditions needed to unlock a door; if for each related flag we have a function
+check that the door's conditions are met, then we can just set the flag that the
+door is open, without having to give the door any specified logic.
+
+This could also be useful for playing cutscenes or triggering other behavior
+as the player progresses.

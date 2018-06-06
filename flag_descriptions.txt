@@ -1,0 +1,11 @@
+0:
+    A test flag just to show how to format this file.  This file is descriptive
+    and intended for humans, it will not be read by the game engine.  Its just
+    that when you've got a jillion flags getting set all left and right, it's
+    better to have some sort of document where you say what each flag is and
+    does.  So please put descriptions of each flag and what flags each might be
+    related to in here.  Try to say more than "door flag" cause there's gonna be
+    a buttload of those.  Writing more here will make your life easier later.
+    
+1:
+    Another test flag.  Put some space in between these suckers.

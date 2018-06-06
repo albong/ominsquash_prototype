@@ -18,6 +18,7 @@
 #include "menu.h"
 #include "logging.h"
 #include "sound.h"
+#include "flags.h"
 
 #include "../debug/hitbox_drawer.h"
 
@@ -123,6 +124,7 @@ void initializeOmnisquash(){
     initTitleScreen();
     initLoadScreen();
     initAreaTransition();
+    initGlobalFlagTable();
 
     //set the current font stuff
     configureTextboxForFont(loadFontForLanguage("en"));
@@ -148,6 +150,7 @@ void terminateOmnisquash(){
     termInterface();
     termTitleScreen();
     termLoadScreen();
+    termGlobalFlagTable();
     
     //pizza - need to track and free fonts
     
