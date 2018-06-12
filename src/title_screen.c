@@ -90,6 +90,7 @@ int doTitleScreen(unsigned delta){
         seenTitleOnce = 1;
         result = 1;
         consumeAllInput();
+        stopMusic();
     } else if (checkInput(ESCAPE_BUTTON)){
         result = -1;
     }
