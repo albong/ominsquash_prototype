@@ -8,6 +8,17 @@
 #include "text.h"
 #include "sound.h"
 
+// NOTE: It is unsafe to pass in memory that cannot be freed to these functions.
+// If the file read or JSON parsing fails, then the methods attempt to free the
+// "result" memory.  This is fine (and desired) in the case that result is NULL
+// or is allocated prior to passing in.  But if the memory cannot be freed, either
+// because it is part of an array, or because you have passed the address to static
+// memory, there will be problems.
+//
+// Probably we should investigate whether or not this should continue - adding
+// a flag to only free if the memory was also allocated in the function is
+// trivial, but we'd need to check where all of these are called.
+
 Area *readAreaFromFile(char *filename, Area *result);
 Entity *readEntityFromFile(char *filename, Entity *result);
 Enemy *readEnemyFromFile(char *filename, Enemy *result);
