@@ -7,6 +7,7 @@
 #include "hitbox.h"
 #include "text.h"
 #include "sound.h"
+#include "cutscene.h"
 
 // NOTE: It is unsafe to pass in memory that cannot be freed to these functions.
 // If the file read or JSON parsing fails, then the methods attempt to free the
@@ -29,5 +30,6 @@ int readAnimationIntoEntity(Entity *result, int animationId); //returns 0 on fai
 Text *readTextFromFile(char *filename, Text *result);
 Music *readMusicFromFile(char *filename, Music *result);
 Sound *readSoundFromFile(char *filename, Sound *result);
+Cutscene *readCutsceneFromFile(char *filename, Cutscene *result);
 
 #endif

@@ -1,0 +1,71 @@
+{
+    "show current room" : [
+        {
+            "from time" : 0,
+            "to time" : 100
+        },
+        ...
+    ],
+    
+    "player tweens" : [
+        {
+            "draw" : true,
+            "start x" : 0.0,
+            "start y" : 0.0,
+            "is moving" : true,
+            "end x" : 10,
+            "end y" : 10,
+            "animation loop" : 1,
+            "duration" : 1000
+        },
+        ...
+    ],
+    
+    "entity animations" : [
+        {
+            "entity id" : 0,
+            "tweens" : [
+                {
+                    "draw" : true,
+                    "start x" : 0.0,
+                    "start y" : 0.0,
+                    "is moving" : true,
+                    "end x" : 10,
+                    "end y" : 10,
+                    "animation loop" : 1,
+                    "duration" : 1000
+                },
+                ...
+            ]
+        },
+        ...
+    ],
+    
+    "sounds" : [
+        {
+            "sound id" : 0,
+            "play at time" : 1000, //may not play at exactly that time
+            "number of repeats" : 0
+        },
+        ...
+    ],
+    
+    "music" : [
+        {
+            "music id" : 0,
+            "start at time" : 500,
+            "fade in duration" : 100,
+            "end at time" : 1000,
+            "fade out duration" : 100
+        },
+        ...
+    ],
+    
+    "text" : [
+        {
+            "text id" : 0,
+            "show at time" : 500
+        },
+        ...
+    ]
+}

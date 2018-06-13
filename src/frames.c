@@ -13,6 +13,7 @@
 #include "screen_wipe.h"
 #include "data_reader.h"
 #include "interface.h"
+#include "cutscene.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -24,6 +25,7 @@ static Frame *textboxFrame;
 static Frame *titleScreenFrame;
 static Frame *loadScreenFrame;
 static Frame *screenWipeFrame;
+static Frame *cutsceneFrame;
 static int popToMenu = 0;
 
 //methods
@@ -40,6 +42,8 @@ static int loadScreenFrameLogic(unsigned delta);
 static void loadScreenFrameDraw();
 static int screenWipeFrameLogic(unsigned delta);
 static void screenWipeFrameDraw();
+static int cutsceneFrameLogic(unsigned delta);
+static void cutsceneFrameDraw();
 
 void initFrames(){
     gameFrame = allocateFrame(&gameFrameLogic, &gameFrameDraw, 1);
@@ -48,6 +52,7 @@ void initFrames(){
     titleScreenFrame = allocateFrame(&titleScreenFrameLogic, &titleScreenFrameDraw, 0);
     loadScreenFrame = allocateFrame(&loadScreenFrameLogic, &loadScreenFrameDraw, 0);
     screenWipeFrame = allocateFrame(&screenWipeFrameLogic, &screenWipeFrameDraw, 0);
+    cutsceneFrame = allocateFrame(&cutsceneFrameLogic, &cutsceneFrameDraw, 1);
     
     _currentFrame = titleScreenFrame;
 }
@@ -227,6 +232,20 @@ int screenWipeFrameLogic(unsigned delta){
 
 void screenWipeFrameDraw(){
     drawScreenWipe();
+}
+
+static int cutsceneFrameLogic(unsigned delta){
+    //if true, cutscene is done
+    if (doCutscene(delta)){
+        consumeAllInput();
+        return -1;
+    } else {    
+        return 0;
+    }
+}
+
+static void cutsceneFrameDraw(){
+    drawCutscene();
 }
 
 

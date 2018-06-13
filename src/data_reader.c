@@ -11,6 +11,7 @@
 #include "text.h"
 #include "sound.h"
 #include "logging.h"
+#include "cutscene.h"
 
 #include "../lib/cJSON/cJSON.h"
 #include <stdio.h>
@@ -28,6 +29,7 @@ static int fillEnemyFromJson(cJSON *root, Enemy *result);
 static int fillSpriteFromJson(cJSON *root, Sprite *result);
 static int fillAnimationFromJson(cJSON *root, Animation *result);
 static int fillHitboxesFromJson(cJSON *root, Hitboxes *result);
+static int fillLinearTweenFromJson(cJSON *root, LinearTween *result);
 
 Area *readAreaFromFile(char *filename, Area *result){
     //init the area
@@ -702,6 +704,147 @@ Sound *readSoundFromFile(char *filename, Sound *result){
     free(fileContents);
     LOG_INF("Sound at %s read into %p", filename, result);
     return result;
+}
+
+Cutscene *readCutsceneFromFile(char *filename, Cutscene *result){
+    if (result == NULL){
+        result = malloc(sizeof(Cutscene));
+    }
+    init_Cutscene(result);
+    
+    //read in the given file to a cJSON object
+    char *fileContents = readFileToCharStar(filename);
+    cJSON *root = cJSON_Parse(fileContents);
+    
+    //if the initial parsing failed, or the detailed parsing failed, print an error and free/NULL result
+    //otherwise free the cJSON root correctly
+    if (!root){
+        LOG_ERR("%s had a JSON error: %s", filename, cJSON_GetErrorPtr());
+        free(result);
+        result = NULL;
+    } else {
+        cJSON *array, *arrayItem, *tweenArray;
+        size_t i, j;
+        char dataFilename[FILENAME_BUFFER_SIZE];
+        
+        //player tweens
+        array = cJSON_GetObjectItem(root, "player tweens");
+        result->numPlayerTweens = cJSON_GetArraySize(array);
+        result->playerTweens = malloc(sizeof(LinearTween *) * result->numPlayerTweens);
+        for (i = 0; i < result->numPlayerTweens; i++){
+            result->playerTweens[i] = init_LinearTween(malloc(sizeof(LinearTween)));
+            fillLinearTweenFromJson(cJSON_GetArrayItem(array, i), result->playerTweens[i]);
+        }
+        
+        //entities
+        array = cJSON_GetObjectItem(root, "entity animations");
+        result->numEntities = cJSON_GetArraySize(array);
+        result->entities = malloc(sizeof(Entity *) * result->numEntities);
+        result->numEntityTweens = malloc(sizeof(int) * result->numEntities);
+        result->entityTweens = malloc(sizeof(LinearTween **) * result->numEntities);
+        for (i = 0; i < result->numEntities; i++){
+            arrayItem = cJSON_GetArrayItem(array, i);
+            tweenArray = cJSON_GetObjectItem(arrayItem, "tweens");
+            
+            //read the entity from file
+            sprintf(dataFilename, "data/entities/%05d.entity", cJSON_GetObjectItem(arrayItem, "entity id")->valueint);
+            result->entities[i] = readEntityFromFile(dataFilename, malloc(sizeof(Entity)));
+            
+            //gotta fill an array of pointers for each entity
+            result->numEntityTweens[i] = cJSON_GetArraySize(tweenArray);
+            result->entityTweens[i] = malloc(sizeof(LinearTween *) * result->numEntityTweens[i]);
+            for (j = 0; j < result->numEntityTweens[i]; i++){
+                result->entityTweens[i][j] = init_LinearTween(malloc(sizeof(LinearTween)));
+                fillLinearTweenFromJson(cJSON_GetArrayItem(tweenArray, j), result->entityTweens[i][j]);
+            }
+        }
+        
+        //sounds
+        array = cJSON_GetObjectItem(root, "sounds");
+        result->numSounds = cJSON_GetArraySize(array);
+        result->sounds = malloc(sizeof(Sound *) * result->numSounds);
+        result->timeToPlay = malloc(sizeof(int) * result->numSounds);
+        result->numRepeats = malloc(sizeof(int) * result->numSounds);
+        for (i = 0; i < result->numSounds; i++){
+            arrayItem = cJSON_GetArrayItem(array, i);
+            
+            //read the sound file
+            sprintf(dataFilename, "data/sound/%05d.sound", cJSON_GetObjectItem(arrayItem, "sound id")->valueint);
+            result->sounds[i] = readSoundFromFile(dataFilename, malloc(sizeof(Sound)));
+            
+            //fill the other data
+            result->timeToPlay[i] = cJSON_GetObjectItem(arrayItem, "play at time")->valueint;
+            result->numRepeats[i] = cJSON_GetObjectItem(arrayItem, "number of repeats")->valueint;
+        }
+        
+        //music
+        array = cJSON_GetObjectItem(root, "music");
+        result->numMusic = cJSON_GetArraySize(array);
+        result->music = malloc(sizeof(Music *) * result->numMusic);
+        result->musicStartTime = malloc(sizeof(int) * result->numMusic);
+        result->musicEndTime = malloc(sizeof(int) * result->numMusic);
+        result->fadeInDuration = malloc(sizeof(int) * result->numMusic);
+        result->fadeOutDuration = malloc(sizeof(int) * result->numMusic);
+        for (i = 0; i < result->numMusic; i++){
+            arrayItem = cJSON_GetArrayItem(array, i);
+            
+            //read the music file
+            sprintf(dataFilename, "data/music/%05d.music", cJSON_GetObjectItem(arrayItem, "music id")->valueint);
+            result->music[i] = readMusicFromFile(dataFilename, malloc(sizeof(Music)));
+            
+            //fill the other data
+            result->musicStartTime[i] = cJSON_GetObjectItem(arrayItem, "start at time")->valueint;
+            result->musicEndTime[i] = cJSON_GetObjectItem(arrayItem, "end at time")->valueint;
+            result->fadeInDuration[i] = cJSON_GetObjectItem(arrayItem, "fade in duration")->valueint;
+            result->fadeOutDuration[i] = cJSON_GetObjectItem(arrayItem, "fade out duration")->valueint;
+        }
+        
+        //text
+        array = cJSON_GetObjectItem(root, "text");
+        result->numText = cJSON_GetArraySize(array);
+        result->text = malloc(sizeof(Text *) * result->numText);
+        result->showTextAtTime = malloc(sizeof(int) * result->numText);
+        for (i = 0; i < result->numText; i++){
+            arrayItem = cJSON_GetArrayItem(array, i);
+            
+            //read the text file in the correct language
+            sprintf(dataFilename, "data/text/%s/%05d.text", getCurrentLanguageString(), cJSON_GetObjectItem(arrayItem, "text id")->valueint);
+            result->text[i] = readTextFromFile(dataFilename, malloc(sizeof(Text)));
+            
+            //fill the other data
+            result->showTextAtTime[i] = cJSON_GetObjectItem(arrayItem, "show at time")->valueint;
+        }
+        
+        //free
+        cJSON_Delete(root);
+    }
+    
+    //free and return
+    free(fileContents);
+    LOG_INF("Cutscene at %s read into %p", filename, result);
+    return result;
+}
+
+int fillLinearTweenFromJson(cJSON *root, LinearTween *result){
+    if (cJSON_GetObjectItem(root, "draw")->type == cJSON_True){
+        result->draw = 1;
+    }
+    
+    result->startX = cJSON_GetObjectItem(root, "start x")->valuedouble;
+    result->startY = cJSON_GetObjectItem(root, "start y")->valuedouble;
+    
+    if (cJSON_GetObjectItem(root, "is moving")->type == cJSON_True){
+        result->isMoving = 1;
+    }
+    
+    result->endX = cJSON_GetObjectItem(root, "end x")->valuedouble;
+    result->endY = cJSON_GetObjectItem(root, "end y")->valuedouble;
+    
+    result->animationLoop = cJSON_GetObjectItem(root, "animation loop")->valueint;
+    
+    result->moveDuration = cJSON_GetObjectItem(root, "duration")->valueint;
+    
+    return 1;
 }
 
 
