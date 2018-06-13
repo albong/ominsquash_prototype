@@ -9,6 +9,13 @@ typedef struct Text {
     size_t length;
 } Text;
 
+typedef enum {
+    EN, KO
+} LanguageCode;
+
 Text *init_Text(Text *self);
+void free_Text(Text *self);
+void setCurrentLanguage(LanguageCode code);
+const char *getCurrentLanguageString();
 
 #endif

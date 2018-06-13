@@ -19,6 +19,7 @@
 #include "logging.h"
 #include "sound.h"
 #include "flags.h"
+#include "text.h"
 
 #include "../debug/hitbox_drawer.h"
 
@@ -127,6 +128,7 @@ void initializeOmnisquash(){
     initGlobalFlagTable();
 
     //set the current font stuff
+    setCurrentLanguage(EN);
     configureTextboxForFont(loadFontForLanguage("en"));
     // configureTextboxForFont(loadFontForLanguage("ko"));
     
