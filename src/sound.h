@@ -76,8 +76,8 @@ void increaseMusicVolume();
 void decreaseMusicVolume();
 
 //Sounds
-int playSound(Sound *sound);
-int repeatSound(Sound *sound, int numRepeats);
+void playSound(Sound *sound);
+void repeatSound(Sound *sound, int numRepeats);
 void stopSound(Sound *sound);
 void stopAllSound();
 void increaseSoundVolume();

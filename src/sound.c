@@ -114,7 +114,7 @@ void free_Sound(Sound *self){
 Music *fillMusicFromFile(Music *self, char *name){
     if (self == NULL){
         LOG_WAR("Received null pointer");
-        return;
+        return NULL;
     }
     
     //check for leaks
@@ -140,7 +140,7 @@ Music *fillMusicFromFile(Music *self, char *name){
 Sound *fillSoundFromFile(Sound *self, char *name){
     if (self == NULL || name == NULL){
         LOG_WAR("Received null pointer");
-        return;
+        return NULL;
     }
     
     //check for leaks
@@ -243,7 +243,7 @@ void decreaseMusicVolume(){
 /////////////////////////////////////////////////
 // Sounds
 /////////////////////////////////////////////////
-int playSound(Sound *sound){
+void playSound(Sound *sound){
     if (sound == NULL){
         LOG_WAR("Received null pointer");
         return;
@@ -260,7 +260,7 @@ int playSound(Sound *sound){
     }
 }
 
-int repeatSound(Sound *sound, int numRepeats){
+void repeatSound(Sound *sound, int numRepeats){
     if (sound == NULL){
         LOG_WAR("Received null pointer");
         return;
