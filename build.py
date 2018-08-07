@@ -43,7 +43,7 @@ def configure():
     #determine the platform and set things accordingly
     if "cygwin" in platform.system().lower():
         PLATFORM = "CYGWIN"
-        CC = "/cygdrive/c/Program\ Files/Dev-Cpp/MinGW64/bin/gcc.exe"
+        CC = "/cygdrive/c/MinGW/bin/gcc.exe"
         LIBS = "-L\"C:/Program Files/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib32\" "\
                 "-L\"D:/SDL2-2.0.8/i686-w64-mingw32/lib\" "\
                 "-static-libgcc "\
