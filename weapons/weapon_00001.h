@@ -5,7 +5,7 @@
 #include "../src/Weapon.h"
 
 //static void loadSwordSprite();
-Weapon *weapon_create_00001();
+Weapon *weapon_create_00001(Weapon *self);
 //static void createHitboxes(Weapon *w);
 //static void doSword(void *self, int delta);
 //static void collideWithSword(Weapon *self, void *o, int collCode, CollisionType t);

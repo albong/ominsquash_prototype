@@ -29,6 +29,5 @@ We def need to ask Vince about this idea
 
 void initInventory();
 void termInventory();
-void addWeaponToInventory(Weapon *w);
 
 #endif

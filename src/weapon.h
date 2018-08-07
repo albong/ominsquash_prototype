@@ -3,43 +3,33 @@
 
 #include "entity.h"
 
-//should have two load methods - one for loading all of the player's weapons, and the other for loading the weapons for an area
-//in actuality we probably can add player weapons one at a time since it won't happen too often, so extending the loaded weapon list is not so costly
-
-//do we need two sets of weapons - one for the player (owner is player) and one for enemies (owner is enemy)?
-
-
 ///////
 // We should have damage types - not in a rock paper scissors way a la pokemon, more a way for enemies to indicate their vulnerability to types
 // makes it easy for weapons to determine if they do damage to an enemy
 ///////
 
-
 // Structs
 typedef struct Weapon {
     Entity e;
-    Entity *owner;
     int totalDelta;
     int cancelled;
     void (*collide)(struct Weapon *self, void *o, int collCode, CollisionType type);
     Entity *icon;
+    int playerHas;
 } Weapon;
 
-typedef struct WeaponList {
-    int num;
-    Weapon **weapons; //array
-} WeaponList;
-
 // Globals
-WeaponList _player_weapons;
-WeaponList _enemy_weapons;
+size_t _num_player_weapons;
+Weapon *_player_weapons; //array
 
 // Loading/Unloading
 Weapon *init_Weapon(Weapon *self);
+void term_Weapon(Weapon *self);
+void free_Weapon(Weapon *self);
 void initWeaponLists();
 void termWeaponLists();
 
 // Access
-void addPlayerWeapon(Weapon *w);
+void givePlayerWeapon(int id);
 
 #endif

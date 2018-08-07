@@ -123,23 +123,29 @@ int doMenu(unsigned delta){
     }
     
     //update the weapon icon displays
-    for (i = 0; i < _player_weapons.num; i++){
-        //if we're able to be displayed, display
-        if (i >= startPositionInWeaponList && i < (startPositionInWeaponList + numIconsPerRow*numIconsPerColumn)){
-            _player_weapons.weapons[i]->icon->active = 1;
-            _player_weapons.weapons[i]->icon->x = ((i-startPositionInWeaponList) % numIconsPerRow)*(iconSize + 2*iconBufferSize) + weaponIconOffsetX + iconBufferSize;
-            _player_weapons.weapons[i]->icon->y = ((i-startPositionInWeaponList) / numIconsPerRow)*(iconSize + 2*iconBufferSize) + weaponIconOffsetY + iconBufferSize;
-            
-            //if the selector is overtop of us, play animation, otherwise reset animation and don't pass delta
-            if (currentSection == WEAPON_MENU){
-                if (currX + (currY * numIconsPerRow) == i - startPositionInWeaponList){
-                    _player_weapons.weapons[i]->icon->action(_player_weapons.weapons[i]->icon, delta);
-                } else {
-                    setAnimationLoop(_player_weapons.weapons[i]->icon->animation, 0, 1);
+    int numOwnedWeapons = 0;
+    for (i = 0; i < _num_player_weapons; i++){
+        if (_player_weapons[i].playerHas){
+            //if we're able to be displayed, display
+            if (numOwnedWeapons >= startPositionInWeaponList && numOwnedWeapons < (startPositionInWeaponList + numIconsPerRow*numIconsPerColumn)){
+                _player_weapons[i].icon->active = 1;
+                _player_weapons[i].icon->x = ((numOwnedWeapons-startPositionInWeaponList) % numIconsPerRow)*(iconSize + 2*iconBufferSize) + weaponIconOffsetX + iconBufferSize;
+                _player_weapons[i].icon->y = ((numOwnedWeapons-startPositionInWeaponList) / numIconsPerRow)*(iconSize + 2*iconBufferSize) + weaponIconOffsetY + iconBufferSize;
+                
+                //if the selector is overtop of us, play animation, otherwise reset animation and don't pass delta
+                if (currentSection == WEAPON_MENU){
+                    if (currX + (currY * numIconsPerRow) == numOwnedWeapons - startPositionInWeaponList){
+                        _player_weapons[i].icon->action(_player_weapons[i].icon, delta);
+                    } else {
+                        setAnimationLoop(_player_weapons[i].icon->animation, 0, 1);
+                    }
                 }
+            } else {
+                _player_weapons[i].icon->active = 0;
             }
-        } else {
-            _player_weapons.weapons[i]->icon->active = 0;
+            
+            //increment the number of owned weapons
+            numOwnedWeapons++;
         }
     }
     
@@ -167,8 +173,10 @@ void drawMenu(){
     menuEntity->draw(menuEntity, menuOffsetX, menuOffsetY);
     
     //draw the weapon icons
-    for (i = 0; i < _player_weapons.num; i++){
-        _player_weapons.weapons[i]->icon->draw(_player_weapons.weapons[i]->icon, menuOffsetX, menuOffsetY);
+    for (i = 0; i < _num_player_weapons; i++){
+        if (_player_weapons[i].playerHas && _player_weapons[i].icon->active){
+            _player_weapons[i].icon->draw(_player_weapons[i].icon, menuOffsetX, menuOffsetY);
+        }
     }
     
     //draw the buttons

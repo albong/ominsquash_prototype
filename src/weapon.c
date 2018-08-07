@@ -1,53 +1,102 @@
 #include "weapon.h"
+#include "../weapons/weapon_tables.h"
+#include "entity.h"
+#include "logging.h"
 #include <stdlib.h>
+
 
 /////////////////////////////////////////////////
 // Loading / Unloading
 /////////////////////////////////////////////////
 Weapon *init_Weapon(Weapon *self){
     if (self == NULL){
+        LOG_WAR("Received null pointer initializing weapon");
         return NULL;
     }
-
     init_Entity((Entity *)self);
-    self->owner = NULL;
+
     self->totalDelta = 0;
     self->cancelled = 0;
     self->collide = NULL;
     self->icon = NULL;
+    self->playerHas = 0;
+    
+    LOG_INF("Weapon at %p initialized", self);
     return self;
 }
 
-void initWeaponLists(){
-    _player_weapons.num = 0;
-    _enemy_weapons.num = 0;
+void term_Weapon(Weapon *self){
+    if (self == NULL){
+        LOG_WAR("Received null pointer terminating weapon");
+        return;
+    }
+
+    self->totalDelta = 0;
+    self->cancelled = 0;
+    self->collide = NULL;
+    free_Entity(self->icon);
+    self->playerHas = 0;
     
-    _player_weapons.weapons = malloc(0);
-    _enemy_weapons.weapons = malloc(0);
+    LOG_INF("Weapon at %p terminated", self);
+}
+
+void free_Weapon(Weapon *self){
+    if (self == NULL){
+        LOG_WAR("Received null pointer freeing weapon");
+        return;
+    }
+    
+    term_Weapon(self);
+    free(self);
+    LOG_INF("Weapon at %p freed", self);
+}
+
+void initWeaponLists(){
+    //load in the function pointers
+    weapon_create_ptr_t *weaponCreateTable; //array
+    weapon_collide_ptr_t *weaponCollideTable; //array
+    fillWeaponTables(&weaponCreateTable, &weaponCollideTable, &_num_player_weapons);
+    
+    //create each of the weapons - we'll only ever need one copy of each
+    size_t i;
+    _player_weapons = malloc(sizeof(Weapon) * _num_player_weapons);
+    for (i = 0; i < _num_player_weapons; i++){
+        init_Weapon(_player_weapons+i); //the create will reinit, but not everything will have a create so this is good
+        if (weaponCreateTable[i] != NULL){
+            weaponCreateTable[i](_player_weapons+i);
+        } else {
+            //do nothing
+        }
+    }
+    
+    //free the pointer tables
+    free(weaponCreateTable);
+    free(weaponCollideTable);
+    
+    LOG_INF("Weapon tables filled");
 }
 
 void termWeaponLists(){
+    //create each of the weapons - we'll only ever need one copy of each
     size_t i;
-    
-    for (i = 0; i < _player_weapons.num; i++){
-        free_Entity(_player_weapons.weapons[i]->icon);
-        free_Entity((Entity *)_player_weapons.weapons[i]);
+    for (i = 0; i < _num_player_weapons; i++){
+        //PIZZA - run destruct method here
+        term_Weapon(_player_weapons+i);
     }
-    free(_player_weapons.weapons);
+    free(_player_weapons);
+    _num_player_weapons = 0;
     
-    for (i = 0; i < _enemy_weapons.num; i++){
-        free_Entity(_enemy_weapons.weapons[i]->icon);
-        free_Entity((Entity *)_enemy_weapons.weapons[i]);
-    }
-    free(_enemy_weapons.weapons);
+    LOG_INF("Weapon tables freed");
 }
 
 
 /////////////////////////////////////////////////
 // Access
 /////////////////////////////////////////////////
-void addPlayerWeapon(Weapon *w){
-    _player_weapons.weapons = (Weapon **)realloc(_player_weapons.weapons, (_player_weapons.num + 1) * sizeof(Weapon *));
-    _player_weapons.weapons[_player_weapons.num] = w;
-    _player_weapons.num++;
+void givePlayerWeapon(int id){
+    if (0 <= id && id < _num_player_weapons){
+        _player_weapons[id].playerHas = 1;
+    } else {
+        LOG_ERR("No weapon with ID %d", id);
+    }
 }

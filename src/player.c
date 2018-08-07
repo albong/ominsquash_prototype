@@ -3,7 +3,6 @@
 #include "constants.h"
 #include "input.h"
 #include "weapon.h"
-#include "weapon_creator.h"
 #include "inventory.h"
 #include "data_reader.h"
 #include "hitbox.h"
@@ -14,6 +13,10 @@ static int roomTransition = 0;
 static int transitionDirection = -1;
 static unsigned totalDelta = 0;
 static const int hitstunMilli = 1000;
+
+static void updatePlayerFrame(int delta);
+static void updatePlayerOrientation();
+static void updatePlayerPosition(int delta);
 
 /////////////////////////////////////////////////
 // Loading / Unloading
@@ -47,19 +50,23 @@ void initPlayer(){
     _player.milliHitstun = 0;
     
     //this will be removed later when this stuff is dynamically set
-    //weapon
-    // Weapon *sword = createSword();
-    Weapon *sword = createWeaponById(0);
-    sword->owner = &_player.e;
-    addPlayerWeapon(sword);
-    addWeaponToInventory(sword);
-    _player.equippedAInd = 0;
+    //the menu will use the weapons that the player has been given to prevent the player from
+    //equipping weapons they don't have
     
-    Weapon *gun = createWeaponById(1);
-    gun->owner = &_player.e;
-    addPlayerWeapon(gun);
-    addWeaponToInventory(gun);
-    _player.equippedBInd = 1;
+    // Weapon *sword = createSword();
+    // Weapon *sword = createWeaponById(0);
+    // sword->owner = &_player.e;
+    // addPlayerWeapon(sword);
+    // addWeaponToInventory(sword);
+    givePlayerWeapon(0);
+    _player.equippedAId = 0;
+    
+    // Weapon *gun = createWeaponById(1);
+    // gun->owner = &_player.e;
+    // addPlayerWeapon(gun);
+    // addWeaponToInventory(gun);
+    givePlayerWeapon(1);
+    _player.equippedBId = 1;
 }
 
 void termPlayer(){
@@ -81,24 +88,24 @@ void doPlayer(int delta){
 		}
 		
 		//weapon key pressed
-		if (_player.equippedAInd >= 0){
-    		if (checkInput(A_BUTTON) && !_player_weapons.weapons[_player.equippedAInd]->cancelled){
-    		    _player_weapons.weapons[_player.equippedAInd]->e.active = 1;
-    		    _player_weapons.weapons[_player.equippedAInd]->e.action(_player_weapons.weapons[_player.equippedAInd], delta);
+		if (_player.equippedAId >= 0){
+    		if (checkInput(A_BUTTON) && !_player_weapons[_player.equippedAId].cancelled){
+    		    _player_weapons[_player.equippedAId].e.active = 1;
+    		    _player_weapons[_player.equippedAId].e.action(_player_weapons + _player.equippedAId, delta);
     		} else if (!checkInput(A_BUTTON)){
-    		    _player_weapons.weapons[_player.equippedAInd]->e.active = 0;
-    		    _player_weapons.weapons[_player.equippedAInd]->e.milliPassed = 0;
-    		    _player_weapons.weapons[_player.equippedAInd]->cancelled = 0;
+    		    _player_weapons[_player.equippedAId].e.active = 0;
+    		    _player_weapons[_player.equippedAId].e.milliPassed = 0;
+    		    _player_weapons[_player.equippedAId].cancelled = 0;
     		}
         }
-		if (_player.equippedBInd >= 0){
-    		if (checkInput(B_BUTTON) && !_player_weapons.weapons[_player.equippedBInd]->cancelled){
-    		    _player_weapons.weapons[_player.equippedBInd]->e.active = 1;
-    		    _player_weapons.weapons[_player.equippedBInd]->e.action(_player_weapons.weapons[_player.equippedBInd], delta);
+		if (_player.equippedBId >= 0){
+    		if (checkInput(B_BUTTON) && !_player_weapons[_player.equippedBId].cancelled){
+    		    _player_weapons[_player.equippedBId].e.active = 1;
+    		    _player_weapons[_player.equippedBId].e.action(_player_weapons + _player.equippedBId, delta);
     		} else if (!checkInput(B_BUTTON)){
-    		    _player_weapons.weapons[_player.equippedBInd]->e.active = 0;
-    		    _player_weapons.weapons[_player.equippedBInd]->e.milliPassed = 0;
-    		    _player_weapons.weapons[_player.equippedBInd]->cancelled = 0;
+    		    _player_weapons[_player.equippedBId].e.active = 0;
+    		    _player_weapons[_player.equippedBId].e.milliPassed = 0;
+    		    _player_weapons[_player.equippedBId].cancelled = 0;
     		}
         }
         
@@ -293,11 +300,11 @@ void drawPlayer(){
     drawAnimation(_player.e.sprite, _player.e.animation, _player.e.x + 0.5, _player.e.y + 0.5);
     
     //draw my weapons
-    if (_player.equippedAInd >= 0 && _player_weapons.weapons[_player.equippedAInd]->e.active){
-    	_player_weapons.weapons[_player.equippedAInd]->e.draw(&_player_weapons.weapons[_player.equippedAInd]->e, 0, 0);
+    if (_player.equippedAId >= 0 && _player_weapons[_player.equippedAId].e.active){
+    	_player_weapons[_player.equippedAId].e.draw(&_player_weapons[_player.equippedAId].e, 0, 0);
     }
-	if (_player.equippedBInd >= 0 && _player_weapons.weapons[_player.equippedBInd]->e.active){
-        _player_weapons.weapons[_player.equippedAInd]->e.draw(&_player_weapons.weapons[_player.equippedBInd]->e, 0, 0);
+	if (_player.equippedBId >= 0 && _player_weapons[_player.equippedBId].e.active){
+        _player_weapons[_player.equippedAId].e.draw(&_player_weapons[_player.equippedBId].e, 0, 0);
     }
 }
 

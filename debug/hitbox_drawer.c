@@ -37,8 +37,8 @@ void drawMoveHitboxes(){
     
     //draw the player's weapons
     Weapon *wep;
-    if (_player.equippedAInd != -1){
-        wep = _player_weapons.weapons[_player.equippedAInd];
+    if (_player.equippedAId != -1){
+        wep = _player_weapons + _player.equippedAId;
         if (wep->e.hitboxes.numMovement > 0  && wep->e.active){
             for (i = 0; i < wep->e.hitboxes.movement[wep->e.animation->currFrame].numRect; i++){
                 x = wep->e.x + wep->e.hitboxes.movement[wep->e.animation->currFrame].rects[i].x;
@@ -49,8 +49,8 @@ void drawMoveHitboxes(){
             }
         }
     }
-    if (_player.equippedBInd != -1){
-        wep = _player_weapons.weapons[_player.equippedBInd];
+    if (_player.equippedBId != -1){
+        wep = _player_weapons + _player.equippedBId;
         if (wep->e.hitboxes.numMovement > 0  && wep->e.active){
             for (i = 0; i < wep->e.hitboxes.movement[wep->e.animation->currFrame].numRect; i++){
                 x = wep->e.x + wep->e.hitboxes.movement[wep->e.animation->currFrame].rects[i].x;
@@ -136,8 +136,8 @@ void drawInteractHitboxes(){
     
     //draw the player's weapons
     Weapon *wep;
-    if (_player.equippedAInd != -1){
-        wep = _player_weapons.weapons[_player.equippedAInd];
+    if (_player.equippedAId != -1){
+        wep = _player_weapons + _player.equippedAId;
         if (wep->e.hitboxes.numInteract > 0 && wep->e.active){
             for (i = 0; i < wep->e.hitboxes.interact[wep->e.animation->currFrame].numRect; i++){
                 x = wep->e.x + wep->e.hitboxes.interact[wep->e.animation->currFrame].rects[i].x;
@@ -148,8 +148,8 @@ void drawInteractHitboxes(){
             }
         }
     }
-    if (_player.equippedBInd != -1){
-        wep = _player_weapons.weapons[_player.equippedBInd];
+    if (_player.equippedBId != -1){
+        wep = _player_weapons + _player.equippedBId;
         if (wep->e.hitboxes.numInteract > 0 && wep->e.active){
             for (i = 0; i < wep->e.hitboxes.interact[wep->e.animation->currFrame].numRect; i++){
                 x = wep->e.x + wep->e.hitboxes.interact[wep->e.animation->currFrame].rects[i].x;

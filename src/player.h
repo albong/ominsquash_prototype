@@ -7,8 +7,8 @@
 // Structs
 typedef struct Player {
     Entity e;
-    int equippedAInd;
-    int equippedBInd;
+    int equippedAId;
+    int equippedBId;
     int health;
     int shields;
     int milliHitstun;
@@ -29,9 +29,6 @@ void lockPlayer();
 void unlockPlayer();
 void movePlayer();
 int playerTakeDamage(int amount);
-static void updatePlayerFrame(int delta);
-static void updatePlayerOrientation();
-static void updatePlayerPosition(int delta);
 
 // Drawing
 void drawPlayer(); //we most likely don't really need this?  Maybe?  The player is prolly a special drawing case

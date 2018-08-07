@@ -12,7 +12,6 @@
 #include "interface.h"
 #include "entity_creator.h"
 #include "enemy_creator.h"
-#include "weapon_creator.h"
 #include "title_screen.h"
 #include "load_screen.h"
 #include "menu.h"
@@ -114,7 +113,6 @@ void initializeOmnisquash(){
     initSound();
     initEntityCreateTable();
     initEnemyCreateTable();
-    initWeaponCreateTable();
     initWeaponLists(); //creates the player's arrays, must be done before the area and player
     initInventory(); //should be done before player
     initPlayer();
@@ -142,7 +140,6 @@ void terminateOmnisquash(){
     termSound();
     termEntityCreateTable();
     termEnemyCreateTable();
-    termWeaponCreateTable();
     termWeaponLists();
     termInventory();
     termPlayer();

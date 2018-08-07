@@ -11,38 +11,41 @@ static void createHitboxes(Weapon *w);
 static void doWeapon(void *self, int delta);
 static void collideWithSword(Weapon *self, void *o, int collCode, CollisionType t);
 
-Weapon *weapon_create_00002(){
-    Weapon *w = init_Weapon(malloc(sizeof(Weapon)));
+Weapon *weapon_create_00002(Weapon *self){
+    if (self == NULL){
+        self = malloc(sizeof(Weapon));
+    }
+    init_Weapon(self);
     
-    w->e.active = 1;
+    self->e.active = 1;
     
-    w->e.action = &doWeapon;
-    w->e.sprite = readSpriteFromFile("data/sprites/00006.sprite", NULL);
-    w->e.animation = readAnimationFromFile("data/animations/00006.animation", NULL);
+    self->e.action = &doWeapon;
+    self->e.sprite = readSpriteFromFile("data/sprites/00006.sprite", NULL);
+    self->e.animation = readAnimationFromFile("data/animations/00006.animation", NULL);
     
-    w->e.pixelsPerMilli = 500;
+    self->e.pixelsPerMilli = 500;
 //    double changeX, changeY;
-//    w->e.x = 0;
-//    w->e.y = 0;
-//    w->e.changeX = 0;
-//    w->e.changeY = 0;
+//    self->e.x = 0;
+//    self->e.y = 0;
+//    self->e.changeX = 0;
+//    self->e.changeY = 0;
 //	int w, h;
-    w->e.isMoving = 1;
-//    w->e.milliPassed = 0;
-    w->e.milliPerFrame = 30;
-//    w->e.currFrame = 0;
-    w->e.numFrames = 2;
-	w->e.orientation = DOWN;
+    self->e.isMoving = 1;
+//    self->e.milliPassed = 0;
+    self->e.milliPerFrame = 30;
+//    self->e.currFrame = 0;
+    self->e.numFrames = 2;
+	self->e.orientation = DOWN;
 //	void (*collide)(struct Entity*);
-	w->e.type = WEAPON;
+	self->e.type = WEAPON;
 	
-//	w->totalDelta = 0;
-//	w->cancelled = 0;
+//	self->totalDelta = 0;
+//	self->cancelled = 0;
        
-    createHitboxes(w);
-    w->collide = &collideWithSword;
+    createHitboxes(self);
+    self->collide = &collideWithSword;
     
-    return w;
+    return self;
 }
 
 void createHitboxes(Weapon *w){

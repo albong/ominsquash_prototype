@@ -225,14 +225,14 @@ void doWeaponCollisions(){
     Could we optimize this into one loop, checking both things?
     Player will (likely) only ever have 2 weapons, so that might make sense...
     ********************************************************/
-    if (_player.equippedAInd != -1){
-        if (_player_weapons.weapons[_player.equippedAInd]->e.active && _player_weapons.weapons[_player.equippedAInd]->e.hitboxes.numInteract > 0){
-            enemiesCollideWithWeapon(_player_weapons.weapons[_player.equippedAInd]);
+    if (_player.equippedAId != -1){
+        if (_player_weapons[_player.equippedAId].e.active && _player_weapons[_player.equippedAId].e.hitboxes.numInteract > 0){
+            enemiesCollideWithWeapon(_player_weapons + _player.equippedAId);
         }
     }
-    if (_player.equippedBInd != -1){
-       if (_player_weapons.weapons[_player.equippedBInd]->e.active && _player_weapons.weapons[_player.equippedBInd]->e.hitboxes.numInteract > 0){
-            enemiesCollideWithWeapon(_player_weapons.weapons[_player.equippedBInd]);
+    if (_player.equippedBId != -1){
+       if (_player_weapons[_player.equippedBId].e.active && _player_weapons[_player.equippedBId].e.hitboxes.numInteract > 0){
+            enemiesCollideWithWeapon(_player_weapons + _player.equippedBId);
         }
     }
     

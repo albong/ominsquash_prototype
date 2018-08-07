@@ -2,7 +2,7 @@
 #include "../src/enemy.h"
 #include "../src/graphics.h"
 #include "../src/data_reader.h"
-#include "../src/weapon_creator.h"
+#include "../src/player.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -10,48 +10,51 @@
 
 static const int DAMAGE = 0;
 
-static Weapon *projectiles[NUM_PROJECTILES];
+static Weapon projectiles[NUM_PROJECTILES];
 
 static void doWeapon(void *self, int delta);
 static void collideWithSword(Weapon *self, void *o, int collCode, CollisionType t);
 static void createProjectiles();
 
-Weapon *weapon_create_00001(){
-    Weapon *w = init_Weapon(malloc(sizeof(Weapon)));
-        
-    w->e.active = 1;
+Weapon *weapon_create_00001(Weapon *self){
+    if (self == NULL){
+        self = malloc(sizeof(Weapon));
+    }
+    init_Weapon(self);
     
-    w->e.action = &doWeapon;
-    // w->e.sprite = readSpriteFromFile("data/sprites/00002.sprite", NULL);
-    // w->e.animation = readAnimationFromFile("data/animations/no_animation.animation", NULL);
+    self->e.active = 1;
     
-    w->e.pixelsPerMilli = 50;
+    self->e.action = &doWeapon;
+    // self->e.sprite = readSpriteFromFile("data/sprites/00002.sprite", NULL);
+    // self->e.animation = readAnimationFromFile("data/animations/no_animation.animation", NULL);
+    
+    self->e.pixelsPerMilli = 50;
 //    double changeX, changeY;
-//    w->e.x = 0;
-//    w->e.y = 0;
-//    w->e.changeX = 0;
-//    w->e.changeY = 0;
+//    self->e.x = 0;
+//    self->e.y = 0;
+//    self->e.changeX = 0;
+//    self->e.changeY = 0;
 //	int w, h;
-    w->e.isMoving = 1;
-//    w->e.milliPassed = 0;
-    w->e.milliPerFrame = 30;
-//    w->e.currFrame = 0;
-    w->e.numFrames = 3;
-	w->e.orientation = DOWN;
+    self->e.isMoving = 1;
+//    self->e.milliPassed = 0;
+    self->e.milliPerFrame = 30;
+//    self->e.currFrame = 0;
+    self->e.numFrames = 3;
+	self->e.orientation = DOWN;
 //	void (*collide)(struct Entity*);
-	w->e.type = WEAPON;
+	self->e.type = WEAPON;
 	
-//	w->totalDelta = 0;
-//	w->cancelled = 0;
+//	self->totalDelta = 0;
+//	self->cancelled = 0;
     
     //make the bullets
     createProjectiles();
     
     //make the icon
-    w->icon = init_Entity(malloc(sizeof(Entity)));
-    readAnimationIntoEntity(w->icon, 15);
+    self->icon = init_Entity(malloc(sizeof(Entity)));
+    readAnimationIntoEntity(self->icon, 15);
     
-    return w;
+    return self;
 }
 
 void doWeapon(void *w, int delta){
@@ -61,13 +64,13 @@ void doWeapon(void *w, int delta){
     size_t i;
     Weapon *bullet;
     for (i = 0; i < NUM_PROJECTILES; i++){
-        if (!projectiles[i]->e.active){
-            bullet = projectiles[i];
+        if (!projectiles[i].e.active){
+            bullet = projectiles + i;
             bullet->e.active = 1;
-            bullet->e.x = self->owner->x;
-            bullet->e.y = self->owner->y;
-            bullet->e.orientation = self->owner->orientation;
-            bullet->owner = self->owner;
+            bullet->e.x = _player.e.x;
+            bullet->e.y = _player.e.y;
+            bullet->e.orientation = _player.e.orientation;
+            // bullet->owner = self->owner;
             addTempEntityToArea((Entity *)bullet);
             break;
         }
@@ -79,7 +82,7 @@ void doWeapon(void *w, int delta){
 void createProjectiles(){
     size_t i;
     for (i = 0; i < NUM_PROJECTILES; i++){
-        projectiles[i] = createWeaponById(2);
-        projectiles[i]->e.active = 0;
+        // projectiles[i] = createWeaponById(2);
+        projectiles[i].e.active = 0;
     }
 }
