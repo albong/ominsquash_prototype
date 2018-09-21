@@ -3,6 +3,7 @@
 #include "graphics.h"
 #include "data_reader.h"
 #include "../entities/entity_tables.h"
+#include "logging.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -55,7 +56,7 @@ Entity *createEntityById(size_t id){
 }
 
 Entity *assignEntityFunctionsById(size_t id, Entity *e){
-    if (e == NULL){
+    if (e == NULL || (id+1) >= entityTableSize){ //+1 because unsigned
         return NULL;
     }
     
