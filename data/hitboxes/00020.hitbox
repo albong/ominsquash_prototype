@@ -1,0 +1,17 @@
+{   
+    "movement" : [],
+    
+    "interact" : [
+        {
+            "circles" : [],
+            "rectangles" : [
+                {
+                    "x" : 1,
+                    "y" : 1,
+                    "width" : 14,
+                    "height" : 14
+                }
+            ]
+        }
+    ]
+}
