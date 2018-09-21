@@ -27,7 +27,7 @@ void initSound(){
     
     //setup stuff for all the different sounds we can play
     size_t i;
-    for (i; i < NUM_SOUND_CHANNELS; i++){
+    for (i = 0; i < NUM_SOUND_CHANNELS; i++){
         lastPlayedSounds[i] = NULL;
     }
     Mix_AllocateChannels(NUM_SOUND_CHANNELS); //from the documentation - this call never fails, only segfaults
