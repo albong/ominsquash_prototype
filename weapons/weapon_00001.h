@@ -1,8 +1,8 @@
 #ifndef WEAPON_00001_H
 #define WEAPON_00001_H
 
-#include "../src/Entity.h"
-#include "../src/Weapon.h"
+#include "../src/entity.h"
+#include "../src/weapon.h"
 
 //static void loadSwordSprite();
 Weapon *weapon_create_00001(Weapon *self);

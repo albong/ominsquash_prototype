@@ -15,3 +15,4 @@ Makefile.win
 entities/entity_tables.c
 weapons/weapon_tables.c
 enemies/enemy_tables.c
+omnisquash

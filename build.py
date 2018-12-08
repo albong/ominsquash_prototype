@@ -1,4 +1,4 @@
-#! /usr/bin/python
+#! /usr/bin/python2
 
 #################################################
 #
@@ -14,9 +14,9 @@ import argparse
 BUILD_DIR = os.path.dirname(os.path.realpath(__file__))
 PLATFORM=""
 CC=""
-LIBS=""
-INCS=""
-CFLAGS=""
+LIBS="" #used for linking only
+INCS="" #used for compilation only
+CFLAGS="" #combined with INCS for compilation only
 BIN=""
 ENVIRONMENT_MODIFY = os.environ.copy()
 
@@ -86,6 +86,18 @@ def configure():
         LIBS = "LIBS"
         INCS = "INCS"
         BIN = "omnisquash"
+    elif "linux" in platform.system().lower():
+        PLATFORM = "LINUX"
+        CC = "gcc"
+        LIBS = "-static-libgcc "\
+                "-lSDL2main "\
+                "-lSDL2 "\
+                "-lSDL2_image "\
+                "-lSDL2_mixer "\
+                "-lm "\
+                "-m32 "\
+                "-g3"
+        BIN = "omnisquash"        
     else:
         print "Platform could not be determined or is unsupported."
         print "Build cancelled."
@@ -463,7 +475,7 @@ configure()
 if FORCE or CREATE_TABLES:
     if not SILENT:
         print "Recreating function tables"
-    if PLATFORM == "CYGWIN":
+    if PLATFORM == "CYGWIN" or PLATFORM == "LINUX":
         ret = subprocess.call("./createtablefiles.py", shell=True)
         if ret != 0:
             print "Function table creation failed"
@@ -505,7 +517,7 @@ for f in cFileList:
         
         #make platform specific changes to, and then run, compile command here
         ret = -1
-        if PLATFORM == "CYGWIN":
+        if PLATFORM == "CYGWIN" or PLATFORM == "LINUX":
             compileCmd = "eval \"" + compileCmd.replace("\"", "\\\"") + "\""
             ret = subprocess.call(compileCmd, shell=True)
         elif PLATFORM == "WINDOWS":
@@ -542,7 +554,7 @@ elif not CLEAN:
         print "Linking"
 
     #make platform specific changes to, and then run, linking command here
-    if PLATFORM == "CYGWIN":
+    if PLATFORM == "CYGWIN" or PLATFORM == "LINUX":
         linkCmd = "eval \"" + linkCmd.replace("\"", "\\\"") + "\""
         ret = subprocess.call(linkCmd, shell=True)
     elif PLATFORM == "WINDOWS":
