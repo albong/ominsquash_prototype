@@ -304,7 +304,7 @@ void drawPlayer(){
     	_player_weapons[_player.equippedAId].e.draw(&_player_weapons[_player.equippedAId].e, 0, 0);
     }
 	if (_player.equippedBId >= 0 && _player_weapons[_player.equippedBId].e.active){
-        _player_weapons[_player.equippedAId].e.draw(&_player_weapons[_player.equippedBId].e, 0, 0);
+        _player_weapons[_player.equippedBId].e.draw(&_player_weapons[_player.equippedBId].e, 0, 0);
     }
 }
 

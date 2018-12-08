@@ -96,7 +96,7 @@ def configure():
                 "-lSDL2_mixer "\
                 "-lm "\
                 "-m32 "\
-                "-g3"
+                "-ggdb"
         BIN = "omnisquash"        
     else:
         print "Platform could not be determined or is unsupported."
