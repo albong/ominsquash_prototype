@@ -58,7 +58,7 @@ Entity *createEntityById(size_t id){
 }
 
 Entity *assignEntityFunctionsById(size_t id, Entity *e){
-    if (e == NULL || (id+1) >= entityTableSize){ //+1 because unsigned
+    if (e == NULL){
         return NULL;
     }
     
