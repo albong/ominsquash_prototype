@@ -15,7 +15,7 @@
 static void doWallCollisions();
 static void doDoorCollisions();
 static void doStairCollisions();
-static void doEntityInteractCollisions();
+static void doEntityCollisions();
 static void doWeaponCollisions();
 static void enemiesCollideWithWeapon(Weapon *w);
 static void doEnemyCollisions();
@@ -28,7 +28,7 @@ void doCollisions(){
     doWallCollisions();
     doDoorCollisions();
     doStairCollisions();
-    doEntityInteractCollisions();
+    doEntityCollisions();
     doWeaponCollisions();
     doEnemyCollisions();
     
@@ -95,36 +95,6 @@ void doWallCollisions(){
             }
         }
     }
-    
-    //now check all entitites
-//    Entity **entityList = getRoomEntityList();
-//    for (i = 0; i < getNumRoomEntities(); i++){
-//        if (!entityList[i]->active || !entityList[i]->hasMoveHitbox){
-//            continue;
-//        }
-//        hitFrame = entityList[i]->animation->currFrame;
-//        for (j = 0; j < entityList[i]->moveHitbox[hitFrame].numRect; j++){
-//            for (k = 0; k < walls.numRect; k++){
-//                temp.x = entityList[i]->x + entityList[i]->changeX + entityList[i]->moveHitbox[hitFrame].rects[j].x;
-//                temp.y = entityList[i]->y + entityList[i]->moveHitbox[hitFrame].rects[j].y;
-//                temp.w = entityList[i]->moveHitbox[hitFrame].rects[j].w;
-//                temp.h = entityList[i]->moveHitbox[hitFrame].rects[j].h;
-//                collCode = rectangleCollide(walls.rects[k], temp);
-//                if (collCode){
-//                    collideWithWallX(walls.rects[k], entityList[i], temp, collCode);
-//                }
-//                
-//                temp.x = entityList[i]->x + entityList[i]->moveHitbox[hitFrame].rects[j].x;
-//                temp.y = entityList[i]->y + entityList[i]->changeY + entityList[i]->moveHitbox[hitFrame].rects[j].y;
-//                temp.w = entityList[i]->moveHitbox[hitFrame].rects[j].w;
-//                temp.h = entityList[i]->moveHitbox[hitFrame].rects[j].h;
-//                collCode = rectangleCollide(walls.rects[k], temp);
-//                if (collCode){
-//                    collideWithWallY(walls.rects[k], entityList[i], temp, collCode);
-//                }
-//            }
-//        }
-//    }
 }
 
 void doDoorCollisions(){
@@ -214,53 +184,71 @@ void doStairCollisions(){
     }
 }
 
-void doEntityInteractCollisions(){
+void doEntityCollisions(){
     size_t numEntities = getNumRoomEntities();
     Entity **entityList = getRoomEntityList();
     CollRect temp, playerTemp;
     size_t i, j, k; 
     int collCode;
+    int hitFrame, entityHitFrame;
+    hitFrame = _player.e.animation->currFrame;
 
-    /*
-    We need to check all the enemies against the player and against all other entities - even walls?
-    What if we want an enemy that absorbs other enemies, we need to check collisions between all enemies too, or do we
-    make a special type of enemy that can collide with others?
-    */
-    
-    if (!isPlayerInteractable() || checkAreaChangeState() != DEFAULT){
-        return;
-    }
-    
-    //player first
-    int hitFrame = _player.e.animation->currFrame;
-    int entityHitFrame;
-    for (i = 0; i < numEntities; i++){
-        if (!entityList[i]->active || !entityList[i]->interactable || !entityList[i]->hitboxes.numInteract > 0){
-            continue;
-        }
-        
-        entityHitFrame = entityList[i]->animation->currFrame;
-        for (j = 0; j < entityList[i]->hitboxes.interact[entityHitFrame].numRect; j++){
-            temp.x = entityList[i]->x + entityList[i]->changeX + entityList[i]->hitboxes.interact[entityHitFrame].rects[j].x;
-            temp.y = entityList[i]->y + entityList[i]->changeY + entityList[i]->hitboxes.interact[entityHitFrame].rects[j].y;
-            temp.w = entityList[i]->hitboxes.interact[entityHitFrame].rects[j].w;
-            temp.h = entityList[i]->hitboxes.interact[entityHitFrame].rects[j].h;
-                
-            for (k = 0; k < _player.e.hitboxes.interact->numRect; k++){
-                playerTemp.x = _player.e.x + _player.e.changeX + _player.e.hitboxes.interact[hitFrame].rects[k].x;
-                playerTemp.y = _player.e.y + _player.e.changeY + _player.e.hitboxes.interact[hitFrame].rects[k].y;
-                playerTemp.w = _player.e.hitboxes.interact[hitFrame].rects[k].w;
-                playerTemp.h = _player.e.hitboxes.interact[hitFrame].rects[k].h;
-                
-                collCode = rectangleCollide(playerTemp, temp);
-                if (collCode && entityList[i]->interact != NULL){
-                    entityList[i]->interact(entityList[i]);
+    //interactactions with the player
+    if (isPlayerInteractable() && checkAreaChangeState() == DEFAULT){
+        for (i = 0; i < numEntities; i++){
+            if (!entityList[i]->active || !entityList[i]->interactable || entityList[i]->hitboxes.numInteract <= 0){
+                continue;
+            }
+            
+            entityHitFrame = entityList[i]->animation->currFrame;
+            for (j = 0; j < entityList[i]->hitboxes.interact[entityHitFrame].numRect; j++){
+                temp.x = entityList[i]->x + entityList[i]->changeX + entityList[i]->hitboxes.interact[entityHitFrame].rects[j].x;
+                temp.y = entityList[i]->y + entityList[i]->changeY + entityList[i]->hitboxes.interact[entityHitFrame].rects[j].y;
+                temp.w = entityList[i]->hitboxes.interact[entityHitFrame].rects[j].w;
+                temp.h = entityList[i]->hitboxes.interact[entityHitFrame].rects[j].h;
+                    
+                for (k = 0; k < _player.e.hitboxes.interact->numRect; k++){
+                    playerTemp.x = _player.e.x + _player.e.changeX + _player.e.hitboxes.interact[hitFrame].rects[k].x;
+                    playerTemp.y = _player.e.y + _player.e.changeY + _player.e.hitboxes.interact[hitFrame].rects[k].y;
+                    playerTemp.w = _player.e.hitboxes.interact[hitFrame].rects[k].w;
+                    playerTemp.h = _player.e.hitboxes.interact[hitFrame].rects[k].h;
+                    
+                    collCode = rectangleCollide(playerTemp, temp);
+                    if (collCode && entityList[i]->interact != NULL){
+                        entityList[i]->interact(entityList[i]);
+                    }
                 }
             }
         }
     }
     
-    //other entites?
+    //movement collisions with player
+    for (i = 0; i < numEntities; i++){
+        if (!entityList[i]->active || entityList[i]->hitboxes.numMovement <= 0){
+            continue;
+        }
+        
+        entityHitFrame = entityList[i]->animation->currFrame;
+        for (j = 0; j < entityList[i]->hitboxes.movement[entityHitFrame].numRect; j++){
+            temp.x = entityList[i]->x + entityList[i]->changeX + entityList[i]->hitboxes.movement[entityHitFrame].rects[j].x;
+            temp.y = entityList[i]->y + entityList[i]->changeY + entityList[i]->hitboxes.movement[entityHitFrame].rects[j].y;
+            temp.w = entityList[i]->hitboxes.movement[entityHitFrame].rects[j].w;
+            temp.h = entityList[i]->hitboxes.movement[entityHitFrame].rects[j].h;
+                
+            for (k = 0; k < _player.e.hitboxes.movement->numRect; k++){
+                playerTemp.x = _player.e.x + _player.e.changeX + _player.e.hitboxes.movement[hitFrame].rects[k].x;
+                playerTemp.y = _player.e.y + _player.e.changeY + _player.e.hitboxes.movement[hitFrame].rects[k].y;
+                playerTemp.w = _player.e.hitboxes.movement[hitFrame].rects[k].w;
+                playerTemp.h = _player.e.hitboxes.movement[hitFrame].rects[k].h;
+                
+                collCode = rectangleCollide(playerTemp, temp);
+                if (collCode && entityList[i]->collidePlayer != NULL){
+                    entityList[i]->collidePlayer(entityList[i], collCode);
+                }
+            }
+        }
+    }
+    
 }
 
 void doWeaponCollisions(){
@@ -368,52 +356,16 @@ void doEnemyCollisions(){
     //other entites?
 }
 
-int checkPlayerCollideEntitiesMovement(Entity **entityList, size_t numEntities){
-    if (entityList == NULL || numEntities <= 0){
-        return -1;
-    }
-
-    CollRect temp, playerTemp;
-    size_t i, j, k; 
-    int collCode;
-    
-    //player first
-    int hitFrame = _player.e.animation->currFrame;
-    int entityHitFrame;
-    for (i = 0; i < numEntities; i++){
-        if (!entityList[i]->active || !(entityList[i]->hitboxes.numMovement > 0)){
-            continue;
-        }
-        
-        entityHitFrame = entityList[i]->animation->currFrame;
-        for (j = 0; j < entityList[i]->hitboxes.movement[entityHitFrame].numRect; j++){
-            temp.x = entityList[i]->x + entityList[i]->changeX + entityList[i]->hitboxes.movement[entityHitFrame].rects[j].x;
-            temp.y = entityList[i]->y + entityList[i]->changeY + entityList[i]->hitboxes.movement[entityHitFrame].rects[j].y;
-            temp.w = entityList[i]->hitboxes.movement[entityHitFrame].rects[j].w;
-            temp.h = entityList[i]->hitboxes.movement[entityHitFrame].rects[j].h;
-                
-            for (k = 0; k < _player.e.hitboxes.movement->numRect; k++){
-                playerTemp.x = _player.e.x + _player.e.changeX + _player.e.hitboxes.movement[hitFrame].rects[k].x;
-                playerTemp.y = _player.e.y + _player.e.changeY + _player.e.hitboxes.movement[hitFrame].rects[k].y;
-                playerTemp.w = _player.e.hitboxes.movement[hitFrame].rects[k].w;
-                playerTemp.h = _player.e.hitboxes.movement[hitFrame].rects[k].h;
-                
-                collCode = rectangleCollide(playerTemp, temp);
-                if (collCode){
-                    return i;
-                }
-            }
-        }
-    }
-    
-    //if the player didn't hit anything
-    return -1;
-}
-
 
 /////////////////////////////////////////////////
 // Collisions
 /////////////////////////////////////////////////
+/*
+ * 
+ * PIZZA - it may be worthwhile to investigate the memory/speed cost of pass by value versus pass by pointer here.
+ * It likely doesn't matter, but collisions may be the bottleneck of performance.
+ * 
+ */
 int rectangleCollide(CollRect r1, CollRect r2){
     ///NOTE: sometimes you can get weird numbers returned, negatives and such; I think this occurs when rectangles are on top of each other.
     

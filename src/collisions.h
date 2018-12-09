@@ -7,7 +7,6 @@
 
 // Logic
 void doCollisions();
-int checkPlayerCollideEntitiesMovement(Entity **entityList, size_t numEntities);
 
 // Collisions
 int rectangleCollide(CollRect r1, CollRect r2);
