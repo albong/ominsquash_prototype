@@ -1,0 +1,33 @@
+ - Switch to transparency for png's, over the magic pink
+    - Add tileset layers (all drawn underneath of course), so that we can easily
+      build stuff that takes advantage of transparency.
+      For example, a house with transparency at the rounded corners means we
+      don't need separate tilesheets for every kind of terrain the house might
+      be drawn on.  Since the house is still just part of the background though,
+      we should draw several layers to the room buffers.
+
+ - Switch from arrays of pointers to arrays with pointer arithmetic.
+
+ - Add options menu to pause menu, allow to change resolution, volume, and
+   language.
+    - As part of changing language, need to have central place where text files
+      are loaded, then passed out.  The structs given out should be maintained
+      by this central text logic, so that if we change the language, all the 
+      underlying text can be reloaded without having to reload/update anything
+      that loaded text - the structs are just updated underneath them.
+      Probably call it text_creator.
+
+ - Death screen (and debug mode to disable)
+
+ - Abandon most homebrew editors relating to graphics.  Find a good map editor, and just come
+   up with an import script.  We should probably still do animations (unless we can set
+   timings in whatever program), and also hitboxes maybe.  Hitboxes could also just be a layer
+   in whatever spritesheets so idk.
+     - Investigate piskel and libresprite
+
+ - Separate Entity into Entity and CollidableEntity (or something).  Entity has gotten really
+   bloated, but it does remain the best way to have animations and such.  So we ought to have
+   a base version with just graphics and positioning and action (which is set to the default
+   that updates the animation), and a subclassed version with hitboxes and etc.
+
+ - Rename all those atrocious shortended variables and types
