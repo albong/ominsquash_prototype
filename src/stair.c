@@ -13,3 +13,19 @@ Stair *init_Stair(Stair *self){
     self->toX = 0;
     self->toY = 0;
 }
+
+void free_Stair(Stair *self){
+    if (self == NULL){
+        return;
+    }
+    
+    term_Entity((Entity *)self);
+    
+    self->sameArea = 0;
+    self->toArea = 0;
+    self->toRoom = 0;
+    self->toX = 0;
+    self->toY = 0;
+    
+    free(self);
+}

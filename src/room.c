@@ -50,6 +50,10 @@ Room *init_Room(Room *self){
 }
 
 void term_Room(Room *self){
+    if (self == NULL){
+        return;
+    }
+    
     size_t i;
     
     free(self->flags);
@@ -101,7 +105,7 @@ void term_Room(Room *self){
     //stairs
     for (i = 0; i < self->numStairs; i++){
         // free(self->stairs[i]);
-        free_Entity((Entity *)self->stairs[i]);
+        free_Stair(self->stairs[i]);
         self->stairs[i] = NULL;
     }
     free(self->stairs);
