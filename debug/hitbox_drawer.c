@@ -10,6 +10,8 @@
 
 static void drawMoveHitboxes();
 static void drawInteractHitboxes();
+static void drawMoveHitboxesEntity(Entity *e);
+static void drawInteractHitboxesEntity(Entity *e);
 
 void drawHitboxes(int drawMove, int drawInteract){
     if (drawMove){
@@ -21,199 +23,141 @@ void drawHitboxes(int drawMove, int drawInteract){
 }
 
 void drawMoveHitboxes(){
-    int i, j, k;
-    int x, y, w, h;
+    int j;
     
     //draw the player's movement box
-    if (_player.e.hitboxes.numMovement > 0){
-        for (i = 0; i < _player.e.hitboxes.movement[_player.e.animation->currFrame].numRect; i++){
-            x = _player.e.x + _player.e.hitboxes.movement[_player.e.animation->currFrame].rects[i].x;
-            y = _player.e.y + _player.e.hitboxes.movement[_player.e.animation->currFrame].rects[i].y;
-            w = _player.e.hitboxes.movement[_player.e.animation->currFrame].rects[i].w;
-            h = _player.e.hitboxes.movement[_player.e.animation->currFrame].rects[i].h;
-            drawUnfilledRect_T(x, y, w, h, 255, 0, 0);
-        }
+    if (_player.e.active && _player.e.hitboxes.numMovement > 0){
+        drawMoveHitboxesEntity((Entity *)(&_player));
     }
     
     //draw the player's weapons
-    Weapon *wep;
+    Weapon *wep; //lordy why
     if (_player.equippedAId != -1){
         wep = _player_weapons + _player.equippedAId;
         if (wep->e.hitboxes.numMovement > 0  && wep->e.active){
-            for (i = 0; i < wep->e.hitboxes.movement[wep->e.animation->currFrame].numRect; i++){
-                x = wep->e.x + wep->e.hitboxes.movement[wep->e.animation->currFrame].rects[i].x;
-                y = wep->e.y + wep->e.hitboxes.movement[wep->e.animation->currFrame].rects[i].y;
-                w = wep->e.hitboxes.movement[wep->e.animation->currFrame].rects[i].w;
-                h = wep->e.hitboxes.movement[wep->e.animation->currFrame].rects[i].h;
-                drawUnfilledRect_T(x, y, w, h, 255, 0, 0);
-            }
+            drawMoveHitboxesEntity((Entity *)wep);
         }
     }
     if (_player.equippedBId != -1){
         wep = _player_weapons + _player.equippedBId;
         if (wep->e.hitboxes.numMovement > 0  && wep->e.active){
-            for (i = 0; i < wep->e.hitboxes.movement[wep->e.animation->currFrame].numRect; i++){
-                x = wep->e.x + wep->e.hitboxes.movement[wep->e.animation->currFrame].rects[i].x;
-                y = wep->e.y + wep->e.hitboxes.movement[wep->e.animation->currFrame].rects[i].y;
-                w = wep->e.hitboxes.movement[wep->e.animation->currFrame].rects[i].w;
-                h = wep->e.hitboxes.movement[wep->e.animation->currFrame].rects[i].h;
-                drawUnfilledRect_T(x, y, w, h, 255, 0, 0);
-            }
+            drawMoveHitboxesEntity((Entity *)wep);
         }
     }
     
     //draw the room's entities
     Entity **entityList = getRoomEntityList();
-    Entity *temp;
-    int hitFrame;
     for (j = 0; j < getNumRoomEntities(); j++){
-        if (!entityList[j]->active || !entityList[j]->hitboxes.numMovement > 0){
-            continue;
-        }
-        
-        temp = entityList[j];
-        hitFrame = entityList[j]->animation->currFrame;
-        for (i = 0; i < entityList[j]->hitboxes.movement[hitFrame].numRect; i++){
-            x = temp->x + temp->hitboxes.movement[temp->animation->currFrame].rects[i].x;
-            y = temp->y + temp->hitboxes.movement[temp->animation->currFrame].rects[i].y;
-            w = temp->hitboxes.movement[temp->animation->currFrame].rects[i].w;
-            h = temp->hitboxes.movement[temp->animation->currFrame].rects[i].h;
-            drawUnfilledRect_T(x, y, w, h, 255, 0, 0);
+        if (entityList[j]->active && entityList[j]->hitboxes.numMovement > 0){
+            drawMoveHitboxesEntity(entityList[j]);
         }
     }
     
     //draw the room's enemies
     Enemy **enemyList = getRoomEnemyList();
     for (j = 0; j < getNumRoomEnemies(); j++){
-        if (!enemyList[j]->e.active || !enemyList[j]->e.hitboxes.numMovement > 0){
-            continue;
-        }
-        
-        temp = (Entity *)enemyList[j];
-        hitFrame = temp->animation->currFrame;
-        for (i = 0; i < temp->hitboxes.movement[hitFrame].numRect; i++){
-            x = temp->x + temp->hitboxes.movement[temp->animation->currFrame].rects[i].x;
-            y = temp->y + temp->hitboxes.movement[temp->animation->currFrame].rects[i].y;
-            w = temp->hitboxes.movement[temp->animation->currFrame].rects[i].w;
-            h = temp->hitboxes.movement[temp->animation->currFrame].rects[i].h;
-            drawUnfilledRect_T(x, y, w, h, 255, 0, 0);
+        if (enemyList[j]->e.active && enemyList[j]->e.hitboxes.numMovement > 0){
+            drawMoveHitboxesEntity((Entity *)(enemyList[j]));
         }
     }
     
     //draw the room's doors
     Door **doorList = getRoomDoorList();
     for (j = 0; j < getNumRoomDoors(); j++){
-        if (!doorList[j]->e.active || !doorList[j]->e.hitboxes.numMovement > 0){
-            continue;
+        if (doorList[j]->e.active && doorList[j]->e.hitboxes.numMovement > 0){
+            drawMoveHitboxesEntity((Entity *)(doorList[j]));
         }
-        
-        temp = (Entity *)doorList[j];
-        hitFrame = temp->animation->currFrame;
-        for (i = 0; i < temp->hitboxes.movement[hitFrame].numRect; i++){
-            x = temp->x + temp->hitboxes.movement[temp->animation->currFrame].rects[i].x;
-            y = temp->y + temp->hitboxes.movement[temp->animation->currFrame].rects[i].y;
-            w = temp->hitboxes.movement[temp->animation->currFrame].rects[i].w;
-            h = temp->hitboxes.movement[temp->animation->currFrame].rects[i].h;
-            drawUnfilledRect_T(x, y, w, h, 255, 0, 0);
+    }
+    
+    //draw the room's stairs
+    Stair **stairList = getRoomStairList();
+    for (j = 0; j < getNumRoomStairs(); j++){
+        if (stairList[j]->e.active && stairList[j]->e.hitboxes.numMovement > 0){
+            drawMoveHitboxesEntity((Entity *)(stairList[j]));
         }
     }
 }
 
 void drawInteractHitboxes(){
-    int i, j, k;
-    int x, y, w, h;
+    int j;
     
-    //draw the player's interact box
-    if (_player.e.hitboxes.numInteract > 0){
-        for (i = 0; i < _player.e.hitboxes.interact[_player.e.animation->currFrame].numRect; i++){
-            x = _player.e.x + _player.e.hitboxes.interact[_player.e.animation->currFrame].rects[i].x;
-            y = _player.e.y + _player.e.hitboxes.interact[_player.e.animation->currFrame].rects[i].y;
-            w = _player.e.hitboxes.interact[_player.e.animation->currFrame].rects[i].w;
-            h = _player.e.hitboxes.interact[_player.e.animation->currFrame].rects[i].h;
-            drawUnfilledRect_T(x, y, w, h, 0, 0, 255);
-        }
+    //draw the player's movement box
+    if (_player.e.active && _player.e.hitboxes.numInteract > 0){
+        drawInteractHitboxesEntity((Entity *)(&_player));
     }
     
     //draw the player's weapons
     Weapon *wep;
     if (_player.equippedAId != -1){
         wep = _player_weapons + _player.equippedAId;
-        if (wep->e.hitboxes.numInteract > 0 && wep->e.active){
-            for (i = 0; i < wep->e.hitboxes.interact[wep->e.animation->currFrame].numRect; i++){
-                x = wep->e.x + wep->e.hitboxes.interact[wep->e.animation->currFrame].rects[i].x;
-                y = wep->e.y + wep->e.hitboxes.interact[wep->e.animation->currFrame].rects[i].y;
-                w = wep->e.hitboxes.interact[wep->e.animation->currFrame].rects[i].w;
-                h = wep->e.hitboxes.interact[wep->e.animation->currFrame].rects[i].h;
-                drawUnfilledRect_T(x, y, w, h, 0, 0, 255);
-            }
+        if (wep->e.hitboxes.numInteract > 0  && wep->e.active){
+            drawInteractHitboxesEntity((Entity *)wep);
         }
     }
     if (_player.equippedBId != -1){
         wep = _player_weapons + _player.equippedBId;
-        if (wep->e.hitboxes.numInteract > 0 && wep->e.active){
-            for (i = 0; i < wep->e.hitboxes.interact[wep->e.animation->currFrame].numRect; i++){
-                x = wep->e.x + wep->e.hitboxes.interact[wep->e.animation->currFrame].rects[i].x;
-                y = wep->e.y + wep->e.hitboxes.interact[wep->e.animation->currFrame].rects[i].y;
-                w = wep->e.hitboxes.interact[wep->e.animation->currFrame].rects[i].w;
-                h = wep->e.hitboxes.interact[wep->e.animation->currFrame].rects[i].h;
-                drawUnfilledRect_T(x, y, w, h, 0, 0, 255);
-            }
+        if (wep->e.hitboxes.numInteract > 0  && wep->e.active){
+            drawInteractHitboxesEntity((Entity *)wep);
         }
     }
     
     //draw the room's entities
     Entity **entityList = getRoomEntityList();
-    Entity *temp;
-    int hitFrame;
     for (j = 0; j < getNumRoomEntities(); j++){
-        if (!entityList[j]->active || !entityList[j]->hitboxes.numInteract > 0){
-            continue;
-        }
-        
-        temp = entityList[j];
-        hitFrame = entityList[j]->animation->currFrame;
-        for (i = 0; i < entityList[j]->hitboxes.interact[hitFrame].numRect; i++){
-            x = temp->x + temp->hitboxes.interact[temp->animation->currFrame].rects[i].x;
-            y = temp->y + temp->hitboxes.interact[temp->animation->currFrame].rects[i].y;
-            w = temp->hitboxes.interact[temp->animation->currFrame].rects[i].w;
-            h = temp->hitboxes.interact[temp->animation->currFrame].rects[i].h;
-            drawUnfilledRect_T(x, y, w, h, 0, 0, 255);
+        if (entityList[j]->active && entityList[j]->hitboxes.numInteract > 0){
+            drawInteractHitboxesEntity(entityList[j]);
         }
     }
     
     //draw the room's enemies
     Enemy **enemyList = getRoomEnemyList();
     for (j = 0; j < getNumRoomEnemies(); j++){
-        if (!enemyList[j]->e.active || !enemyList[j]->e.hitboxes.numInteract > 0){
-            continue;
-        }
-        
-        temp = (Entity *)enemyList[j];
-        hitFrame = temp->animation->currFrame;
-        for (i = 0; i < temp->hitboxes.interact[hitFrame].numRect; i++){
-            x = temp->x + temp->hitboxes.interact[temp->animation->currFrame].rects[i].x;
-            y = temp->y + temp->hitboxes.interact[temp->animation->currFrame].rects[i].y;
-            w = temp->hitboxes.interact[temp->animation->currFrame].rects[i].w;
-            h = temp->hitboxes.interact[temp->animation->currFrame].rects[i].h;
-            drawUnfilledRect_T(x, y, w, h, 0, 0, 255);
+        if (enemyList[j]->e.active && enemyList[j]->e.hitboxes.numInteract > 0){
+            drawInteractHitboxesEntity((Entity *)(enemyList[j]));
         }
     }
     
     //draw the room's doors
     Door **doorList = getRoomDoorList();
     for (j = 0; j < getNumRoomDoors(); j++){
-        if (!doorList[j]->e.active || !doorList[j]->e.hitboxes.numInteract > 0){
-            continue;
+        if (doorList[j]->e.active && doorList[j]->e.hitboxes.numInteract > 0){
+            drawInteractHitboxesEntity((Entity *)(doorList[j]));
         }
-        
-        temp = (Entity *)doorList[j];
-        hitFrame = temp->animation->currFrame;
-        for (i = 0; i < temp->hitboxes.interact[hitFrame].numRect; i++){
-            x = temp->x + temp->hitboxes.interact[temp->animation->currFrame].rects[i].x;
-            y = temp->y + temp->hitboxes.interact[temp->animation->currFrame].rects[i].y;
-            w = temp->hitboxes.interact[temp->animation->currFrame].rects[i].w;
-            h = temp->hitboxes.interact[temp->animation->currFrame].rects[i].h;
-            drawUnfilledRect_T(x, y, w, h, 0, 0, 255);
+    }
+    
+    //draw the room's stairs
+    Stair **stairList = getRoomStairList();
+    for (j = 0; j < getNumRoomStairs(); j++){
+        if (stairList[j]->e.active && stairList[j]->e.hitboxes.numInteract > 0){
+            drawInteractHitboxesEntity((Entity *)(stairList[j]));
         }
+    }
+}
+
+static void drawMoveHitboxesEntity(Entity *self){
+    int i;
+    int x, y, w, h;
+    
+    int hitFrame = self->animation->currFrame;
+    for (i = 0; i < self->hitboxes.movement[hitFrame].numRect; i++){
+        x = self->x + self->hitboxes.movement[self->animation->currFrame].rects[i].x;
+        y = self->y + self->hitboxes.movement[self->animation->currFrame].rects[i].y;
+        w = self->hitboxes.movement[self->animation->currFrame].rects[i].w;
+        h = self->hitboxes.movement[self->animation->currFrame].rects[i].h;
+        drawUnfilledRect_T(x, y, w, h, 255, 0, 0);
+    }
+}
+
+static void drawInteractHitboxesEntity(Entity *self){
+    int i;
+    int x, y, w, h;
+    
+    int hitFrame = self->animation->currFrame;
+    for (i = 0; i < self->hitboxes.interact[hitFrame].numRect; i++){
+        x = self->x + self->hitboxes.interact[self->animation->currFrame].rects[i].x;
+        y = self->y + self->hitboxes.interact[self->animation->currFrame].rects[i].y;
+        w = self->hitboxes.interact[self->animation->currFrame].rects[i].w;
+        h = self->hitboxes.interact[self->animation->currFrame].rects[i].h;
+        drawUnfilledRect_T(x, y, w, h, 0, 0, 255);
     }
 }
