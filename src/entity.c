@@ -43,6 +43,7 @@ Entity *init_Entity(Entity *self){
     self->destruct = NULL;
 	self->action = &defaultActionEntity;
 	self->draw = &defaultDrawEntity;
+	self->collidePlayer = NULL;
     self->type = NONE;
     init_Hitboxes(&(self->hitboxes));
     self->interactable = 0;

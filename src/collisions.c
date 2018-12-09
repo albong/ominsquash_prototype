@@ -317,7 +317,7 @@ void doEnemyCollisions(){
                 
                 collCode = rectangleCollide(playerTemp, temp);
                 if (collCode && enemyList[i]->collidePlayer != NULL){
-                    enemyList[i]->collidePlayer(enemyList[i], collCode);
+                    enemyList[i]->e.collidePlayer((Entity *) (enemyList[i]), collCode);
                 }
             }
         }

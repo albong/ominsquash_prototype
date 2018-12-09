@@ -43,7 +43,7 @@ typedef struct Entity {
     void (*destruct)(struct Entity *self);
 	void (*action)(void *, int); //probs should be Entity *, but whatevs? - The advantage of void is not having to cast when calling, despite having to cast in method, especially when subclassing
 	void (*draw)(struct Entity *, double shiftX, double shiftY);
-//	void (*collide)(void *);
+	void (*collidePlayer)(struct Entity *, int collisionCode);
 	CollisionType type;
     Hitboxes hitboxes;
 	int interactable; //when we move to single hitboxes and collision groups, this will be replaced by hasInteractHitbox

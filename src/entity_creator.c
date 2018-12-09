@@ -20,11 +20,12 @@ static entity_construct_ptr_t *entityConstructTable; //array
 static entity_destruct_ptr_t *entityDestructTable; //array
 static entity_action_ptr_t *entityActionTable; //array
 static entity_draw_ptr_t *entityDrawTable; //array
+static entity_collidePlayer_ptr_t *entityCollidePlayerTable; //array
 static entity_interact_ptr_t *entityInteractTable; //array
 static size_t entityTableSize = 0;
 
 void initEntityCreateTable(){
-    fillEntityTables(&entityConstructTable, &entityDestructTable, &entityActionTable, &entityDrawTable, &entityInteractTable, &entityTableSize);
+    fillEntityTables(&entityConstructTable, &entityDestructTable, &entityActionTable, &entityDrawTable, &entityCollidePlayerTable, &entityInteractTable, &entityTableSize);
 }
 
 void termEntityCreateTable(){
@@ -32,6 +33,7 @@ void termEntityCreateTable(){
     free(entityDestructTable);
     free(entityActionTable);
     free(entityDrawTable);
+    free(entityCollidePlayerTable);
     free(entityInteractTable);
 }
 
@@ -72,6 +74,9 @@ Entity *assignEntityFunctionsById(size_t id, Entity *e){
     }
     if (entityDrawTable[id] != NULL){
         e->draw = entityDrawTable[id];
+    }
+    if (entityCollidePlayerTable[id] != NULL){
+        e->collidePlayer = entityCollidePlayerTable[id];
     }
     if (entityInteractTable[id] != NULL){
         e->interact = entityInteractTable[id];

@@ -18,25 +18,25 @@ static Enemy **loadedEnemies = NULL;
 static enemy_entity_construct_ptr_t *eConstructTable; //array
 static enemy_entity_destruct_ptr_t *eDestructTable; //array
 static enemy_entity_action_ptr_t *eActionTable; //array
+static enemy_entity_collidePlayer_ptr_t *eCollidePlayerTable; //array
 static enemy_draw_ptr_t *drawTable; //array
 static enemy_interact_ptr_t *interactTable; //array
 static enemy_takeDamage_ptr_t *takeDamageTable; //array
-static enemy_collidePlayer_ptr_t *collidePlayerTable; //array
 static enemy_action_ptr_t *actionTable; //array
 static size_t enemyTableSize = 0;
 
 void initEnemyCreateTable(){
-    fillEnemyTables(&eConstructTable, &eDestructTable, &eActionTable, &drawTable, &interactTable, &takeDamageTable, &collidePlayerTable, &actionTable, &enemyTableSize);
+    fillEnemyTables(&eConstructTable, &eDestructTable, &eActionTable, &eCollidePlayerTable, &drawTable, &interactTable, &takeDamageTable, &actionTable, &enemyTableSize);
 }
 
 void termEnemyCreateTable(){
     free(eConstructTable);
     free(eDestructTable);
     free(eActionTable);
+    free(eCollidePlayerTable);
     free(drawTable);
     free(interactTable);
     free(takeDamageTable);
-    free(collidePlayerTable);
     free(actionTable);    
 }
 
@@ -75,6 +75,9 @@ Enemy *assignEnemyFunctionsById(size_t id, Enemy *e){
     if (eActionTable[id] != NULL){
         e->e.action = eActionTable[id];
     }
+    if (eCollidePlayerTable[id] != NULL){
+        e->e.collidePlayer = eCollidePlayerTable[id];
+    }
     if (drawTable[id] != NULL){
         e->e.draw = drawTable[id];
     }
@@ -83,9 +86,6 @@ Enemy *assignEnemyFunctionsById(size_t id, Enemy *e){
     }
     if (takeDamageTable[id] != NULL){
         e->takeDamage = takeDamageTable[id];
-    }
-    if (collidePlayerTable[id] != NULL){
-        e->collidePlayer = collidePlayerTable[id];
     }
     if (actionTable[id] != NULL){
         e->action = actionTable[id];

@@ -3,7 +3,7 @@
 #include "data_reader.h"
 
 static void defaultDrawEnemy(Entity *self, double shiftX, double shiftY);
-static void defaultCollidePlayer(Enemy *self, int collCode);
+static void defaultCollidePlayer(Entity *self, int collCode);
 /////////////////////////////////////////////////
 // Loading / Unloading
 /////////////////////////////////////////////////
@@ -18,9 +18,9 @@ Enemy *init_Enemy(Enemy *self){
     self->deathEntity = NULL;
     self->touchDamage = 0;
     self->takeDamage = NULL;
-    self->collidePlayer = &defaultCollidePlayer;
     self->action = NULL;
     
+    self->e.collidePlayer = &defaultCollidePlayer;
     self->e.type = ENEMY;
     self->e.draw = &defaultDrawEnemy;
 
@@ -48,8 +48,8 @@ void defaultDrawEnemy(Entity *self, double shiftX, double shiftY){
     }
 }
 
-void defaultCollidePlayer(Enemy *self, int collCode){
-    if (playerTakeDamage(self->touchDamage)){
-        addImpactMove(&_player.e, self->e.x, self->e.y, 15, 1);
+void defaultCollidePlayer(Entity *self, int collCode){
+    if (playerTakeDamage(((Enemy *)self)->touchDamage)){
+        addImpactMove(&_player.e, self->x, self->y, 15, 1);
     }
 }
