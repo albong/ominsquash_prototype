@@ -26,6 +26,7 @@ VERBOSE = False
 SILENT = False
 CLEAN = False
 CREATE_TABLES = False
+MEMORY_COMPILE = False
 
 IGNORE_FILENAME = ".build.ignore"
 CHANGED_FILENAME = ".build.changed"
@@ -102,6 +103,9 @@ def configure():
         print "Platform could not be determined or is unsupported."
         print "Build cancelled."
         exit(1)
+
+    if MEMORY_COMPILE:
+        LIBS += " -fsanitize=address "
 
 
 #    LIBS = "-L\"C:/Program Files/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib32\" -L\"D:/SDL-1.2.15/lib\" -static-libgcc -lmingw32 -lSDLmain -lSDL -lSDL_image -lSDL_mixer -lSDL_ttf -m32 -g3"
@@ -434,6 +438,7 @@ def handleArguments():
     global SILENT
     global CLEAN
     global CREATE_TABLES
+    global MEMORY_COMPILE
     
     descr = "Build the omnisquash engine. Files/directories to be ignored should\
             be included in .build.ignore. Data used for smarter compilation stored in\
@@ -445,6 +450,7 @@ def handleArguments():
     parser.add_argument("-s", "--silent", help="only show compiler output", action="store_true")
     parser.add_argument("-c", "--clean", help="don't compile, remove all .o files", action="store_true")
     parser.add_argument("-t", "--tables", help="recreate the function tables before building", action="store_true")
+    parser.add_argument("-m", "--memory", help="adds the '-fsanitize=address' flag during compilation, so that AddressSanitizer is used", action="store_true")
     args = parser.parse_args()
     
     #first, check that no incompatible arguments have been given
@@ -459,6 +465,7 @@ def handleArguments():
     SILENT = args.silent
     CLEAN = args.clean
     CREATE_TABLES = args.tables
+    MEMORY_COMPILE = args.memory
     
 #################################################
 # Script start
