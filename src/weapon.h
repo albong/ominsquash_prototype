@@ -14,7 +14,8 @@ typedef struct Weapon {
     int totalDelta;
     int cancelled;
     void (*collide)(struct Weapon *self, void *o, int collCode, CollisionType type);
-    Entity *icon;
+    Entity *icon; //for the menu
+    Entity *iconSmall; //for the in-game ui
     int playerHas;
 } Weapon;
 

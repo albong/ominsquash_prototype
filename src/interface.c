@@ -1,5 +1,6 @@
 #include "interface.h"
 #include "player.h"
+#include "weapon.h"
 #include "data_reader.h"
 #include "graphics.h"
 #include <stdlib.h>
@@ -9,9 +10,11 @@
 static int numToDraw = 5;
 static Sprite *healthIcons;
 static Animation *healthIconsAnim[MAX_SHIELD_SLOTS];
+static Sprite *weaponBox;
 
 void initInterface(){
     healthIcons = readSpriteFromFile("data/sprites/00005.sprite", malloc(sizeof(Sprite)));
+    weaponBox = readSpriteFromFile("data/sprites/00023.sprite", malloc(sizeof(Sprite)));
     
     Animation *healthAnim = readAnimationFromFile("data/animations/00005.animation", malloc(sizeof(Animation)));
     healthIconsAnim[0] = healthAnim;
@@ -23,6 +26,7 @@ void initInterface(){
 
 void termInterface(){
     free_Sprite(healthIcons);
+    free_Sprite(weaponBox);
     
     size_t i;
     for (i = 1; i < MAX_SHIELD_SLOTS; i++){
@@ -58,13 +62,39 @@ void updateInterface(int delta){
             }
         }
     }
+    
+    //update the animations for the small weapon icons
+    if (_player.equippedAId >= 0 && _player_weapons[_player.equippedAId].iconSmall != NULL){
+        _player_weapons[_player.equippedAId].iconSmall->action(_player_weapons[_player.equippedAId].iconSmall, delta);
+    }
+    if (_player.equippedBId >= 0 && _player_weapons[_player.equippedBId].iconSmall != NULL){
+        _player_weapons[_player.equippedBId].iconSmall->action(_player_weapons[_player.equippedBId].iconSmall, delta);
+    }
 }
 
 void drawInterface(){
     size_t i;
     int offset;
+    
+    //draw the health shields
     for (i = 0; i < numToDraw; i++){
         offset = i*healthIcons->frameWidth + (i/2)*2;
         drawAnimation(healthIcons, healthIconsAnim[i], 3 + offset, 3);
     }
+    
+    //draw the equipped weapons and weapon boxes
+    //currently the weapon boxes have a 2 border around the area where the small icon is drawn
+    offset = numToDraw*healthIcons->frameWidth + (numToDraw/2)*2 + 2;
+    if (_player.equippedAId >= 0 && _player_weapons[_player.equippedAId].iconSmall != NULL){
+        _player_weapons[_player.equippedAId].iconSmall->draw(_player_weapons[_player.equippedAId].iconSmall, 1+offset+2, 3);
+    }
+    drawAnimation(weaponBox, NULL, 1+offset, 1);
+    
+    
+    offset = (numToDraw*healthIcons->frameWidth + (numToDraw/2)*2) + weaponBox->frameWidth + 2;
+    if (_player.equippedBId >= 0 && _player_weapons[_player.equippedBId].iconSmall != NULL){
+        _player_weapons[_player.equippedBId].iconSmall->draw(_player_weapons[_player.equippedBId].iconSmall, 1+offset+2, 3);
+    }
+    drawAnimation(weaponBox, NULL, 1+offset, 1);
+    
 }

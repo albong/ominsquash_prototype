@@ -19,6 +19,7 @@ Weapon *init_Weapon(Weapon *self){
     self->cancelled = 0;
     self->collide = NULL;
     self->icon = NULL;
+    self->iconSmall = NULL;
     self->playerHas = 0;
     
     LOG_INF("Weapon at %p initialized", self);
@@ -35,6 +36,7 @@ void term_Weapon(Weapon *self){
     self->cancelled = 0;
     self->collide = NULL;
     free_Entity(self->icon);
+    free_Entity(self->iconSmall);
     self->playerHas = 0;
     
     LOG_INF("Weapon at %p terminated", self);

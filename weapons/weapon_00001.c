@@ -54,6 +54,10 @@ Weapon *weapon_create_00001(Weapon *self){
     self->icon = init_Entity(malloc(sizeof(Entity)));
     readAnimationIntoEntity(self->icon, 15);
     
+    //the icon for the ui
+    self->iconSmall = init_Entity(malloc(sizeof(Entity)));
+    readAnimationIntoEntity(self->iconSmall, 24);
+    
     return self;
 }
 
