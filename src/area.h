@@ -5,6 +5,11 @@
 #include "room.h"
 #include "constants.h"
 
+// Enums
+typedef enum {
+    DEFAULT, SHIFTING_ROOMS, JUMPING_ROOMS, AREA_CHANGE
+} AreaState;
+
 // Structs
 typedef struct Tilesheet {
     Image *sheet;
@@ -21,7 +26,6 @@ typedef struct Area {
 //    int *entitySpriteWidths;
 //    Sprite **sprites;
 //    int numEntitySprites;
-    int changingRooms;
     size_t numTemporaryEntities;
     Entity *temporaryEntities[NUM_AREA_TEMP_ENTITIES]; //array of pointers
     int id;
@@ -58,6 +62,7 @@ Door **getRoomDoorList();
 size_t getNumRoomStairs();
 Stair **getRoomStairList();
 void addTempEntityToArea(Entity *e);
+AreaState checkAreaChangeState();
 int checkChangeArea();
 int checkScreenWipe(double *x, double *y); //0 for none, 1 for inward, 2 for outward, set x and y to be center of wipe
 void setWipeAfterLoadScreen();

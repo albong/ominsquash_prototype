@@ -19,7 +19,7 @@
 #include <stdlib.h>
 #include <string.h>
  
-static int changingRooms = 0; //0 for nothing, 1 for shifting rooms, 2 for jumping rooms, 3 for area change?
+static AreaState areaChangeState = DEFAULT;
 static int changingToRoom = -1;
 static unsigned totalDelta = 0;
 static int changeToAreaId = -1;//checked by the game frame at the end of its logic cycle
@@ -73,7 +73,6 @@ Area *init_Area(Area *self){
     self->numRooms = 0;
 	self->currentRoom = NULL;
     self->roomList = NULL;
-    self->changingRooms = 0;
     
     size_t i;
     self->numTemporaryEntities = 0;
@@ -141,7 +140,6 @@ int loadAreaById(int id){
         resetEntityPositions(_current_area.roomList[i]);
     }
     
-    _current_area.changingRooms = 0;
     changeToAreaId = -1;
     
     return 1;
@@ -296,7 +294,7 @@ void unloadCurrentArea(){
     term_Area(&_current_area);
 
     //reset the globals
-    changingRooms = 0;
+    areaChangeState = DEFAULT;
     changingToRoom = -1;
     totalDelta = 0;
     changeToAreaId = -1;
@@ -325,7 +323,7 @@ void doRoom(int delta){
     totalDelta += delta;
     
     //if we're not in the middle of a transition, logic, otherwise transition
-    if (!changingRooms){
+    if (areaChangeState == DEFAULT){
         doRoomDoors(delta);
         doRoomEntities(delta);
         doRoomEnemies(delta);
@@ -341,8 +339,7 @@ void doRoom(int delta){
             
             totalDelta = 0;
             if (stair->sameArea){
-                changingRooms = 2;
-                _current_area.changingRooms = 2;
+                areaChangeState = JUMPING_ROOMS;
                 room_transition.newRoom = _current_area.roomList[stair->toRoom];
                 resetEntityPositions(room_transition.newRoom);
                 resetEnemyPositions(room_transition.newRoom);
@@ -350,8 +347,7 @@ void doRoom(int delta){
                 setDoorStates(room_transition.newRoom, stair->toRoom);
                 room_transition.newArea = -1;
             } else {
-                changingRooms = 3;
-                _current_area.changingRooms = 3;
+                areaChangeState = AREA_CHANGE;
                 room_transition.newRoom = NULL;
                 room_transition.newArea = stair->toArea;
             }
@@ -365,8 +361,7 @@ void doRoom(int delta){
             
         } else if (newRoom >= 0 && _current_area.currentRoom->connectingRooms[newRoom] != -1){
             totalDelta = 0;
-            changingRooms = 1;
-            _current_area.changingRooms = 1;
+            areaChangeState = SHIFTING_ROOMS;
             changingToRoom = newRoom;
             room_transition.newRoom = _current_area.roomList[_current_area.currentRoom->connectingRooms[newRoom]];
             resetEntityPositions(room_transition.newRoom);
@@ -376,11 +371,11 @@ void doRoom(int delta){
             setPlayerTransitioning(changingToRoom);
             shiftRoom(_current_area.currentRoom->connectingRooms[changingToRoom], changingToRoom, delta);
         }
-    } else if (changingRooms == 1){
+    } else if (areaChangeState == SHIFTING_ROOMS){
         shiftRoom(_current_area.currentRoom->connectingRooms[changingToRoom], changingToRoom, delta);
     
     //IF YOU CHANGE THESE PLEASE CHECK checkScreenWipe() AND setWipeAfterLoadScreen() STILL WORK
-    } else if (changingRooms == 2) {
+    } else if (areaChangeState == JUMPING_ROOMS) {
         //after setting changingRooms initially, we should have already pushed on a screen wipe frame to wipe inward
         //so here we should change everything so that at the end of the loop we push on another wipe outward if we haven't
         //then if we've done both, then reset the various variables
@@ -390,20 +385,18 @@ void doRoom(int delta){
             _player.e.y = room_transition.newY;
             room_transition.roomLoaded = 1;
         } else {// if (room_transition.roomLoaded){
-            changingRooms = 0;
-            _current_area.changingRooms = 0;
+            areaChangeState = DEFAULT;
             removeTempEntities();
             totalDelta = 0;
         }
-    } else { //changingRooms == 3
+    } else {
         if (!room_transition.roomLoaded){
             changeToAreaId = room_transition.newArea;
             _player.e.x = room_transition.newX;
             _player.e.y = room_transition.newY;
             room_transition.roomLoaded = 1;
         } else {
-            changingRooms = 0;
-            _current_area.changingRooms = 0;
+            areaChangeState = DEFAULT;
             totalDelta = 0;
         }
     }
@@ -442,8 +435,7 @@ void shiftRoom(int roomIndex, int direction, int delta){
     }
     
     if (transPercent >= 1){
-        changingRooms = 0;
-        _current_area.changingRooms = 0;
+        areaChangeState = DEFAULT;
         _current_area.currentRoom = room_transition.newRoom;
         removeTempEntities();
         stopPlayerTransitioning();
@@ -567,14 +559,14 @@ void removeTempEntities(){
 // Drawing
 /////////////////////////////////////////////////
 void drawCurrentRoom(){
-    if (!changingRooms){
+    if (areaChangeState == DEFAULT){
         drawImage(_current_area.currentRoom->buffer, 0, 0);
         drawRoomDoors(_current_area.currentRoom, 0, 0);
         drawRoomStairs(_current_area.currentRoom, 0, 0);
         drawRoomEntities(_current_area.currentRoom, 0, 0);
         drawRoomEnemies(_current_area.currentRoom, 0, 0);
         drawTempEntities(0, 0);
-    } else if (changingRooms == 1){
+    } else if (areaChangeState == SHIFTING_ROOMS){
         drawImage(_current_area.currentRoom->buffer, room_transition.oldX, room_transition.oldY);
         drawImage(room_transition.newRoom->buffer, room_transition.newX, room_transition.newY);
         
@@ -592,7 +584,7 @@ void drawCurrentRoom(){
         
         //new room won't have temp stuff yet
         drawTempEntities(room_transition.oldX, room_transition.oldY);
-    } else { //changinRooms == 2
+    } else {
         drawImage(_current_area.currentRoom->buffer, 0, 0);
         drawRoomDoors(_current_area.currentRoom, 0, 0);
         drawRoomStairs(_current_area.currentRoom, 0, 0);
@@ -712,6 +704,10 @@ void addTempEntityToArea(Entity *e){
     _current_area.numTemporaryEntities++;
 }
 
+AreaState checkAreaChangeState(){
+    return areaChangeState;
+}
+
 int checkChangeArea(){
     return changeToAreaId;
 }
@@ -720,11 +716,11 @@ int checkScreenWipe(double *x, double *y){
     int result;
     
     //check if we're jumping rooms, and then whether or not we've moved the player
-    if ((changingRooms == 2 || changingRooms == 3) && !room_transition.roomLoaded){
+    if ((areaChangeState == JUMPING_ROOMS || areaChangeState == AREA_CHANGE) && !room_transition.roomLoaded){
         *x = room_transition.oldX;
         *y = room_transition.oldY;
         result = 1;
-    } else if ((changingRooms == 2 || changingRooms == 3) && room_transition.roomLoaded){
+    } else if ((areaChangeState == JUMPING_ROOMS || areaChangeState == AREA_CHANGE) && room_transition.roomLoaded){
         *x = room_transition.newX;
         *y = room_transition.newY;
         result = 2;
@@ -737,7 +733,7 @@ int checkScreenWipe(double *x, double *y){
 
 void setWipeAfterLoadScreen(){
     //set these to cause the logic loop to push an outward wipe
-    changingRooms = 3;
+    areaChangeState = AREA_CHANGE;
     room_transition.roomLoaded = 0;
     room_transition.newArea = -1; //so that we don't push another load screen on
     

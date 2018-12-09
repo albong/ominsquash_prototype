@@ -14,7 +14,7 @@
 /////////////////////////////////////////////////
 static void doWallCollisions();
 static void doDoorCollisions();
-static void doEntityCollisions();
+static void doEntityInteractCollisions();
 static void doWeaponCollisions();
 static void enemiesCollideWithWeapon(Weapon *w);
 static void doEnemyCollisions();
@@ -26,7 +26,7 @@ static void doEnemyCollisions();
 void doCollisions(){
     doWallCollisions();
     doDoorCollisions();
-    doEntityCollisions();
+    doEntityInteractCollisions();
     doWeaponCollisions();
     doEnemyCollisions();
     
@@ -126,7 +126,8 @@ void doWallCollisions(){
 }
 
 void doDoorCollisions(){
-    if (_current_area.changingRooms){
+    //if (_current_area.changingRooms){
+    if (checkAreaChangeState != DEFAULT){
         return;
     }
     
@@ -171,7 +172,7 @@ void doDoorCollisions(){
     //check if other stuff collides, or just player?
 }
 
-void doEntityCollisions(){
+void doEntityInteractCollisions(){
     size_t numEntities = getNumRoomEntities();
     Entity **entityList = getRoomEntityList();
     CollRect temp, playerTemp;
