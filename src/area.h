@@ -46,6 +46,7 @@ void doRoom(int delta);
 void moveRoomEntities();
 void moveRoomEnemies();
 void moveTemporaryEntities();
+int checkIfPlayerTriggerRoomChange(int delta);
 
 // Drawing
 void drawCurrentRoom();

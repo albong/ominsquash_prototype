@@ -317,9 +317,6 @@ void initAreaTransition(){
 // Logic
 /////////////////////////////////////////////////
 void doRoom(int delta){
-    int newRoom, stairIndex;
-    Stair *stair;
-    
     totalDelta += delta;
     
     //if we're not in the middle of a transition, logic, otherwise transition
@@ -329,48 +326,6 @@ void doRoom(int delta){
         doRoomEnemies(delta);
         doTempEntities(delta);
         
-        //check if the player is leaving the room
-        stairIndex = checkPlayerCollideEntitiesMovement((Entity **)_current_area.currentRoom->stairs, _current_area.currentRoom->numStairs);
-        newRoom = checkForRoomChange();
-        
-        //depending on how the player is leaving, set various flags, clear everything, and start the transition
-        if (stairIndex >= 0){
-            stair = _current_area.currentRoom->stairs[stairIndex];
-            
-            totalDelta = 0;
-            if (stair->sameArea){
-                areaChangeState = JUMPING_ROOMS;
-                room_transition.newRoom = _current_area.roomList[stair->toRoom];
-                resetEntityPositions(room_transition.newRoom);
-                resetEnemyPositions(room_transition.newRoom);
-                clearAndResetEnemies(room_transition.newRoom);
-                setDoorStates(room_transition.newRoom, stair->toRoom);
-                room_transition.newArea = -1;
-            } else {
-                areaChangeState = AREA_CHANGE;
-                room_transition.newRoom = NULL;
-                room_transition.newArea = stair->toArea;
-            }
-            
-            room_transition.newRoomNumber = stair->toRoom;
-            room_transition.oldX = _player.e.x + (_player.e.w / 2);
-            room_transition.oldY = _player.e.y + (_player.e.h / 2);
-            room_transition.newX = stair->toX;
-            room_transition.newY = stair->toY;
-            room_transition.roomLoaded = 0;
-            
-        } else if (newRoom >= 0 && _current_area.currentRoom->connectingRooms[newRoom] != -1){
-            totalDelta = 0;
-            areaChangeState = SHIFTING_ROOMS;
-            changingToRoom = newRoom;
-            room_transition.newRoom = _current_area.roomList[_current_area.currentRoom->connectingRooms[newRoom]];
-            resetEntityPositions(room_transition.newRoom);
-            resetEnemyPositions(room_transition.newRoom);
-            clearAndResetEnemies(room_transition.newRoom);
-            setDoorStates(room_transition.newRoom, changingToRoom);
-            setPlayerTransitioning(changingToRoom);
-            shiftRoom(_current_area.currentRoom->connectingRooms[changingToRoom], changingToRoom, delta);
-        }
     } else if (areaChangeState == SHIFTING_ROOMS){
         shiftRoom(_current_area.currentRoom->connectingRooms[changingToRoom], changingToRoom, delta);
     
@@ -551,6 +506,54 @@ void removeTempEntities(){
             _current_area.temporaryEntities[i]->active = 0;
             _current_area.temporaryEntities[i] = NULL;
         }
+    }
+}
+
+int checkIfPlayerTriggerRoomChange(int delta){
+    int newRoom, stairIndex;
+    Stair *stair;
+    
+    //check if the player is leaving the room
+    stairIndex = checkPlayerCollideEntitiesMovement((Entity **)_current_area.currentRoom->stairs, _current_area.currentRoom->numStairs);
+    newRoom = checkForRoomChange();
+    
+    //depending on how the player is leaving, set various flags, clear everything, and start the transition
+    if (stairIndex >= 0){
+        stair = _current_area.currentRoom->stairs[stairIndex];
+        
+        totalDelta = 0;
+        if (stair->sameArea){
+            areaChangeState = JUMPING_ROOMS;
+            room_transition.newRoom = _current_area.roomList[stair->toRoom];
+            resetEntityPositions(room_transition.newRoom);
+            resetEnemyPositions(room_transition.newRoom);
+            clearAndResetEnemies(room_transition.newRoom);
+            setDoorStates(room_transition.newRoom, stair->toRoom);
+            room_transition.newArea = -1;
+        } else {
+            areaChangeState = AREA_CHANGE;
+            room_transition.newRoom = NULL;
+            room_transition.newArea = stair->toArea;
+        }
+        
+        room_transition.newRoomNumber = stair->toRoom;
+        room_transition.oldX = _player.e.x + (_player.e.w / 2);
+        room_transition.oldY = _player.e.y + (_player.e.h / 2);
+        room_transition.newX = stair->toX;
+        room_transition.newY = stair->toY;
+        room_transition.roomLoaded = 0;
+        
+    } else if (newRoom >= 0 && _current_area.currentRoom->connectingRooms[newRoom] != -1){
+        totalDelta = 0;
+        areaChangeState = SHIFTING_ROOMS;
+        changingToRoom = newRoom;
+        room_transition.newRoom = _current_area.roomList[_current_area.currentRoom->connectingRooms[newRoom]];
+        resetEntityPositions(room_transition.newRoom);
+        resetEnemyPositions(room_transition.newRoom);
+        clearAndResetEnemies(room_transition.newRoom);
+        setDoorStates(room_transition.newRoom, changingToRoom);
+        setPlayerTransitioning(changingToRoom);
+        shiftRoom(_current_area.currentRoom->connectingRooms[changingToRoom], changingToRoom, delta);
     }
 }
 
