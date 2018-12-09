@@ -1,0 +1,51 @@
+{   
+    
+    "movement" : [
+        {
+            "circles" : [],
+            "rectangles" : [
+                {
+                    "x" : 5,
+                    "y" : 5,
+                    "width" : 10,
+                    "height" : 10
+                }
+            ]
+        },
+        {
+            "circles" : [],
+            "rectangles" : [
+                {
+                    "x" : 5,
+                    "y" : 5,
+                    "width" : 10,
+                    "height" : 10
+                }
+            ]
+        },
+        {
+            "circles" : [],
+            "rectangles" : [
+                {
+                    "x" : 5,
+                    "y" : 5,
+                    "width" : 10,
+                    "height" : 10
+                }
+            ]
+        },
+        {
+            "circles" : [],
+            "rectangles" : [
+                {
+                    "x" : 5,
+                    "y" : 5,
+                    "width" : 10,
+                    "height" : 10
+                }
+            ]
+        }
+    ],
+
+    "interact" : []
+}

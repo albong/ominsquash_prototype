@@ -58,8 +58,9 @@ void initPlayer(){
     // sword->owner = &_player.e;
     // addPlayerWeapon(sword);
     // addWeaponToInventory(sword);
-    givePlayerWeapon(0);
-    _player.equippedAId = 0;
+    //givePlayerWeapon(0);
+    //_player.equippedAId = 0;
+    _player.equippedAId = -1;
     
     // Weapon *gun = createWeaponById(1);
     // gun->owner = &_player.e;
