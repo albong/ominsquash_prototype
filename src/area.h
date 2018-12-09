@@ -46,7 +46,7 @@ void doRoom(int delta);
 void moveRoomEntities();
 void moveRoomEnemies();
 void moveTemporaryEntities();
-int checkIfPlayerTriggerRoomChange(int delta);
+int checkIfPlayerTriggeredRoomChange();
 
 // Drawing
 void drawCurrentRoom();
@@ -67,5 +67,6 @@ AreaState checkAreaChangeState();
 int checkChangeArea();
 int checkScreenWipe(double *x, double *y); //0 for none, 1 for inward, 2 for outward, set x and y to be center of wipe
 void setWipeAfterLoadScreen();
+void setChangingRoomFromStair(Stair *stair);
 
 #endif

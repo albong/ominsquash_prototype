@@ -114,7 +114,7 @@ int gameFrameLogic(unsigned delta){
     updateInterface(delta);
     
     //check if the player is now position in such a way that they are outside the room, and if so, set state to trigger a transition
-    checkIfPlayerTriggerRoomChange(delta);
+    checkIfPlayerTriggeredRoomChange();
     
     //interact button only gets one press here
     checkAndConsumeInput(X_BUTTON);

@@ -14,6 +14,7 @@
 /////////////////////////////////////////////////
 static void doWallCollisions();
 static void doDoorCollisions();
+static void doStairCollisions();
 static void doEntityInteractCollisions();
 static void doWeaponCollisions();
 static void enemiesCollideWithWeapon(Weapon *w);
@@ -26,6 +27,7 @@ static void doEnemyCollisions();
 void doCollisions(){
     doWallCollisions();
     doDoorCollisions();
+    doStairCollisions();
     doEntityInteractCollisions();
     doWeaponCollisions();
     doEnemyCollisions();
@@ -126,8 +128,7 @@ void doWallCollisions(){
 }
 
 void doDoorCollisions(){
-    //if (_current_area.changingRooms){
-    if (checkAreaChangeState != DEFAULT){
+    if (checkAreaChangeState() != DEFAULT){
         return;
     }
     
@@ -172,6 +173,47 @@ void doDoorCollisions(){
     //check if other stuff collides, or just player?
 }
 
+void doStairCollisions(){
+    if (checkAreaChangeState() != DEFAULT){
+        return;
+    }
+
+    CollRect temp, playerTemp;
+    size_t i, j, k; 
+    int collCode;
+    
+    size_t numStairs = getNumRoomStairs();
+    Stair **stairList = getRoomStairList();
+    
+    int hitFrame = _player.e.animation->currFrame;
+    int entityHitFrame;
+    for (i = 0; i < numStairs; i++){
+        if (!stairList[i]->e.active || !(stairList[i]->e.hitboxes.numMovement > 0)){
+            continue;
+        }
+        
+        entityHitFrame = stairList[i]->e.animation->currFrame;
+        for (j = 0; j < stairList[i]->e.hitboxes.movement[entityHitFrame].numRect; j++){
+            temp.x = stairList[i]->e.x + stairList[i]->e.changeX + stairList[i]->e.hitboxes.movement[entityHitFrame].rects[j].x;
+            temp.y = stairList[i]->e.y + stairList[i]->e.changeY + stairList[i]->e.hitboxes.movement[entityHitFrame].rects[j].y;
+            temp.w = stairList[i]->e.hitboxes.movement[entityHitFrame].rects[j].w;
+            temp.h = stairList[i]->e.hitboxes.movement[entityHitFrame].rects[j].h;
+                
+            for (k = 0; k < _player.e.hitboxes.movement->numRect; k++){
+                playerTemp.x = _player.e.x + _player.e.changeX + _player.e.hitboxes.movement[hitFrame].rects[k].x;
+                playerTemp.y = _player.e.y + _player.e.changeY + _player.e.hitboxes.movement[hitFrame].rects[k].y;
+                playerTemp.w = _player.e.hitboxes.movement[hitFrame].rects[k].w;
+                playerTemp.h = _player.e.hitboxes.movement[hitFrame].rects[k].h;
+                
+                collCode = rectangleCollide(playerTemp, temp);
+                if (collCode && stairList[i]->e.collidePlayer != NULL){
+                    stairList[i]->e.collidePlayer((Entity *)(stairList[i]), collCode);
+                }
+            }
+        }
+    }
+}
+
 void doEntityInteractCollisions(){
     size_t numEntities = getNumRoomEntities();
     Entity **entityList = getRoomEntityList();
@@ -185,7 +227,7 @@ void doEntityInteractCollisions(){
     make a special type of enemy that can collide with others?
     */
     
-    if (!isPlayerInteractable()){
+    if (!isPlayerInteractable() || checkAreaChangeState() != DEFAULT){
         return;
     }
     
@@ -368,10 +410,11 @@ int checkPlayerCollideEntitiesMovement(Entity **entityList, size_t numEntities){
     return -1;
 }
 
+
 /////////////////////////////////////////////////
 // Collisions
 /////////////////////////////////////////////////
-static int rectangleCollide(CollRect r1, CollRect r2){
+int rectangleCollide(CollRect r1, CollRect r2){
     ///NOTE: sometimes you can get weird numbers returned, negatives and such; I think this occurs when rectangles are on top of each other.
     
     //1 = left, 2, = right, 3 = up, 4 = down - these are for which side of r1 is hit by r2
@@ -402,7 +445,7 @@ static int rectangleCollide(CollRect r1, CollRect r2){
     return result;
 }
 
-static int circleCollide(CollCircle c1, CollCircle c2){
+int circleCollide(CollCircle c1, CollCircle c2){
     if (square(c2.cx-c1.cx) + square(c2.cy-c1.cy) < square(c1.r+c2.r)){
         return 1;
     } else {
@@ -410,7 +453,7 @@ static int circleCollide(CollCircle c1, CollCircle c2){
     }
 }
 
-static int rectangleCircleCollide(CollRect r, CollCircle c){
+int rectangleCircleCollide(CollRect r, CollCircle c){
     //check if edge of rectangle is inside of circle
     //then check if a corner of rectangle is inside of circle
     if ((r.x < c.cx && c.cx < r.x+r.w && square(c.cy-r.y) < square(c.r)) ||
