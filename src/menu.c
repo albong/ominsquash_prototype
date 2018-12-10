@@ -42,7 +42,8 @@ static int startPositionInWeaponList = 0; //increment this by numIconsPerRow if 
 
 //methods
 static int loadMenuData();
-static int updateSelectionFromInput(); //returns 0 if nothing changed, 1 otherwise
+static int updateFromDirectionalInput(); //returns 0 if nothing changed, 1 otherwise
+static void handleSelectionInput(int selectorOverWeaponId);
 
 void initMenu(){
     size_t i, j;
@@ -132,7 +133,7 @@ int doMenu(unsigned delta){
     
     //handle input - you can't hold the buttons down, but that's just a logic thing I don't feel like managing right now
     //reset all animations regardless of whether or not its drawn - why not
-    if (updateSelectionFromInput()){
+    if (updateFromDirectionalInput()){
         setAnimationLoop(iconSelectorEntity->animation, 0, 1);
         setAnimationLoop(buttonSelectorEntity->animation, 0, 1);
     }
@@ -151,6 +152,7 @@ int doMenu(unsigned delta){
     bSelectionEntity->active = 0;
     
     //update the weapon icon displays
+    int selectorOverWeaponId = -1;
     int numOwnedWeapons = 0;
     for (i = 0; i < _num_player_weapons; i++){
         if (_player_weapons[i].playerHas){
@@ -164,6 +166,7 @@ int doMenu(unsigned delta){
                 if (currentSection == WEAPON_MENU){
                     if (currX + (currY * numIconsPerRow) == numOwnedWeapons - startPositionInWeaponList){
                         _player_weapons[i].icon->action(_player_weapons[i].icon, delta);
+                        selectorOverWeaponId = i;
                     } else {
                         setAnimationLoop(_player_weapons[i].icon->animation, 0, 1);
                     }
@@ -189,6 +192,11 @@ int doMenu(unsigned delta){
             //increment the number of owned weapons
             numOwnedWeapons++;
         }
+    }
+    
+    //determine if the player has pressed a button to select a weapon, and if it was on top of a weapon, and what to do from there
+    if (currentSection == WEAPON_MENU){
+        handleSelectionInput(selectorOverWeaponId);
     }
     
     //if you've hit start, exit the menu
@@ -305,7 +313,7 @@ int loadMenuData(){
 }
 
 //take input and move about the menu accordingly
-int updateSelectionFromInput(){
+int updateFromDirectionalInput(){
     int result = 0;
     
     //
@@ -365,15 +373,40 @@ int updateSelectionFromInput(){
     return result;
 }
 
-
-
-
-
-/*
-
-
-Maybe I should have icons representing the a/b buttons (or is it x/y?) to overlay
-on the player's selected weapons.  Still not sure of how to do the ui.
-
-
-*/
+void handleSelectionInput(int selectorOverWeaponId){
+    int temp;
+    
+    if (checkAndConsumeInput(A_BUTTON)){
+        //no selection - unequip
+        if (selectorOverWeaponId == -1 || selectorOverWeaponId == _player.equippedAId){
+            _player.equippedAId = -1;
+            
+        //switch weapons
+        } else if (selectorOverWeaponId == _player.equippedBId){
+            temp = _player.equippedAId;
+            _player.equippedAId = _player.equippedBId;
+            _player.equippedBId = temp;
+            
+        //equip
+        } else {
+            _player.equippedAId = selectorOverWeaponId;
+        }
+    }
+    
+    if (checkAndConsumeInput(B_BUTTON)){
+        //no selection - unequip
+        if (selectorOverWeaponId == -1 || selectorOverWeaponId == _player.equippedBId){
+            _player.equippedBId = -1;
+            
+        //switch weapons
+        } else if (selectorOverWeaponId == _player.equippedAId){
+            temp = _player.equippedBId;
+            _player.equippedBId = _player.equippedAId;
+            _player.equippedAId = temp;
+            
+        //equip
+        } else {
+            _player.equippedBId = selectorOverWeaponId;
+        }
+    }
+}
