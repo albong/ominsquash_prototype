@@ -31,3 +31,5 @@
    that updates the animation), and a subclassed version with hitboxes and etc.
 
  - Rename all those atrocious shortended variables and types
+
+ - Determine if entities need a "atLoad" method, or if construct suffices
