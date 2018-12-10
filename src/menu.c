@@ -6,6 +6,7 @@
 #include "weapon.h"
 #include "file_reader.h"
 #include "data_reader.h"
+#include "logging.h"
 #include "../lib/cJSON/cJSON.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -19,6 +20,8 @@ typedef enum {
 static Entity *menuEntity;
 static Entity *iconSelectorEntity;
 static Entity *buttonSelectorEntity;
+static Entity *aSelectionEntity;
+static Entity *bSelectionEntity;
 static Entity *saveButtonEntity;
 static Entity *loadButtonEntity;
 static Entity *exitButtonEntity;
@@ -48,15 +51,19 @@ void initMenu(){
     menuEntity = init_Entity(malloc(sizeof(Entity)));
     iconSelectorEntity = init_Entity(malloc(sizeof(Entity)));
     buttonSelectorEntity = init_Entity(malloc(sizeof(Entity)));
+    aSelectionEntity = init_Entity(malloc(sizeof(Entity)));
+    bSelectionEntity = init_Entity(malloc(sizeof(Entity)));
     saveButtonEntity = init_Entity(malloc(sizeof(Entity)));
     loadButtonEntity = init_Entity(malloc(sizeof(Entity)));
     exitButtonEntity = init_Entity(malloc(sizeof(Entity)));
     
+    LOG_INF("Menu entities allocated");
+    
     //read in the data from file, load animations
     if (!loadMenuData()){
-        printf("Failed to load menu data\n");
-        fflush(stdout);
+        LOG_ERR("Failed to load menu data");
     }
+    LOG_INF("Menu data loaded");
     
     //perform additional allocations
     iconDisplay = malloc(sizeof(int *) * numIconsPerRow);
@@ -78,11 +85,28 @@ void initMenu(){
     loadButtonEntity->y = buttonBufferSize + buttonOffsetY + (buttonHeight + 2*buttonBufferSize);
     exitButtonEntity->x = buttonBufferSize + buttonOffsetX;
     exitButtonEntity->y = buttonBufferSize + buttonOffsetY + 2*(buttonHeight + 2*buttonBufferSize);
+    
+    LOG_INF("Menu initialized");
 }
 
 void termMenu(){
-    // free_Image(menuImage);
+    size_t i;
+    
     free_Entity(menuEntity);
+    free_Entity(iconSelectorEntity);
+    free_Entity(buttonSelectorEntity);
+    free_Entity(aSelectionEntity);
+    free_Entity(bSelectionEntity);
+    free_Entity(saveButtonEntity);
+    free_Entity(loadButtonEntity);
+    free_Entity(exitButtonEntity);
+    
+    for (i = 0; i < numIconsPerRow; i++){
+        free(iconDisplay[i]);
+    }
+    free(iconDisplay);
+    
+    LOG_INF("Menu freed");
 }
 
 int doMenu(unsigned delta){
@@ -122,6 +146,10 @@ int doMenu(unsigned delta){
         buttonSelectorEntity->y = buttonOffsetY + (currY * (buttonHeight + 2*buttonBufferSize));
     }
     
+    //if these need to be displayed, they'll be reset to active when looping over the weapons
+    aSelectionEntity->active = 0;
+    bSelectionEntity->active = 0;
+    
     //update the weapon icon displays
     int numOwnedWeapons = 0;
     for (i = 0; i < _num_player_weapons; i++){
@@ -139,6 +167,20 @@ int doMenu(unsigned delta){
                     } else {
                         setAnimationLoop(_player_weapons[i].icon->animation, 0, 1);
                     }
+                }
+                
+                //if this is an equipped weapon, display the icon for that
+                if (i == _player.equippedAId){
+                    aSelectionEntity->active = 1;
+                    aSelectionEntity->x = _player_weapons[i].icon->x;
+                    aSelectionEntity->y = _player_weapons[i].icon->y;
+                    aSelectionEntity->action(aSelectionEntity, delta);
+                }
+                if (i == _player.equippedBId){
+                    bSelectionEntity->active = 1;
+                    bSelectionEntity->x = _player_weapons[i].icon->x;
+                    bSelectionEntity->y = _player_weapons[i].icon->y;
+                    bSelectionEntity->action(bSelectionEntity, delta);
                 }
             } else {
                 _player_weapons[i].icon->active = 0;
@@ -179,6 +221,14 @@ void drawMenu(){
         }
     }
     
+    //draw the selection icon over the weapon icons
+    if (aSelectionEntity->active){
+        aSelectionEntity->draw(aSelectionEntity, menuOffsetX, menuOffsetY);
+    }
+    if (bSelectionEntity->active){
+        bSelectionEntity->draw(bSelectionEntity, menuOffsetX, menuOffsetY);
+    }
+    
     //draw the buttons
     saveButtonEntity->draw(saveButtonEntity, menuOffsetX, menuOffsetY);
     loadButtonEntity->draw(loadButtonEntity, menuOffsetX, menuOffsetY);
@@ -217,6 +267,10 @@ int loadMenuData(){
         readAnimationIntoEntity(iconSelectorEntity, id);
         id = cJSON_GetObjectItem(root, "button selector animation")->valueint;
         readAnimationIntoEntity(buttonSelectorEntity, id);
+        id = cJSON_GetObjectItem(root, "a selection animation")->valueint;
+        readAnimationIntoEntity(aSelectionEntity, id);
+        id = cJSON_GetObjectItem(root, "b selection animation")->valueint;
+        readAnimationIntoEntity(bSelectionEntity, id);
         
         //load the button animations
         id = cJSON_GetObjectItem(root, "save button animation")->valueint;

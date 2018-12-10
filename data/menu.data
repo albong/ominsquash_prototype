@@ -2,6 +2,8 @@
     "menu animation" : 12,
     "icon selector animation" : 13,
     "button selector animation" : 16,
+    "a selection animation" : 25,
+    "b selection animation" : 26,
 
     "save button animation" : 17,
     "load button animation" : 18,
