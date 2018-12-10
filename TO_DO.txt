@@ -33,3 +33,13 @@
  - Rename all those atrocious shortended variables and types
 
  - Determine if entities need a "atLoad" method, or if construct suffices
+
+ - Add ability to push text frame.  Probably could just pass the ID to the textbox frame,
+   instead of a complicated _creator system.  Frame should accept one ID and return 1 if
+   accepted and 0 otherwise - better than holding a buffer of text to display.  Entities can
+   then decide on their own how to handle their text not being displayed.
+
+ - Fix player hitboxes.  CIRCLES.
+
+ - Sort out the hitbox garbage re: interact (for pressing interact button), movement
+   (physically hitting things), damage/hurt (idk)
