@@ -22,7 +22,7 @@ Weapon *weapon_create_00001(Weapon *self){
     }
     init_Weapon(self);
     
-    self->e.active = 1;
+    self->e.active = 0;
     
     self->e.action = &doWeapon;
     // self->e.sprite = readSpriteFromFile("data/sprites/00002.sprite", NULL);

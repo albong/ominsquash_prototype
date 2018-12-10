@@ -4,11 +4,13 @@
 #include "../src/data_reader.h"
 #include "../src/player.h"
 #include <stdlib.h>
+#include <stdio.h>
 
 static const int DAMAGE = 4;
 
 static void doSword(void *self, int delta);
 static void collideWithSword(Weapon *self, void *o, int collCode, CollisionType t);
+static void drawSword(Entity *self, double shiftX, double shfitY);
 
 Weapon *weapon_create_00000(Weapon *self){
     if (self == NULL){
@@ -16,7 +18,7 @@ Weapon *weapon_create_00000(Weapon *self){
     }
     init_Weapon(self);
         
-    self->e.active = 1;
+    self->e.active = 0;
     self->e.action = &doSword;
     readAnimationIntoEntity((Entity *)self, 2);
     
@@ -94,3 +96,4 @@ void collideWithSword(Weapon *self, void *o, int collCode, CollisionType t){
 void weapon_collide_00000(Weapon *self, void *o, int collCode, CollisionType t){
     collideWithSword(self, o, collCode, t);
 }
+
