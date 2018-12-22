@@ -1,0 +1,8 @@
+We probably don't need Entities to have a "construct" method, since that will be
+run whenever they're built from the table.
+
+However, to ease the pain of freeing, they should have the destruct method, as
+they may be far from the table at free time.
+
+Alternatively, just have them hold their ID, and request those methods from the
+tables at init/free

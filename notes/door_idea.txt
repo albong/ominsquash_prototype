@@ -1,0 +1,7 @@
+We should have ids for doors.
+Different rooms have the same ids, and various rooms have instances of the same
+id.  Each door with the same id has static shared state about whether or not
+its open; either from a c file for each door (maybe bleh, maybe not), or a list
+of whether the given door id is open/closed unlocked/locked.
+
+Maybe just some massive "master" door logic stuff somewhere?  idk

@@ -1,0 +1,10 @@
+Enities should have an initialLogic method.  This would be run at the end of
+loading to do any setup, but NOT allocation.  This would be to separate any
+setup conditions from the loading, and alter any self-state that has been set
+by something else.  Namely the checking of the flag table.
+
+For example - entities that are pickups for the player (like weapons), need to
+check if they've already been picked up - if so, they should disable themselves.
+
+This also may not be necessary, I dunno.  But it seems like it'd be good to
+separate loading, setup, and logic.

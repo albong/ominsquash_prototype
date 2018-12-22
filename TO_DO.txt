@@ -43,3 +43,5 @@
 
  - Sort out the hitbox garbage re: interact (for pressing interact button), movement
    (physically hitting things), damage/hurt (idk)
+
+ - Doors?

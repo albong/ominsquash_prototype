@@ -1,0 +1,34 @@
+weapon.c/.h:
+    CHECK - create and maintain a table of all weapons in the game
+    
+    CHECK - essentially, move the createTable function here, and then run all of the create methods in a row
+    
+    uhhhhhhhhhhhh... do we want to hide the "construct" and "destruct" bits in the entity?
+    Better not, that isn't used yet and I don't know how it will be or what I intended
+    
+    CHECK - we should rework the create methods so that they receive allocated memory, rather
+    than allocating themselves.  Is this a good principle for construct methods, ie
+    they construct whatever the thing needs?
+    
+    
+weapon_creator.c/.h:
+    CHECK - remove
+    
+inventory.c/.h:
+    CHECK - track what the player currently has in their inventory by holding arrays of
+    booleans corresponding to id's
+    
+    CHECK - the weapon array should of fixed size from the beginning, as should the array
+    corresponding to tradeable items I guess, but the array for keys should be
+    resized on area changes I guess
+    
+weapon_table.c/.h:
+    need destruct methods too
+    
+    rename "create" to "construct"?
+    
+collisions.c:
+    CHECK - remove _player_weapons?
+    
+player.c:
+    CHECK - 아이고

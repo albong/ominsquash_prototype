@@ -1,0 +1,24 @@
+Hitbox types idea:
+
+Flavor - display flavor text on button push
+
+Interact - Push buttons, talk, etc
+
+Movement - physically blocks the player/other movement hitboxes
+
+Damaging - Can damage vulnerable areas
+
+Vulnerable - Can be damaged by damaging hitboxes
+
+-------
+
+If we go this route, we should remove the CollisionTypes thing.  On the one
+hand, this does make for more efficient code: we don't need to check weapon
+hitboxes against interaction hitboxes, just movement and vulnerable, for 
+example.  On the other hand, this feels like hard-coding; and I'm sure I'll come
+up with more types later.  It also will probably lead to some code duplication?  
+
+The alternative is to remove the interact/movement hitboxes altogether, just
+have lists of hitboxes with different types.
+
+Maybe a blended approach?  But that also seems dumb.
