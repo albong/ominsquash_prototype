@@ -1,0 +1,15 @@
+Maybe put all text into one file, and give each lanuage its own master file?
+
+I was pretty much against loading all of something at once, but this seems
+like the most straightforward way.  We still have ids, but we just have them in
+the file, like
+
+01234
+blah blah blah
+
+
+We could give each kind of text its own file I suppose.  Like, menu.en,
+interact.en, dialog.en, notification.en.  I kinda like that idea to separate
+things.
+
+Remember to thank Vince extensively later.
