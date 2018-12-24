@@ -8,7 +8,6 @@
 #include "hitbox.h"
 #include "graphics.h"
 #include "entity_creator.h"
-#include "text.h"
 #include "sound.h"
 #include "logging.h"
 #include "cutscene.h"
@@ -522,122 +521,6 @@ int readAnimationIntoEntity(Entity *result, int animationId){
     return 1;
 }
 
-Text *readTextFromFile(char *filename, Text *result){
-    if (result == NULL){
-        result = malloc(sizeof(Text));
-    }
-    init_Text(result);
-    
-    //read the file, null check
-    unsigned char *data = readFileToString(filename);
-    if (data == NULL){
-        free(result);
-        return NULL;
-    }
-    
-    /*
-    * UTF8 CONVERSION START
-    */
-    uint32_t *codes = NULL;
-    size_t i;
-    size_t numChars = 0;
-    size_t expectedLength = 0;
-    size_t currChar = 0;
-    
-    //first, count the number of characters
-    for (i = 0; data[i] != '\0'; i++){
-        //check if the leading bits match what utf8 wants for the first byte
-        //0xxxxxxx, 110xxxxx, 1110xxxx, 11110xxx
-        //could of course replace with more bitwise operators over logical operators, but probably good enough
-        //0xxxxxxx
-        if (((~data[i]) & 128) == 128){
-            numChars++;
-            expectedLength += 1;
-
-        //110xxxxx
-        } else if ((data[i] & 192) == 192 && ((~data[i]) & 32) == 32) {
-            numChars++;
-            expectedLength += 2;
-
-        //1110xxxx
-        } else if ((data[i] & 224) == 224 && ((~data[i]) & 16) == 16) {
-            numChars++;
-            expectedLength += 3;
-
-        //11110xxx
-        } else if ((data[i] & 240) == 240 && ((~data[i]) & 8) == 8) {
-            numChars++;
-            expectedLength += 4;
-        }
-    }
-
-    //if the expected number of bytes is incorrect, fail
-    if (expectedLength != strlen(data)){
-        free(data);
-        free(result);
-        return NULL;
-    }
-        
-    //allocate an array for the codes
-    codes = calloc(numChars, sizeof(uint32_t));
-    
-    //reread the data and convert to utf8 code points in decimal
-    currChar = 0;
-    i = 0;
-    while (data[i] != '\0'){
-        //as before, could use bitwise operators over logical ones, but don't see need for such optimization yet
-        //0xxxxxxx
-        if (((~data[i]) & 128) == 128){
-            codes[currChar] |= data[i]; //leading bit is 0, no need to mask
-            currChar++;
-            i++;
-
-        //110xxxxx
-        } else if ((data[i] & 192) == 192 && ((~data[i]) & 32) == 32) {
-            // codes[currChar] = ((((uint32_t)data[i]) ^ 192) << 6) | (data[i + 1] ^ 128);
-            codes[currChar] |= (((uint32_t)data[i]) ^ 192) << 6;
-            codes[currChar] |= data[i + 1] ^ 128;
-            currChar++;
-            i += 2;
-
-        //1110xxxx
-        } else if ((data[i] & 224) == 224 && ((~data[i]) & 16) == 16) {
-            // codes[currChar] = ((((uint32_t)data[i]) ^ 224) << 12) | ((((uint32_t)data[i+1]) ^ 128) << 6) | (((uint32_t)data[i+2]) ^ 128);
-            codes[currChar] |= (((uint32_t)data[i]) ^ 224) << 12;
-            codes[currChar] |= (((uint32_t)data[i+1]) ^ 128) << 6;
-            codes[currChar] |= data[i+2] ^ 128;
-            currChar++;
-            i += 3;
-
-        //11110xxx
-        } else if ((data[i] & 240) == 240 && ((~data[i]) & 8) == 8) {
-            // codes[currChar] = ((((uint32_t)data[i]) ^ 240) << 18) | ((((uint32_t)data[i+1]) ^ 128) << 12) | ((((uint32_t)data[i+2]) ^ 128) << 6) | (((uint32_t)data[i+3]) ^ 128);
-            codes[currChar] |= (((uint32_t)data[i]) ^ 240) << 18;
-            codes[currChar] |= (((uint32_t)data[i+1]) ^ 128) << 12;
-            codes[currChar] |= (((uint32_t)data[i+2]) ^ 128) << 6;
-            codes[currChar] |= data[i+3] ^ 128;
-            currChar++;
-            i += 4;
-        
-        //error - probs should return null here too but eh
-        } else {
-            printf("idk my bff jill\n");
-            i++;
-        }
-    }
-    /*
-    * UTF8 CONVERSION END
-    */
-    
-    //store
-    result->ids = codes;
-    result->length = numChars;
-    
-    //free and return
-    free(data);
-    return result;
-}
-
 Music *readMusicFromFile(char *filename, Music *result){
     if (result == NULL){
         result = malloc(sizeof(Music));
@@ -809,7 +692,7 @@ Cutscene *readCutsceneFromFile(char *filename, Cutscene *result){
             
             //read the text file in the correct language
             sprintf(dataFilename, "data/text/%s/%05d.text", getCurrentLanguageString(), cJSON_GetObjectItem(arrayItem, "text id")->valueint);
-            result->text[i] = readTextFromFile(dataFilename, malloc(sizeof(Text)));
+            //result->text[i] = readTextFromFile(dataFilename, malloc(sizeof(Text)));
             
             //fill the other data
             result->showTextAtTime[i] = cJSON_GetObjectItem(arrayItem, "show at time")->valueint;
