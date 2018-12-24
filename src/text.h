@@ -17,5 +17,7 @@ Text *init_Text(Text *self);
 void free_Text(Text *self);
 void setCurrentLanguage(LanguageCode code);
 const char *getCurrentLanguageString();
+void loadTextForCurrentLanguage();
+void unloadTextForCurrentLanguage();
 
 #endif

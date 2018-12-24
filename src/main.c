@@ -129,7 +129,8 @@ void initializeOmnisquash(){
     setCurrentLanguage(EN);
     configureTextboxForFont(loadFontForLanguage("en"));
     // configureTextboxForFont(loadFontForLanguage("ko"));
-    
+    loadTextForCurrentLanguage();
+ 
     initFrames();
 }
 
@@ -150,6 +151,7 @@ void terminateOmnisquash(){
     termTitleScreen();
     termLoadScreen();
     termGlobalFlagTable();
+    unloadTextForCurrentLanguage();
     
     //pizza - need to track and free fonts
     
