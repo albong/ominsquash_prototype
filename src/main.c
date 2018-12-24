@@ -151,7 +151,7 @@ void terminateOmnisquash(){
     termTitleScreen();
     termLoadScreen();
     termGlobalFlagTable();
-    unloadTextForCurrentLanguage();
+    termText();
     
     //pizza - need to track and free fonts
     

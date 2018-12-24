@@ -8,6 +8,8 @@
 #include <stdio.h>
 
 static LanguageCode currentLanguageCode = EN;
+static Text *textTable;
+static size_t textTableLength;
 
 static int readByteRangeToText(unsigned char *data, int startByte, int endByte, Text *result);
 
@@ -127,6 +129,10 @@ void loadTextForCurrentLanguage(){
     free(data);
     cJSON_Delete(root);
     free(manifestContents);
+    
+    //set the variables
+    textTable = textById;
+    textTableLength = largestId + 1;
 }
 
 static int readByteRangeToText(unsigned char *data, int startByte, int endByte, Text *result){
@@ -145,7 +151,7 @@ static int readByteRangeToText(unsigned char *data, int startByte, int endByte, 
     size_t currChar = 0;
     
     //first, count the number of characters
-    for (i = startByte; data[i] != '\0' && i <= endByte; i++){
+    for (i = startByte; i <= endByte && data[i] != '\0'; i++){
         //check if the leading bits match what utf8 wants for the first byte
         //0xxxxxxx, 110xxxxx, 1110xxxx, 11110xxx
         //could of course replace with more bitwise operators over logical operators, but probably good enough
@@ -183,7 +189,7 @@ static int readByteRangeToText(unsigned char *data, int startByte, int endByte, 
     //reread the data and convert to utf8 code points in decimal
     currChar = 0;
     i = startByte;
-    while (data[i] != '\0' && i <= endByte){
+    while (i <= endByte && data[i] != '\0'){
         //as before, could use bitwise operators over logical ones, but don't see need for such optimization yet
         //0xxxxxxx
         if (((~data[i]) & 128) == 128){
@@ -236,8 +242,15 @@ static int readByteRangeToText(unsigned char *data, int startByte, int endByte, 
     return 1;
 }
 
-void unloadTextForCurrentLanguage(){
-    
+void termText(){
+    size_t i;
+    for (i = 0; i < textTableLength; i++){
+        if (textTable[i].length != 0){
+            free(textTable[i].ids);
+        }
+    }
+    free(textTable);
+    textTableLength = 0;
 }
 
 
