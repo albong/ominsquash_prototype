@@ -45,3 +45,6 @@
    (physically hitting things), damage/hurt (idk)
 
  - Doors?
+
+ - Add script to verify data integrity, sanitize the text files (Remove excess 
+   lines)

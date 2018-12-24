@@ -1,0 +1,7 @@
+We should have everything be old school gameboy cream colored, with black outlines.
+We could then just accent things with color, their shading and whatnot.
+
+Its like the idea of making everything watercolored, but easier.
+
+I also suggest to write a script to be able to blanket change a particular color across all images.
+This seems like a good time to learn go, since python doesn't have the builtin for that but go does.
