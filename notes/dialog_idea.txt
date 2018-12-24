@@ -1,0 +1,4 @@
+Dialog should be a frame - it can manage the dialog tree and responses, then
+pop textboxes onto the stack.  As long as it continually pushes textboxes onto
+the stack, there shouldn't be any graphical interruption alerting the player to
+the fact that there isn't a contiguous textbox, but actually several.
