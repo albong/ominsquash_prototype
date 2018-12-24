@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-char *readFileToCharStar(char *filename){
+char *readFileToString(char *filename){
     //More or less copied and pasted from the cJSON examples
     FILE *f;
     long len;
@@ -23,6 +23,8 @@ char *readFileToCharStar(char *filename){
     //allocate and read the data
     data = (char*)malloc(len + 1);
     fread(data, 1, len, f);
+    
+    //add a null character
     data[len] = '\0';
     
     fclose(f);
@@ -34,7 +36,7 @@ unsigned char *readBinaryFileToCharStar(char *filename, unsigned long *length){
     //More or less copied and pasted from the cJSON examples
     FILE *f;
     unsigned long len;
-    char *data;
+    unsigned char *data;
 
     // open in read binary mode
     f = fopen(filename,"rb");

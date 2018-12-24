@@ -257,7 +257,7 @@ int loadMenuData(){
     int id;
     
     //read in the menu data file
-    char *fileContents = readFileToCharStar(menuFilename);
+    char *fileContents = readFileToString(menuFilename);
     root = cJSON_Parse(fileContents);
     
     //check that the read succeeded

@@ -39,7 +39,7 @@ Area *readAreaFromFile(char *filename, Area *result){
     init_Area(result);
     
     //read in the given file to a cJSON object
-    char *fileContents = readFileToCharStar(filename);
+    char *fileContents = readFileToString(filename);
     cJSON *root = cJSON_Parse(fileContents);
     
     //if the initial parsing failed, or the detailed parsing failed, print an error and free/NULL result
@@ -67,7 +67,7 @@ Entity *readEntityFromFile(char *filename, Entity *result){
     init_Entity(result);
     
     //read in the given file to a cJSON object
-    char *fileContents = readFileToCharStar(filename);
+    char *fileContents = readFileToString(filename);
     cJSON *root = cJSON_Parse(fileContents);
 
     //if the initial parsing failed, or the detailed parsing failed, print an error and free/NULL result
@@ -94,7 +94,7 @@ Enemy *readEnemyFromFile(char *filename, Enemy *result){
     init_Enemy(result);
     
     //read in the given file to a cJSON object
-    char *fileContents = readFileToCharStar(filename);
+    char *fileContents = readFileToString(filename);
     cJSON *root = cJSON_Parse(fileContents);
 
     //if the initial parsing failed, or the detailed parsing failed, print an error and free/NULL result
@@ -121,7 +121,7 @@ Sprite *readSpriteFromFile(char *filename, Sprite *result){
     init_Sprite(result);
     
     //read in the given file to a cJSON object
-    char *fileContents = readFileToCharStar(filename);
+    char *fileContents = readFileToString(filename);
     cJSON *root = cJSON_Parse(fileContents);
     
     //if the initial parsing failed, or the detailed parsing failed, print an error and free/NULL result
@@ -148,7 +148,7 @@ Animation *readAnimationFromFile(char *filename, Animation *result){
     init_Animation(result);
     
     //read in the given file to a cJSON object
-    char *fileContents = readFileToCharStar(filename);
+    char *fileContents = readFileToString(filename);
     if (fileContents == NULL){
         printf("Not found: %s\n", filename);
         fflush(stdout);
@@ -191,7 +191,7 @@ Hitboxes *readHitboxesFromFile(char *filename, Hitboxes *result, int allowAlloca
     init_Hitboxes(result);
     
     //read in file, convert to cJSON and parse
-    char *fileContents = readFileToCharStar(filename);
+    char *fileContents = readFileToString(filename);
     if (fileContents == NULL){
         printf("Not found: %s\n", filename);
         fflush(stdout);
@@ -529,7 +529,7 @@ Text *readTextFromFile(char *filename, Text *result){
     init_Text(result);
     
     //read the file, null check
-    unsigned char *data = readFileToCharStar(filename);
+    unsigned char *data = readFileToString(filename);
     if (data == NULL){
         free(result);
         return NULL;
@@ -645,7 +645,7 @@ Music *readMusicFromFile(char *filename, Music *result){
     init_Music(result);
     
     //read in the given file to a cJSON object
-    char *fileContents = readFileToCharStar(filename);
+    char *fileContents = readFileToString(filename);
     cJSON *root = cJSON_Parse(fileContents);
     
     //if the initial parsing failed, or the detailed parsing failed, print an error and free/NULL result
@@ -679,7 +679,7 @@ Sound *readSoundFromFile(char *filename, Sound *result){
     init_Sound(result);
 
     //read in the given file to a cJSON object
-    char *fileContents = readFileToCharStar(filename);
+    char *fileContents = readFileToString(filename);
     cJSON *root = cJSON_Parse(fileContents);
     
     //if the initial parsing failed, or the detailed parsing failed, print an error and free/NULL result
@@ -713,7 +713,7 @@ Cutscene *readCutsceneFromFile(char *filename, Cutscene *result){
     init_Cutscene(result);
     
     //read in the given file to a cJSON object
-    char *fileContents = readFileToCharStar(filename);
+    char *fileContents = readFileToString(filename);
     cJSON *root = cJSON_Parse(fileContents);
     
     //if the initial parsing failed, or the detailed parsing failed, print an error and free/NULL result

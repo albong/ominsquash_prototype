@@ -128,7 +128,7 @@ int loadTitleScreenData(){
     }
     
     //read in the data file for the title
-    char *fileContents = readFileToCharStar(titleFilename);
+    char *fileContents = readFileToString(titleFilename);
     root = cJSON_Parse(fileContents);
     
     //check that the file was read correctly, then parse the data
