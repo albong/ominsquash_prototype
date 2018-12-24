@@ -4,13 +4,20 @@
 #include "font.h"
 #include "text.h"
 
+//Init
 void initTextbox();
 void termTextbox();
+void setTextboxFont(Font *font);
+
+//Logic
 int doTextbox(unsigned delta);
+
+//Drawing
 void drawTextbox();
-void setTextboxText(Text *text);
-// void testTextbox();
-void configureTextboxForFont(Font *font);
+
+//Access
+int setTextToDisplayById(size_t id);
+int hasTextToDisplay();
 
 #endif
 

@@ -48,3 +48,5 @@
 
  - Add script to verify data integrity, sanitize the text files (Remove excess 
    lines)
+
+ - Fix the way fonts are read to account for the fact that blocks may be out of order

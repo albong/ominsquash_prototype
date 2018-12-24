@@ -4,6 +4,7 @@
 #include "constants.h"
 #include "data_reader.h"
 #include "font.h"
+#include "logging.h"
 #include <string.h>
 #include <stdlib.h>
 
@@ -31,9 +32,12 @@ typedef struct TextboxDisplay {
 static TextboxDisplay display;
 
 static void resetDisplay();
-static void loadNextBlockOfText();
 static int addCharacterToDisplay();//return 1 to indicate not to load further characters, 0 otherwise
 
+
+/////////////////////////////////////////////////
+// Init
+/////////////////////////////////////////////////
 void initTextbox(){
     textboxImage = loadImage("gfx/textbox.png");
     display.numLines = 0;
@@ -44,6 +48,10 @@ void initTextbox(){
     display.waitForPlayer = 0;
     display.loadBlock = 0;
     display.maxWidth = textboxImage->width - (2 * TEXTBOX_OFFSET);
+    
+    currentText = NULL;
+    
+    LOG_INF("Textbox initialized");
 }
 
 void termTextbox(){
@@ -53,15 +61,58 @@ void termTextbox(){
         free(display.numCharacters);
         free(display.addDashAtLineEnd);
     }
-    //this stuff isn't finalized, and the text is freed elsewhere
+    
+    free_Font(currentFont);
+    
+    LOG_INF("Textbox terminated");
 }
 
+void setTextboxFont(Font *font){
+    currentFont = font;
+    
+    //free our previous display data
+    if (display.numLines != 0) {
+        free(display.startPosition);
+        free(display.numCharacters);
+        free(display.addDashAtLineEnd);
+    }
+    
+    //allocate new data
+    display.numLines = (textboxImage->height - (2*TEXTBOX_OFFSET)) / font->lineHeight;
+    display.startPosition = malloc(sizeof(size_t) * display.numLines);
+    display.numCharacters = malloc(sizeof(int) * display.numLines);
+    display.addDashAtLineEnd = malloc(sizeof(int) * display.numLines);
+    
+    //initialize
+    resetDisplay();
+    
+    LOG_INF("Textbox font changed");
+}
+
+
+/////////////////////////////////////////////////
+// Logic
+/////////////////////////////////////////////////
 int doTextbox(unsigned delta){
     int result = 0;
+    size_t i;
     
     //we need to determine BEFORE display time what text is going to be displayed, so load up a block
     if (display.loadBlock){
-        loadNextBlockOfText();
+        resetDisplay();
+        display.startPosition[0] = display.blockStart;
+        
+        //idk - indenting reasons
+        while(!addCharacterToDisplay()) {
+        }
+        
+        //set the next load position - may have empty lines
+        for (i = 0; i < display.numLines; i++){
+            if (display.numCharacters[i] != 0){
+                display.blockStart = display.startPosition[i] + display.numCharacters[i] + 1;
+            }
+        }
+        display.loadBlock = 0;
     }
     
     //for scrolling characters, currently unused
@@ -74,6 +125,7 @@ int doTextbox(unsigned delta){
     if (checkAndConsumeInput(X_BUTTON)){
         if (display.blockStart >= currentText->length){
             result = 1;
+            currentText = NULL;
         } else {
             display.loadBlock = 1;
         }
@@ -82,6 +134,81 @@ int doTextbox(unsigned delta){
     return result;
 }
 
+void resetDisplay(){
+    size_t i;
+    for (i = 0; i < display.numLines; i++){
+        display.numCharacters[i] = 0;
+        display.addDashAtLineEnd[i] = 0;
+    }
+    display.currLine = 0;
+    display.waitForPlayer = 0;
+}
+
+int addCharacterToDisplay(){
+    int result = 0;
+    int lengthToSpace = -1;
+    int i;
+    int newWidth;
+    size_t startPos = display.startPosition[display.currLine];
+    int currLength = display.numCharacters[display.currLine];
+    
+    //first check if we've exhausted all text already
+    if (startPos + currLength >= currentText->length){
+        return 1;
+    
+    //check if the next character is a line break, in which case stop printing and wait
+    } else if (currentText->ids[startPos + currLength + 1] == LINEFEED_UTF8_ID) {
+        display.numCharacters[display.currLine]++;//linefeed shouldn't get drawn
+        return 1;
+    }
+    
+    //we want to add a character to the current line, but we need to make sure we don't overrun the line
+    //check if adding a new character makes the line too wide
+    newWidth = getWidthOfText(currentFont, currentText, startPos, currLength + 1);
+    if (newWidth > display.maxWidth){
+        //walk backwards until we find a space character
+        for (i = currLength; i > 0; i--){
+            if (currentText->ids[startPos + i] == SPACE_UTF8_ID){
+                lengthToSpace = i;
+                break;
+            }
+        }
+        
+        //if we found a space character, break the line there
+        if (lengthToSpace != -1){
+            display.numCharacters[display.currLine] = lengthToSpace;
+            
+            if (display.currLine == display.numLines -1){
+                result = 1;
+            } else {
+                display.currLine++;
+                display.startPosition[display.currLine] = startPos + lengthToSpace + 1; //skip the space
+            }
+            
+        //if there was no space character, add a dash and advance the line without adding a new character
+        } else {
+            display.addDashAtLineEnd[display.currLine] = 1;
+            
+            if (display.currLine == display.numLines -1){
+                result = 1;
+            } else {
+                display.currLine++;
+                display.startPosition[display.currLine] = startPos + currLength;
+            }
+        }
+        
+    //if theres space on the current line for the next character
+    } else {
+        display.numCharacters[display.currLine]++;
+    }
+    
+    return result;
+}
+
+
+/////////////////////////////////////////////////
+// Drawing
+/////////////////////////////////////////////////
 void drawTextbox(){
     size_t i, j;
     FontCharacter *fc;
@@ -154,118 +281,31 @@ void drawTextbox(){
     }
 }
 
-void setTextboxText(Text *text){
-    currentText = text;
-    resetDisplay();
-    display.loadBlock = 1;
-    display.blockStart = 0;
-}
 
-void configureTextboxForFont(Font *font){
-    currentFont = font;
-    
-    //free our previous display data
-    if (display.numLines != 0) {
-        free(display.startPosition);
-        free(display.numCharacters);
-        free(display.addDashAtLineEnd);
-    }
-    
-    //allocate new data
-    display.numLines = (textboxImage->height - (2*TEXTBOX_OFFSET)) / font->lineHeight;
-    display.startPosition = malloc(sizeof(size_t) * display.numLines);
-    display.numCharacters = malloc(sizeof(int) * display.numLines);
-    display.addDashAtLineEnd = malloc(sizeof(int) * display.numLines);
-    
-    //initialize
-    resetDisplay();
-}
-
-void resetDisplay(){
-    size_t i;
-    for (i = 0; i < display.numLines; i++){
-        display.numCharacters[i] = 0;
-        display.addDashAtLineEnd[i] = 0;
-    }
-    display.currLine = 0;
-    display.waitForPlayer = 0;
-}
-
-void loadNextBlockOfText(){
-    resetDisplay();
-    display.startPosition[0] = display.blockStart;
-    
-    //idk - indenting reasons
-    while(!addCharacterToDisplay()) {
-    }
-    
-    //set the next load position - may have empty lines
-    size_t i;
-    for (i = 0; i < display.numLines; i++){
-        if (display.numCharacters[i] != 0){
-            display.blockStart = display.startPosition[i] + display.numCharacters[i] + 1;
-        }
-    }
-    display.loadBlock = 0;
-}
-
-int addCharacterToDisplay(){
-    int result = 0;
-    int lengthToSpace = -1;
-    int i;
-    int newWidth;
-    size_t startPos = display.startPosition[display.currLine];
-    int currLength = display.numCharacters[display.currLine];
-    
-    //first check if we've exhausted all text already
-    if (startPos + currLength >= currentText->length){
-        return 1;
-    
-    //check if the next character is a line break, in which case stop printing and wait
-    } else if (currentText->ids[startPos + currLength + 1] == LINEFEED_UTF8_ID) {
-        display.numCharacters[display.currLine]++;//linefeed shouldn't get drawn
-        return 1;
-    }
-    
-    //we want to add a character to the current line, but we need to make sure we don't overrun the line
-    //check if adding a new character makes the line too wide
-    newWidth = getWidthOfText(currentFont, currentText, startPos, currLength + 1);
-    if (newWidth > display.maxWidth){
-        //walk backwards until we find a space character
-        for (i = currLength; i > 0; i--){
-            if (currentText->ids[startPos + i] == SPACE_UTF8_ID){
-                lengthToSpace = i;
-                break;
-            }
-        }
+/////////////////////////////////////////////////
+// Access
+/////////////////////////////////////////////////
+int setTextToDisplayById(size_t id){
+    if (currentText == NULL){
+        resetDisplay();
+        display.loadBlock = 1;
+        display.blockStart = 0;
         
-        //if we found a space character, break the line there
-        if (lengthToSpace != -1){
-            display.numCharacters[display.currLine] = lengthToSpace;
-            
-            if (display.currLine == display.numLines -1){
-                result = 1;
-            } else {
-                display.currLine++;
-                display.startPosition[display.currLine] = startPos + lengthToSpace + 1; //skip the space
-            }
-            
-        //if there was no space character, add a dash and advance the line without adding a new character
+        currentText = getTextById(id);
+        if (currentText == NULL){
+            return 0;
         } else {
-            display.addDashAtLineEnd[display.currLine] = 1;
-            
-            if (display.currLine == display.numLines -1){
-                result = 1;
-            } else {
-                display.currLine++;
-                display.startPosition[display.currLine] = startPos + currLength;
-            }
+            return 1;
         }
-        
-    //if theres space on the current line for the next character
     } else {
-        display.numCharacters[display.currLine]++;
+        return 0;
     }
-    
-    return result;
+}
+
+int hasTextToDisplay(){
+    if (currentText != NULL){
+        return 1;
+    } else {
+        return 0;
+    }
 }

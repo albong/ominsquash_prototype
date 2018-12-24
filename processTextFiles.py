@@ -61,10 +61,10 @@ for name in textFileNames:
         
         startPosition.append(newlineIndex + 1)
         
-        newlineIndex = fileContents.find("\n", newlineIndex + 1)
+        newlineIndex = fileContents.find("\n\n", newlineIndex + 1)
         
         if newlineIndex != -1:
-            stopPosition.append(newlineIndex)
+            stopPosition.append(newlineIndex - 1)
             searchFromIndex = fileContents.find("\n\n", newlineIndex) + 2
         else:
             stopPosition.append(len(fileContents) - 1)

@@ -102,6 +102,9 @@ not sure how to solve that yet.
 */
 
 void initializeOmnisquash(){
+    //don't buffer standard out, makes logging easier
+    setbuf(stdout, NULL);
+    
     initSDL();
 //	freopen( "CON", "w", stdout );
 //    freopen( "CON", "w", stderr );
@@ -127,8 +130,8 @@ void initializeOmnisquash(){
 
     //set the current font stuff
     setCurrentLanguage(EN);
-    configureTextboxForFont(loadFontForLanguage("en"));
-    // configureTextboxForFont(loadFontForLanguage("ko"));
+    setTextboxFont(loadFontForLanguage("en"));
+    // setTextboxFont(loadFontForLanguage("ko"));
     loadTextForCurrentLanguage();
  
     initFrames();

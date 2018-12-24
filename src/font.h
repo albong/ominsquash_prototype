@@ -38,6 +38,7 @@ typedef struct Font {
 Font *loadFontForLanguage(char *language);
 int getWidthOfText(Font *font, Text *text, int startIndex, int length);
 FontCharacter *findCharacter(Font *font, uint32_t id);
+void free_Font(Font *self);
     
 /*
 

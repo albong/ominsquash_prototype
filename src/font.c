@@ -6,6 +6,7 @@
 #include "file_reader.h"
 #include "graphics.h"
 #include "constants.h"
+#include "logging.h"
 
 //note: I had to change the colors of the output, had to get that sweet magic pink
 //
@@ -15,8 +16,6 @@
 //
 //I think the computer I generated the original fnt file on is little endian, if you generate
 //a big endian file this is all boned - again, idgaf, we'll burn that bridge when we cross it
-
-static char current_language[3];
 
 static void readCommonBlock(uint8_t *block, uint32_t blockSize, Font *font);
 static void readPagesBlock(uint8_t *block, uint32_t blockSize, Font *font);
@@ -41,20 +40,15 @@ Font *loadFontForLanguage(char *language){
     
     //read in the file
     sprintf(filename, "data/fonts/%s.fnt", language);
-    data = readBinaryFileToCharStar(filename, &fileSize);
+    data = readBinaryFileToCharStar(filename, &fileSize);  //PIZZA type mismatch possible here
     
     //null check, size check, header check
     //this magic number is the bare minimum number of bytes to produce a valid Font struct
     if (data == NULL || fileSize < (4 + 5*4 + 15 + 15 + 1 + 20) || (data[0] != 66 && data[0] != 77 && data[0] != 70 && data[0] != 3)){ 
+        LOG_ERR("Problem with font file %s", filename);
         return NULL;
     }
-    
-    //allocate the font
     Font *font = malloc(sizeof(Font));
-    if (font == NULL){
-        free(data);
-        return NULL;
-    }
     
     //loop over all the data
     index = 4;
@@ -91,6 +85,7 @@ Font *loadFontForLanguage(char *language){
     free(data);
     
     //return the result
+    LOG_INF("Font at %s loaded", filename);
     return font;
 }
 
@@ -122,7 +117,7 @@ void readPagesBlock(uint8_t *block, uint32_t blockSize, Font *font){
     
     //check if the sizes are the same
     if (blockSize / (strlen(block)+1) != font->numSheets){
-        printf("Font file corrupted\n");
+        LOG_ERR("Font file corrupted OR font file blocks are out of order");
     }
     
     //allocate the array
@@ -133,6 +128,7 @@ void readPagesBlock(uint8_t *block, uint32_t blockSize, Font *font){
         sprintf(filename, "gfx/fonts/%s", block);
         font->fontSheets[i] = loadImage(filename);
         block += strlen(block)+1;
+        LOG_INF("Font image at %s loaded", filename);
     }
 }
 
@@ -242,3 +238,27 @@ FontCharacter *findCharacter(Font *font, uint32_t id){
     return result;
 }
 
+void free_Font(Font *self){
+    if (self == NULL){
+        LOG_WAR("Tried to free NULL font");
+        return;
+    }
+    
+    size_t i;
+    for (i = 0; i < self->numSheets; i++){
+        free_Image(self->fontSheets[i]);
+        self->fontSheets[i] = NULL;
+    }
+    free(self->fontSheets);
+    
+    free(self->characters);
+    free(self->idTable);
+    
+    self->numCharacters = 0;
+    self->numSheets = 0;
+    self->baseHeight = 0;
+    self->lineHeight = 0;
+    
+    free(self);
+    LOG_INF("Font at %p freed", self);
+}

@@ -13,6 +13,17 @@ static size_t textTableLength;
 
 static int readByteRangeToText(unsigned char *data, int startByte, int endByte, Text *result);
 
+void termText(){
+    size_t i;
+    for (i = 0; i < textTableLength; i++){
+        if (textTable[i].length != 0){
+            free(textTable[i].ids);
+        }
+    }
+    free(textTable);
+    textTableLength = 0;
+}
+
 Text *init_Text(Text *self){
     if (self == NULL){
         LOG_WAR("Received null pointer");
@@ -242,15 +253,11 @@ static int readByteRangeToText(unsigned char *data, int startByte, int endByte, 
     return 1;
 }
 
-void termText(){
-    size_t i;
-    for (i = 0; i < textTableLength; i++){
-        if (textTable[i].length != 0){
-            free(textTable[i].ids);
-        }
+Text *getTextById(size_t id){
+    if (id >= textTableLength){
+        LOG_WAR("Requested text id %d is larger than table size", id);
+        return NULL;
     }
-    free(textTable);
-    textTableLength = 0;
+    
+    return textTable + id;
 }
-
-

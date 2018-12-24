@@ -14,6 +14,7 @@
 #include "data_reader.h"
 #include "interface.h"
 #include "cutscene.h"
+#include "logging.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -83,10 +84,8 @@ int gameFrameLogic(unsigned delta){
         return 1;
     } else if (checkInput(Y_BUTTON)){
         // setTextboxText(readTextFromFile("data/text/ko/00000.text", NULL));
-        setTextboxText(readTextFromFile("data/text/en/00001.text", NULL));
-        _currentFrame = textboxFrame;
-        consumeAllInput();
-        return 1;
+        //setTextboxText(readTextFromFile("data/text/en/00001.text", NULL));
+        setTextToDisplayById(0);
     } else if (checkInput(ESCAPE_BUTTON) || popToMenu){
         popToMenu = 0;
         setAreaIdToLoad(-1);
@@ -123,7 +122,7 @@ int gameFrameLogic(unsigned delta){
     newAreaId = checkChangeArea();
     pushWipe = checkScreenWipe(&x, &y);
     
-    //we should switch areas over performing a wipe, doCurrentRoom should accordingling manage variables to make this work correctly
+    //we should switch areas over performing a wipe, doCurrentRoom should accordingly manage variables to make this work correctly
     if (newAreaId != -1){ //change area
         setAreaIdToLoad(newAreaId);
         consumeAllInput();
@@ -137,6 +136,10 @@ int gameFrameLogic(unsigned delta){
         setScreenWipeCenter(x, y);
         setScreenWipeInward(0);
         _currentFrame = screenWipeFrame;
+        return 1;
+    } else if (hasTextToDisplay()){
+        _currentFrame = textboxFrame;
+        consumeAllInput();
         return 1;
     } else {
         return 0;
