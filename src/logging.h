@@ -23,6 +23,6 @@
     #define LOG_WAR(fmt, ...)
 #endif
 
-#define LOG_ERR(fmt, ...) printf("ERROR " fmt "\n", __FILE__, __LINE__, ##__VA_ARGS__)
+#define LOG_ERR(fmt, ...) printf("ERROR %s:%d " fmt "\n", __FILE__, __LINE__, ##__VA_ARGS__)
 
 #endif
