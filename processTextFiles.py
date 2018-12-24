@@ -13,6 +13,7 @@ import json
 BUILD_DIR = os.path.dirname(os.path.realpath(__file__))
 TEXT_FILES_DIR = "data/text"
 OUTPUT_EXTENSION = ".manifest"
+TEXT_CHANGED_FILENAME = ".text.changed"
 
 
 #################################################
@@ -26,6 +27,7 @@ textFileNames = []
 for name in os.listdir("."):
     if os.path.isfile(name) and not name[-len(OUTPUT_EXTENSION):] == OUTPUT_EXTENSION:
         textFileNames.append(name)
+
 #process each file
 for name in textFileNames:
     fileContents = None
@@ -81,3 +83,16 @@ for name in textFileNames:
     except IOError as err:
         print("Couldn't write " + name)
         print(err)
+
+#write out a record of the changed files
+#this is done here and not in build.py so that if you run this on Windows, the record of change times gets updated
+os.chdir(BUILD_DIR)
+try:
+    with open(TEXT_CHANGED_FILENAME, "w+") as fout:    
+        for name in textFileNames:
+            absolutePath = os.path.join(BUILD_DIR, TEXT_FILES_DIR, name)
+            modifiedDate = int(os.path.getmtime(absolutePath))
+            
+            fout.write(str(modifiedDate) + "," + absolutePath + "\n")
+except:
+    print "Couldn't write text change file!"

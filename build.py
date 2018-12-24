@@ -28,8 +28,10 @@ CLEAN = False
 CREATE_TABLES = False
 MEMORY_COMPILE = False
 
-IGNORE_FILENAME = ".build.ignore"
-CHANGED_FILENAME = ".build.changed"
+BUILD_IGNORE_FILENAME = ".build.ignore"
+BUILD_CHANGED_FILENAME = ".build.changed"
+TEXT_CHANGED_FILENAME = ".text.changed"
+
 
 def configure():
     """configure the compilation options"""
@@ -124,7 +126,7 @@ def findIgnore():
     from the build"""
     toIgnore = []
     try:
-        with open(IGNORE_FILENAME, "r") as fin:
+        with open(BUILD_IGNORE_FILENAME, "r") as fin:
             for line in fin:
                 line = line.strip()
                 if len(line) > 0 and line[0] != "#":
@@ -266,7 +268,7 @@ def determineRecompile(toIgnore):
     #read in the file modification list
     times = {}
     try:
-        with open(CHANGED_FILENAME, "r") as fin:
+        with open(BUILD_CHANGED_FILENAME, "r") as fin:
             for line in fin:
                 line = line.strip()
                 data = line.split(",")
@@ -425,12 +427,32 @@ def setHeaderCompileSuccess(cFiles, hFiles):
 def writeNewModifiedList(fileList):
     """Attempt to create a new file with the last modified date for all source files"""
     try:
-        with open(CHANGED_FILENAME, "w+") as fout:
+        with open(BUILD_CHANGED_FILENAME, "w+") as fout:
             for f in fileList:
                 fout.write(f.modifiedRecord() + "\n")
     except IOError:
         pass
-
+        
+def determineReprocessText():
+    """
+    Determine if we need to reprocess the text assets to create the text manifests
+    """
+    result = False
+    
+    #read in the file modification list and compare modified times
+    try:
+        with open(TEXT_CHANGED_FILENAME, "r") as fin:
+            for line in fin:
+                line = line.strip()
+                data = line.split(",")
+                if int(data[0]) != int(os.path.getmtime(data[1])):
+                    result = True
+                    break
+    except IOError:
+        result = True
+        
+    return result
+    
 def handleArguments():
     global FORCE
     global LINK 
@@ -467,6 +489,7 @@ def handleArguments():
     CREATE_TABLES = args.tables
     MEMORY_COMPILE = args.memory
     
+    
 #################################################
 # Script start
 #################################################
@@ -489,6 +512,18 @@ if FORCE or CREATE_TABLES:
             exit(1)
     else:
         print "Not yet implemented, please run createtablefiles.py manually."
+        
+#rebuild text manifest files if necessary - no need to do this on force
+if determineReprocessText():
+    if not SILENT:
+        print "Reprocessing text files"
+    if PLATFORM == "CYGWIN" or PLATFORM == "LINUX":
+        ret = subprocess.call("./processTextFiles.py", shell=True)
+        if ret != 0:
+            print "Text file processing failed"
+            exit(1)
+    else:
+        print "Not yet implemented, please run processTextFiles.py manually."
     
 #load files and directories to be ignored
 toIgnore = findIgnore()
