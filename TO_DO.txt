@@ -50,3 +50,31 @@
    lines)
 
  - Fix the way fonts are read to account for the fact that blocks may be out of order
+
+ - Add a "callback" frame?  It would be most useful in between the game and
+   text box frames I think.  We could also just have a callback option for the
+   text box I suppose.
+
+ - Add map layers.  We don't really need to maintain layers per se, just do
+   several draws on top of the buffer.
+    - Animated maps
+
+    - Hitboxes for walls, easier to handle the creation of in Tiled, and better
+      since we convert the walls to hitboxes anyway
+
+ - Move code into different directories:
+    omnisquash
+        |
+        +-engine
+        |
+        +-assets
+        |
+        +-bin
+   Here engine will have all the code (essentially the current tech_demo1
+   directory without gfx and data), assets will contain images and Tiled files
+   and also Krita files, and bin will contain the executable and gfx and data.
+   The directory omnisquash will have scripts for converting the asset stuff
+   into game files in bin, as well as building the engine and moving the
+   executable.
+   I'm a bit worried about how moving directories will cause us to lose git
+   history, but its probably fine.
